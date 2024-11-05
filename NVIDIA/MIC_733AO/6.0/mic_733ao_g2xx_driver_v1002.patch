@@ -65,7 +65,7 @@ index c88bbe207..2a51ab30e 100644
  dtb-y := $(addprefix $(makefile-path)/,$(dtb-y))
 diff --git a/kernel/hardware/nvidia/t23x/nv-public/overlay/tegra234-camera-g2xx-overlay.dts b/kernel/hardware/nvidia/t23x/nv-public/overlay/tegra234-camera-g2xx-overlay.dts
 new file mode 100644
-index 000000000..e0363ce1e
+index 000000000..aaf186cf0
 --- /dev/null
 +++ b/kernel/hardware/nvidia/t23x/nv-public/overlay/tegra234-camera-g2xx-overlay.dts
 @@ -0,0 +1,1638 @@
@@ -813,7 +813,7 @@ index 000000000..e0363ce1e
 +									cil_settletime = "0";
 +									line_length = "1280";
 +									mclk_multiplier = "15.625";
-+									embedded_metadata_height = "1";
++									embedded_metadata_height = "0";
 +									vc_id = "1";
 +								};
 +								gmsl-link {
@@ -866,7 +866,7 @@ index 000000000..e0363ce1e
 +									cil_settletime = "0";
 +									line_length = "1280";
 +									mclk_multiplier = "15.625";
-+									embedded_metadata_height = "1";
++									embedded_metadata_height = "0";
 +									vc_id = "0";
 +								};
 +								gmsl-link {
@@ -919,7 +919,7 @@ index 000000000..e0363ce1e
 +									cil_settletime = "0";
 +									line_length = "1280";
 +									mclk_multiplier = "15.625";
-+									embedded_metadata_height = "1";
++									embedded_metadata_height = "0";
 +									vc_id = "3";
 +								};
 +								gmsl-link {
@@ -972,7 +972,7 @@ index 000000000..e0363ce1e
 +									cil_settletime = "0";
 +									line_length = "1280";
 +									mclk_multiplier = "15.625";
-+									embedded_metadata_height = "1";
++									embedded_metadata_height = "0";
 +									vc_id = "2";
 +								};
 +								gmsl-link {
@@ -1027,7 +1027,7 @@ index 000000000..e0363ce1e
 +									cil_settletime = "0";
 +									line_length = "1280";
 +									mclk_multiplier = "15.625";
-+									embedded_metadata_height = "1";
++									embedded_metadata_height = "0";
 +									vc_id = "3";
 +								};
 +								gmsl-link {
@@ -1081,7 +1081,7 @@ index 000000000..e0363ce1e
 +									cil_settletime = "0";
 +									line_length = "1280";
 +									mclk_multiplier = "15.625";
-+									embedded_metadata_height = "1";
++									embedded_metadata_height = "0";
 +									vc_id = "2";
 +								};
 +								gmsl-link {
@@ -1135,7 +1135,7 @@ index 000000000..e0363ce1e
 +									cil_settletime = "0";
 +									line_length = "1280";
 +									mclk_multiplier = "15.625";
-+									embedded_metadata_height = "1"; 
++									embedded_metadata_height = "0"; 
 +									vc_id = "1";
 +								};
 +								gmsl-link {
@@ -1189,7 +1189,7 @@ index 000000000..e0363ce1e
 +									cil_settletime = "0";
 +									line_length = "1280";
 +									mclk_multiplier = "15.625";
-+									embedded_metadata_height = "1"; 
++									embedded_metadata_height = "0"; 
 +									vc_id = "0";
 +								};
 +								gmsl-link {
@@ -1283,7 +1283,7 @@ index 000000000..e0363ce1e
 +									cil_settletime = "0";
 +									line_length = "1280";
 +									mclk_multiplier = "15.625";
-+									embedded_metadata_height = "1";
++									embedded_metadata_height = "0";
 +									vc_id = "1";
 +								};
 +								gmsl-link {
@@ -1336,7 +1336,7 @@ index 000000000..e0363ce1e
 +									cil_settletime = "0";
 +									line_length = "1280";
 +									mclk_multiplier = "15.625";
-+									embedded_metadata_height = "1";
++									embedded_metadata_height = "0";
 +									vc_id = "0";
 +								};
 +								gmsl-link {
@@ -1389,7 +1389,7 @@ index 000000000..e0363ce1e
 +									cil_settletime = "0";
 +									line_length = "1280";
 +									mclk_multiplier = "15.625";
-+									embedded_metadata_height = "1"; 
++									embedded_metadata_height = "0"; 
 +									vc_id = "3";
 +								};
 +								gmsl-link {
@@ -1442,7 +1442,7 @@ index 000000000..e0363ce1e
 +									cil_settletime = "0";
 +									line_length = "1280";
 +									mclk_multiplier = "15.625";
-+									embedded_metadata_height = "1"; 
++									embedded_metadata_height = "0"; 
 +									vc_id = "2";
 +								};
 +								gmsl-link {
@@ -1496,7 +1496,7 @@ index 000000000..e0363ce1e
 +									cil_settletime = "0";
 +									line_length = "1280";
 +									mclk_multiplier = "15.625";
-+									embedded_metadata_height = "1";
++									embedded_metadata_height = "0";
 +									vc_id = "3";
 +								};
 +								gmsl-link {
@@ -1549,7 +1549,7 @@ index 000000000..e0363ce1e
 +									cil_settletime = "0";
 +									line_length = "1280";
 +									mclk_multiplier = "15.625";
-+									embedded_metadata_height = "1";
++									embedded_metadata_height = "0";
 +									vc_id = "2";
 +								};
 +								gmsl-link {
@@ -1602,7 +1602,7 @@ index 000000000..e0363ce1e
 +									cil_settletime = "0";
 +									line_length = "1280";
 +									mclk_multiplier = "15.625";
-+									embedded_metadata_height = "1";
++									embedded_metadata_height = "0";
 +									vc_id = "1";
 +								};
 +								gmsl-link {
@@ -1655,7 +1655,7 @@ index 000000000..e0363ce1e
 +									cil_settletime = "0";
 +									line_length = "1280";
 +									mclk_multiplier = "15.625";
-+									embedded_metadata_height = "1";
++									embedded_metadata_height = "0";
 +									vc_id = "0";
 +								};
 +								gmsl-link {
