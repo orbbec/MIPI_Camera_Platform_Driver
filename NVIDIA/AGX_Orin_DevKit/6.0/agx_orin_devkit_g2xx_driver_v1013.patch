@@ -78,7 +78,7 @@ index 000000000..652dd817c
 +++ b/Linux_for_Tegra/source/hardware/nvidia/t23x/nv-public/overlay/tegra234-camera-g2xx-cti-overlay.dts
 @@ -0,0 +1,3507 @@
 +// SPDX-License-Identifier: GPL-2.0-only
-+// SPDX-FileCopyrightText: Copyright (c) 2018-2023, INTEL CORPORATION.  All rights reserved.
++// SPDX-FileCopyrightText: Copyright (c) 2024-2029, ORBBEC CORPORATION.  All rights reserved.
 +
 +/dts-v1/;
 +/plugin/;
@@ -5388,7 +5388,7 @@ index 000000000..dea91db23
 +++ b/Linux_for_Tegra/source/hardware/nvidia/t23x/nv-public/overlay/tegra234-camera-g2xx-overlay.dts
 @@ -0,0 +1,1788 @@
 +// SPDX-License-Identifier: GPL-2.0-only
-+// SPDX-FileCopyrightText: Copyright (c) 2018-2023, INTEL CORPORATION.  All rights reserved.
++// SPDX-FileCopyrightText: Copyright (c) 2024-2029, ORBBEC CORPORATION.  All rights reserved.
 +
 +/dts-v1/;
 +/plugin/;
@@ -7183,7 +7183,7 @@ index 000000000..2f2c66d8b
 +++ b/Linux_for_Tegra/source/hardware/nvidia/t23x/nv-public/overlay/tegra234-camera-g2xx-pwm-overlay.dts
 @@ -0,0 +1,1789 @@
 +// SPDX-License-Identifier: GPL-2.0-only
-+// SPDX-FileCopyrightText: Copyright (c) 2018-2023, INTEL CORPORATION.  All rights reserved.
++// SPDX-FileCopyrightText: Copyright (c) 2024-2029, ORBBEC CORPORATION.  All rights reserved.
 +
 +/dts-v1/;
 +/plugin/;
