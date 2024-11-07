@@ -23,14 +23,19 @@ fi
 sudo cp Image /boot/Image
 
 if [ -e /boot/dtb/kernel_tegra234-p3737-0000+p3701-0000-nv.dtb ]; then
-    echo "bakckup DTB"
-    sudo cp /boot/dtb/kernel_tegra234-p3737-0000+p3701-0000-nv.dtb /boot/dtb/kernel_tegra234-p3737-0000+p3701-0000-nv.dtb.org
+    if [ ! -f "/boot/dtb/kernel_tegra234-p3737-0000+p3701-0000-nv.dtb.orig" ];then
+        echo "bakckup DTB"
+        sudo cp /boot/dtb/kernel_tegra234-p3737-0000+p3701-0000-nv.dtb /boot/dtb/kernel_tegra234-p3737-0000+p3701-0000-nv.dtb.orig
+    fi
     sudo cp tegra234-p3737-0000+p3701-0000-nv.dtb /boot/dtb/kernel_tegra234-p3737-0000+p3701-0000-nv.dtb
 fi
 
 if [ -e /boot/dtb/kernel_tegra234-p3737-0000+p3701-0005-nv.dtb ]; then
-    echo "bakckup DTB"
-    sudo cp /boot/dtb/kernel_tegra234-p3737-0000+p3701-0005-nv.dtb /boot/dtb/kernel_tegra234-p3737-0000+p3701-0005-nv-orig.dtb.
+    if [ ! -f "/boot/dtb/kernel_tegra234-p3737-0000+p3701-0000-nv.dtb.orig" ];then
+        echo "bakckup DTB"
+        sudo cp /boot/dtb/kernel_tegra234-p3737-0000+p3701-0005-nv.dtb /boot/dtb/kernel_tegra234-p3737-0000+p3701-0005-nv.dtb.orig
+    fi
+   
     sudo cp tegra234-p3737-0000+p3701-0005-nv.dtb /boot/dtb/kernel_tegra234-p3737-0000+p3701-0005-nv.dtb
 fi
 
