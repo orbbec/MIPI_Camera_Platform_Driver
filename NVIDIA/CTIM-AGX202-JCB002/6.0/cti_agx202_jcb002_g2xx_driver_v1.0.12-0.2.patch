@@ -63,7 +63,7 @@ index 000000000..da8993327
 +++ b/Linux_for_Tegra/sources/hardware/nvidia/t23x/cti-public/orin-agx/cti_camera/tegra234-orin-agx-cti-JCB002-G2XX.dtsi
 @@ -0,0 +1,3569 @@
 +// SPDX-License-Identifier: GPL-2.0-only
-+// SPDX-FileCopyrightText: Copyright (c) 2018-2023, INTEL CORPORATION.  All rights reserved.
++// SPDX-FileCopyrightText: Copyright (c) 2024-2029, ORBBEC CORPORATION.  All rights reserved.
 +
 +#include <dt-bindings/clock/tegra234-clock.h>
 +#include <dt-bindings/gpio/tegra234-gpio.h>
