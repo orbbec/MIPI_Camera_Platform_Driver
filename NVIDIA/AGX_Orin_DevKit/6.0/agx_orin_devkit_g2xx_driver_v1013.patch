@@ -3592,7 +3592,7 @@ index 000000000..8e06e799c
 +++ b/Linux_for_Tegra/source/hardware/nvidia/t23x/nv-public/overlay/tegra234-camera-g2xx-nomtd-overlay.dts
 @@ -0,0 +1,1789 @@
 +// SPDX-License-Identifier: GPL-2.0-only
-+// SPDX-FileCopyrightText: Copyright (c) 2018-2023, INTEL CORPORATION.  All rights reserved.
++// SPDX-FileCopyrightText: Copyright (c) 2024-2029, ORBBEC CORPORATION.  All rights reserved.
 +
 +/dts-v1/;
 +/plugin/;
