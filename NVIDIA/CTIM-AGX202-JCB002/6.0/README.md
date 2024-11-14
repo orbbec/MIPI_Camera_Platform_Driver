@@ -18,11 +18,11 @@ tar xf aarch64--glibc--stable-final.tar.bz2 --strip-components 1
 ## 3. The source code structure is organized as follows:
 ```
 agx-orin-ctim-agx202-jcb002
-	├── aarch64--glibc--stable-2022.08-1 (gcc)
+	├── aarch64--glibc--stable-2022.08-1	(gcc, download from Nvidia official website)
 	│   ├── aarch64-buildroot-linux-gnu
 	│   ├── bin
 	│   :
-	├── Linux_for_Tegra (kernel src)
+	├── Linux_for_Tegra	(Kernel src, from Connect Tech Inc.(CTIM))
 	│   └── sources
 	│	    ├── cti
 	│       ├── hardware
@@ -35,13 +35,13 @@ agx-orin-ctim-agx202-jcb002
 	│       ├── nvethernetrm
 	│       ├── nvgpu
 	│       ├── nvidia-oot
-	│       ├── Makefile
+	│       ├── Makefile	(we provided)
 	│       :
-	├── build_all.sh
-	├── copy_to_ssh.sh
-	├── copy_to_target.sh
-	├── cti_orin_agx202_jcb002_jp6.0_v1.0.12-0.2.patch
-	├── extlinux.conf
+	├── build_all.sh  	(we provided)
+	├── copy_to_ssh.sh	(we provided)
+	├── copy_to_target.sh	(we provided)
+	├── cti_orin_agx202_jcb002_jp6.0_v1.0.12-0.2.patch	(we provided)
+	├── extlinux.conf	(we provided)
 	└── README.md
 ```
 
@@ -51,12 +51,21 @@ agx-orin-ctim-agx202-jcb002
 git apply cti_agx202_jcb002_g2xx_driver_v1.0.12-0.2.patch
 ```
 
-## 5. Build kernel
+## 5. Prepare for compiling the kernel
+
+To avoid the following issues:
+   SSL error:02001002:system library:fopen:No such file or directory: bss_file.c:175
+```
+openssl req -new -nodes -utf8 -sha512 -days 36500 -batch -x509 -config x509.genkey -outform DER -out signing_key.x509 -keyout signing_key.pem
+mv signing_key.pem signing_key.x509 Linux_for_Tegra/sources/kernel/kernel-jammy-src/certs/
+```
+
+## 6. Build kernel
 ```
 ./build_all.sh
 ```
 
-## 6. Packaging and transferring target files
+## 7. Packaging and transferring target files
 
 1.modify "copy_to_ssh.sh" file below IP:
   scp -r $OUTPUT_DIR orbbec@10.8.170.11:~/
@@ -66,7 +75,7 @@ git apply cti_agx202_jcb002_g2xx_driver_v1.0.12-0.2.patch
 ./copy_to_ssh.sh
 ```
 
-## 7. Update files on target AGX Orin board
+## 8. Update files on target AGX Orin board
 
 ```
 ./copy_to_target.sh
