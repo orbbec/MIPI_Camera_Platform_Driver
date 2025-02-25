@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sudo cp tegra234-camera-g2xx-overlay.dtbo /boot/
+sudo cp tegra234-camera-g300-overlay.dtbo /boot/
 
 # backup:
 back_file=/lib/modules/$(uname -r)/modules_$(uname -r)_updates.tar.bz2
@@ -23,27 +23,22 @@ fi
 sudo cp Image /boot/Image
 
 if [ -e /boot/dtb/kernel_tegra234-p3737-0000+p3701-0000-nv.dtb ]; then
-    if [ ! -f "/boot/dtb/kernel_tegra234-p3737-0000+p3701-0000-nv.dtb.orig" ];then
-        echo "bakckup DTB"
-        sudo cp /boot/dtb/kernel_tegra234-p3737-0000+p3701-0000-nv.dtb /boot/dtb/kernel_tegra234-p3737-0000+p3701-0000-nv.dtb.orig
-    fi
+    echo "bakckup DTB"
+    sudo cp /boot/dtb/kernel_tegra234-p3737-0000+p3701-0000-nv.dtb /boot/dtb/kernel_tegra234-p3737-0000+p3701-0000-nv.dtb.org
     sudo cp tegra234-p3737-0000+p3701-0000-nv.dtb /boot/dtb/kernel_tegra234-p3737-0000+p3701-0000-nv.dtb
 fi
 
 if [ -e /boot/dtb/kernel_tegra234-p3737-0000+p3701-0005-nv.dtb ]; then
-    if [ ! -f "/boot/dtb/kernel_tegra234-p3737-0000+p3701-0000-nv.dtb.orig" ];then
-        echo "bakckup DTB"
-        sudo cp /boot/dtb/kernel_tegra234-p3737-0000+p3701-0005-nv.dtb /boot/dtb/kernel_tegra234-p3737-0000+p3701-0005-nv.dtb.orig
-    fi
-   
+    echo "bakckup DTB"
+    sudo cp /boot/dtb/kernel_tegra234-p3737-0000+p3701-0005-nv.dtb /boot/dtb/kernel_tegra234-p3737-0000+p3701-0005-nv-orig.dtb.
     sudo cp tegra234-p3737-0000+p3701-0005-nv.dtb /boot/dtb/kernel_tegra234-p3737-0000+p3701-0005-nv.dtb
 fi
 
 sudo /opt/nvidia/jetson-io/config-by-hardware.py -n 2="Jetson Orbbec Camera G335Lg"
 
-if [ -e /etc/modules-load.d/g2xx.conf ]; then
-        echo "Files g2xx.conf has exists,rm g2xx.conf"
-        sudo rm /etc/modules-load.d/g2xx.conf
+if [ -e /etc/modules-load.d/g300.conf ]; then
+        echo "Files g300.conf has exists,rm g300.conf"
+        sudo rm /etc/modules-load.d/g300.conf
 fi
 
 sudo depmod -a

@@ -1,6 +1,6 @@
  .../t23x/nv-public/nv-soc/tegra234-soc-camera.dtsi |    4 +-
  .../nvidia/t23x/nv-public/overlay/Makefile         |    1 +
- .../overlay/tegra234-camera-g2xx-overlay.dts       | 1638 ++++++++
+ .../overlay/tegra234-camera-g300-overlay.dts       | 1808 +++++++++
  .../kernel-jammy-src/arch/arm64/configs/defconfig  |    8 +
  .../drivers/media/usb/uvc/uvc_ctrl.c               |    1 +
  .../drivers/media/usb/uvc/uvc_driver.c             |  336 ++
@@ -10,15 +10,15 @@
  .../include/uapi/linux/media-bus-format.h          |    1 +
  .../include/uapi/linux/videodev2.h                 |   19 +
  kernel/nvidia-oot/drivers/media/i2c/Makefile       |    3 +
- kernel/nvidia-oot/drivers/media/i2c/g2xx.c         | 4156 ++++++++++++++++++++
+ kernel/nvidia-oot/drivers/media/i2c/g300.c         | 4228 ++++++++++++++++++++
  kernel/nvidia-oot/drivers/media/i2c/max9295.c      |  381 +-
- kernel/nvidia-oot/drivers/media/i2c/max9296.c      |  435 +-
- .../tegra/camera/fusa-capture/capture-vi.c         |    4 +-
+ kernel/nvidia-oot/drivers/media/i2c/max9296.c      |  464 ++-
+ .../tegra/camera/fusa-capture/capture-vi-channel.c |   29 +-
  .../media/platform/tegra/camera/sensor_common.c    |    4 +
  .../media/platform/tegra/camera/vi/channel.c       |  402 +-
  .../drivers/media/platform/tegra/camera/vi/graph.c |   38 +-
  .../media/platform/tegra/camera/vi/mc_common.c     |   27 +
- .../media/platform/tegra/camera/vi/vi5_fops.c      |   73 +-
+ .../media/platform/tegra/camera/vi/vi5_fops.c      |   72 +-
  .../media/platform/tegra/camera/vi/vi5_formats.h   |   61 +-
  .../platform/tegra/rtcpu/capture-ivc-priv.h        |    1 +
  .../drivers/platform/tegra/rtcpu/capture-ivc.c     |   12 +
@@ -27,7 +27,7 @@
  kernel/nvidia-oot/include/media/max9296.h          |   14 +
  kernel/nvidia-oot/include/media/mc_common.h        |   22 +
  .../nvidia-oot/include/media/tegra_camera_core.h   |   10 +-
- 29 files changed, 7603 insertions(+), 126 deletions(-)
+ 29 files changed, 7887 insertions(+), 137 deletions(-)
 
 diff --git a/kernel/hardware/nvidia/t23x/nv-public/nv-soc/tegra234-soc-camera.dtsi b/kernel/hardware/nvidia/t23x/nv-public/nv-soc/tegra234-soc-camera.dtsi
 index 52cbe5141..5e9e67422 100644
@@ -52,25 +52,25 @@ index 52cbe5141..5e9e67422 100644
  			};
  
 diff --git a/kernel/hardware/nvidia/t23x/nv-public/overlay/Makefile b/kernel/hardware/nvidia/t23x/nv-public/overlay/Makefile
-index c88bbe207..2a51ab30e 100644
+index c88bbe207..d63bee842 100644
 --- a/kernel/hardware/nvidia/t23x/nv-public/overlay/Makefile
 +++ b/kernel/hardware/nvidia/t23x/nv-public/overlay/Makefile
 @@ -60,6 +60,7 @@ dtbo-y += tegra234-p3767-camera-p3768-imx219-A.dtbo
  dtbo-y += tegra234-p3767-camera-p3768-imx219-imx477.dtbo
  dtbo-y += tegra234-p3767-camera-p3768-imx477-C.dtbo
  dtbo-y += tegra234-p3767-camera-p3768-imx477-A.dtbo
-+dtbo-y += tegra234-camera-g2xx-overlay.dtbo  # orbbec modify
++dtbo-y += tegra234-camera-g300-overlay.dtbo  # orbbec modify
  
  ifneq ($(dtb-y),)
  dtb-y := $(addprefix $(makefile-path)/,$(dtb-y))
-diff --git a/kernel/hardware/nvidia/t23x/nv-public/overlay/tegra234-camera-g2xx-overlay.dts b/kernel/hardware/nvidia/t23x/nv-public/overlay/tegra234-camera-g2xx-overlay.dts
+diff --git a/kernel/hardware/nvidia/t23x/nv-public/overlay/tegra234-camera-g300-overlay.dts b/kernel/hardware/nvidia/t23x/nv-public/overlay/tegra234-camera-g300-overlay.dts
 new file mode 100644
-index 000000000..e0363ce1e
+index 000000000..1a9cf1bb6
 --- /dev/null
-+++ b/kernel/hardware/nvidia/t23x/nv-public/overlay/tegra234-camera-g2xx-overlay.dts
-@@ -0,0 +1,1638 @@
++++ b/kernel/hardware/nvidia/t23x/nv-public/overlay/tegra234-camera-g300-overlay.dts
+@@ -0,0 +1,1808 @@
 +// SPDX-License-Identifier: GPL-2.0-only
-+// SPDX-FileCopyrightText: Copyright (c) 2024-2029, ORBBEC CORPORATION.  All rights reserved.
++// SPDX-FileCopyrightText: Copyright (c) 2018-2023, INTEL CORPORATION.  All rights reserved.
 +
 +/dts-v1/;
 +/plugin/;
@@ -100,180 +100,180 @@ index 000000000..e0363ce1e
 +					port@0 {
 +						reg = <0>;
 +						status = "okay";
-+						g2xx_vi_in0: endpoint {
++						g300_vi_in0: endpoint {
 +							status = "okay";
 +							vc-id = <0>;
 +							port-index = <0>; //0
 +							bus-width = <4>;
-+							remote-endpoint = <&g2xx_csi_out0>;
++							remote-endpoint = <&g300_csi_out0>;
 +						};
 +					};
 +					port@1 {
 +						reg = <1>;
 +						status = "okay";
-+						g2xx_vi_in1: endpoint {
++						g300_vi_in1: endpoint {
 +							status = "okay";
 +							vc-id = <1>;
 +							port-index = <0>; //0
 +							bus-width = <4>;
-+							remote-endpoint = <&g2xx_csi_out1>;
++							remote-endpoint = <&g300_csi_out1>;
 +						};
 +					};
 +					port@2 {
 +						reg = <2>;
 +						status = "okay";
-+						g2xx_vi_in2: endpoint {
++						g300_vi_in2: endpoint {
 +							status = "okay";
 +							vc-id = <2>;
 +							port-index = <0>; //0
 +							bus-width = <4>;
-+							remote-endpoint = <&g2xx_csi_out2>;
++							remote-endpoint = <&g300_csi_out2>;
 +						};
 +					};
 +					port@3 {
 +						reg = <3>;
 +						status = "okay";
-+						g2xx_vi_in3: endpoint {
++						g300_vi_in3: endpoint {
 +							status = "okay";
 +							vc-id = <3>;
 +							port-index = <0>; //0
 +							bus-width = <4>;
-+							remote-endpoint = <&g2xx_csi_out3>;
++							remote-endpoint = <&g300_csi_out3>;
 +						};
 +					};
 +
 +					port@4 {
 +						reg = <4>;
 +						status = "okay";
-+						g2xx_vi_in4: endpoint {
++						g300_vi_in4: endpoint {
 +							status = "okay";
 +							vc-id = <2>;
 +							port-index = <0>; //1
 +							bus-width = <4>;
-+							remote-endpoint = <&g2xx_csi_out4>;
++							remote-endpoint = <&g300_csi_out4>;
 +						};
 +					};
 +					port@5 {
 +						reg = <5>;
 +						status = "okay";
-+						g2xx_vi_in5: endpoint {
++						g300_vi_in5: endpoint {
 +							status = "okay";
 +							vc-id = <3>;
 +							port-index = <0>; //1
 +							bus-width = <4>;
-+							remote-endpoint = <&g2xx_csi_out5>;
++							remote-endpoint = <&g300_csi_out5>;
 +						};
 +					};
 +					port@6 {
 +						reg = <6>;
 +						status = "okay";
-+						g2xx_vi_in6: endpoint {
++						g300_vi_in6: endpoint {
 +							status = "okay";
 +							vc-id = <0>;
 +							port-index = <0>; //1
 +							bus-width = <4>;
-+							remote-endpoint = <&g2xx_csi_out6>;
++							remote-endpoint = <&g300_csi_out6>;
 +						};
 +					};
 +					port@7 {
 +						reg = <7>;
 +						status = "okay";
-+						g2xx_vi_in7: endpoint {
++						g300_vi_in7: endpoint {
 +							status = "okay";
 +							vc-id = <1>;
 +							port-index = <0>; //1
 +							bus-width = <4>;
-+							remote-endpoint = <&g2xx_csi_out7>;
++							remote-endpoint = <&g300_csi_out7>;
 +						};
 +					};
 +
 +					port@8 {
 +						reg = <8>;
 +						status = "okay";
-+						g2xx_vi_in8: endpoint {
++						g300_vi_in8: endpoint {
 +							status = "okay";
 +							vc-id = <0>;
 +							port-index = <2>; //2
 +							bus-width = <4>;
-+							remote-endpoint = <&g2xx_csi_out8>;
++							remote-endpoint = <&g300_csi_out8>;
 +						};
 +					};
 +					port@9 {
 +						reg = <9>;
 +						status = "okay";
-+						g2xx_vi_in9: endpoint {
++						g300_vi_in9: endpoint {
 +							status = "okay";
 +							vc-id = <1>;
 +							port-index = <2>; //2
 +							bus-width = <4>;
-+							remote-endpoint = <&g2xx_csi_out9>;
++							remote-endpoint = <&g300_csi_out9>;
 +						};
 +					};
 +					port@10 {
 +						reg = <10>;
 +						status = "okay";
-+						g2xx_vi_in10: endpoint {
++						g300_vi_in10: endpoint {
 +							status = "okay";
 +							vc-id = <2>;
 +							port-index = <2>; //2
 +							bus-width = <4>;
-+							remote-endpoint = <&g2xx_csi_out10>;
++							remote-endpoint = <&g300_csi_out10>;
 +						};
 +					};
 +					port@11 {
 +						reg = <11>;
 +						status = "okay";
-+						g2xx_vi_in11: endpoint {
++						g300_vi_in11: endpoint {
 +							status = "okay";
 +							vc-id = <3>;
 +							port-index = <2>; //2
 +							bus-width = <4>;
-+							remote-endpoint = <&g2xx_csi_out11>;
++							remote-endpoint = <&g300_csi_out11>;
 +						};
 +					};
 +
 +					port@12 {
 +						reg = <12>;
 +						status = "okay";
-+						g2xx_vi_in12: endpoint {
++						g300_vi_in12: endpoint {
 +							status = "okay";
 +							vc-id = <2>;
 +							port-index = <2>; //3
 +							bus-width = <4>;
-+							remote-endpoint = <&g2xx_csi_out12>;
++							remote-endpoint = <&g300_csi_out12>;
 +						};
 +					};
 +					port@13 {
 +						reg = <13>;
 +						status = "okay";
-+						g2xx_vi_in13: endpoint {
++						g300_vi_in13: endpoint {
 +							status = "okay";
 +							vc-id = <3>;
 +							port-index = <2>; //3
 +							bus-width = <4>;
-+							remote-endpoint = <&g2xx_csi_out13>;
++							remote-endpoint = <&g300_csi_out13>;
 +						};
 +					};
 +					port@14 {
 +						reg = <14>;
 +						status = "okay";
-+						g2xx_vi_in14: endpoint {
++						g300_vi_in14: endpoint {
 +							status = "okay";
 +							vc-id = <0>;
 +							port-index = <2>; //3
 +							bus-width = <4>;
-+							remote-endpoint = <&g2xx_csi_out14>;
++							remote-endpoint = <&g300_csi_out14>;
 +						};
 +					};
 +					port@15 {
 +						reg = <15>;
 +						status = "okay";
-+						g2xx_vi_in15: endpoint {
++						g300_vi_in15: endpoint {
 +							status = "okay";
 +							vc-id = <1>;
 +							port-index = <2>; //3
 +							bus-width = <4>;
-+							remote-endpoint = <&g2xx_csi_out15>;
++							remote-endpoint = <&g300_csi_out15>;
 +						};
 +					};
 +
@@ -297,7 +297,7 @@ index 000000000..e0363ce1e
 +								port@0 {
 +									reg = <0>;
 +									status = "okay";
-+									g2xx_csi_in0: endpoint@0 {
++									g300_csi_in0: endpoint@0 {
 +										status = "okay";
 +										port-index = <0>; //0
 +										bus-width = <4>;
@@ -307,9 +307,9 @@ index 000000000..e0363ce1e
 +								port@1 {
 +									reg = <1>;
 +									status = "okay";
-+									g2xx_csi_out0: endpoint@1 {
++									g300_csi_out0: endpoint@1 {
 +										status = "okay";
-+										remote-endpoint = <&g2xx_vi_in0>;
++										remote-endpoint = <&g300_vi_in0>;
 +									};
 +								};
 +							};
@@ -324,7 +324,7 @@ index 000000000..e0363ce1e
 +								port@0 {
 +									reg = <0>;
 +									status = "okay";
-+									g2xx_csi_in1: endpoint@2 {
++									g300_csi_in1: endpoint@2 {
 +										status = "okay";
 +										port-index = <0>; //0
 +										bus-width = <4>;
@@ -334,9 +334,9 @@ index 000000000..e0363ce1e
 +								port@1 {
 +									reg = <1>;
 +									status = "okay";
-+									g2xx_csi_out1: endpoint@3 {
++									g300_csi_out1: endpoint@3 {
 +										status = "okay";
-+										remote-endpoint = <&g2xx_vi_in1>;
++										remote-endpoint = <&g300_vi_in1>;
 +									};
 +								};
 +							};
@@ -351,7 +351,7 @@ index 000000000..e0363ce1e
 +								port@0 {
 +									reg = <0>;
 +									status = "okay";
-+									g2xx_csi_in2: endpoint@4 {
++									g300_csi_in2: endpoint@4 {
 +										status = "okay";
 +										port-index = <0>; //0
 +										bus-width = <4>;
@@ -361,9 +361,9 @@ index 000000000..e0363ce1e
 +								port@1 {
 +									reg = <1>;
 +									status = "okay";
-+									g2xx_csi_out2: endpoint@5 {
++									g300_csi_out2: endpoint@5 {
 +										status = "okay";
-+										remote-endpoint = <&g2xx_vi_in2>;
++										remote-endpoint = <&g300_vi_in2>;
 +									};
 +								};
 +							};
@@ -378,7 +378,7 @@ index 000000000..e0363ce1e
 +								port@0 {
 +									reg = <0>;
 +									status = "okay";
-+									g2xx_csi_in3: endpoint@6 {
++									g300_csi_in3: endpoint@6 {
 +										status = "okay";
 +										port-index = <0>; //0
 +										bus-width = <4>;
@@ -388,9 +388,9 @@ index 000000000..e0363ce1e
 +								port@1 {
 +									reg = <1>;
 +									status = "okay";
-+									g2xx_csi_out3: endpoint@7 {
++									g300_csi_out3: endpoint@7 {
 +										status = "okay";
-+										remote-endpoint = <&g2xx_vi_in3>;
++										remote-endpoint = <&g300_vi_in3>;
 +									};
 +								};
 +							};
@@ -406,7 +406,7 @@ index 000000000..e0363ce1e
 +								port@0 {
 +									reg = <0>;
 +									status = "okay";
-+									g2xx_csi_in4: endpoint@8 {
++									g300_csi_in4: endpoint@8 {
 +										status = "okay";
 +										port-index = <0>; //1
 +										bus-width = <4>;
@@ -416,9 +416,9 @@ index 000000000..e0363ce1e
 +								port@1 {
 +									reg = <1>;
 +									status = "okay";
-+									g2xx_csi_out4: endpoint@9 {
++									g300_csi_out4: endpoint@9 {
 +										status = "okay";
-+										remote-endpoint = <&g2xx_vi_in4>;
++										remote-endpoint = <&g300_vi_in4>;
 +									};
 +								};
 +							};
@@ -433,7 +433,7 @@ index 000000000..e0363ce1e
 +								port@0 {
 +									reg = <0>;
 +									status = "okay";
-+									g2xx_csi_in5: endpoint@10 {
++									g300_csi_in5: endpoint@10 {
 +										status = "okay";
 +										port-index = <0>; //1
 +										bus-width = <4>;
@@ -443,9 +443,9 @@ index 000000000..e0363ce1e
 +								port@1 {
 +									reg = <1>;
 +									status = "okay";
-+									g2xx_csi_out5: endpoint@11 {
++									g300_csi_out5: endpoint@11 {
 +										status = "okay";
-+										remote-endpoint = <&g2xx_vi_in5>;
++										remote-endpoint = <&g300_vi_in5>;
 +									};
 +								};
 +							};
@@ -460,7 +460,7 @@ index 000000000..e0363ce1e
 +								port@0 {
 +									reg = <0>;
 +									status = "okay";
-+									g2xx_csi_in6: endpoint@12 {
++									g300_csi_in6: endpoint@12 {
 +										status = "okay";
 +										port-index = <0>; //1
 +										bus-width = <4>;
@@ -470,9 +470,9 @@ index 000000000..e0363ce1e
 +								port@1 {
 +									reg = <1>;
 +									status = "okay";
-+									g2xx_csi_out6: endpoint@13 {
++									g300_csi_out6: endpoint@13 {
 +										status = "okay";
-+										remote-endpoint = <&g2xx_vi_in6>;
++										remote-endpoint = <&g300_vi_in6>;
 +									};
 +								};
 +							};
@@ -487,7 +487,7 @@ index 000000000..e0363ce1e
 +								port@0 {
 +									reg = <0>;
 +									status = "okay";
-+									g2xx_csi_in7: endpoint@14 {
++									g300_csi_in7: endpoint@14 {
 +										status = "okay";
 +										port-index = <0>; //1
 +										bus-width = <4>;
@@ -497,9 +497,9 @@ index 000000000..e0363ce1e
 +								port@1 {
 +									reg = <1>;
 +									status = "okay";
-+									g2xx_csi_out7: endpoint@15 {
++									g300_csi_out7: endpoint@15 {
 +										status = "okay";
-+										remote-endpoint = <&g2xx_vi_in7>;
++										remote-endpoint = <&g300_vi_in7>;
 +									};
 +								};
 +							};
@@ -515,7 +515,7 @@ index 000000000..e0363ce1e
 +								port@0 {
 +									reg = <0>;
 +									status = "okay";
-+									g2xx_csi_in8: endpoint@16 {
++									g300_csi_in8: endpoint@16 {
 +										status = "okay";
 +										port-index = <2>; //2
 +										bus-width = <4>;
@@ -525,9 +525,9 @@ index 000000000..e0363ce1e
 +								port@1 {
 +									reg = <1>;
 +									status = "okay";
-+									g2xx_csi_out8: endpoint@17 {
++									g300_csi_out8: endpoint@17 {
 +										status = "okay";
-+										remote-endpoint = <&g2xx_vi_in8>;
++										remote-endpoint = <&g300_vi_in8>;
 +									};
 +								};
 +							};
@@ -542,7 +542,7 @@ index 000000000..e0363ce1e
 +								port@0 {
 +									reg = <0>;
 +									status = "okay";
-+									g2xx_csi_in9: endpoint@18 {
++									g300_csi_in9: endpoint@18 {
 +										status = "okay";
 +										port-index = <2>; //2
 +										bus-width = <4>;
@@ -552,9 +552,9 @@ index 000000000..e0363ce1e
 +								port@1 {
 +									reg = <1>;
 +									status = "okay";
-+									g2xx_csi_out9: endpoint@19 {
++									g300_csi_out9: endpoint@19 {
 +										status = "okay";
-+										remote-endpoint = <&g2xx_vi_in9>;
++										remote-endpoint = <&g300_vi_in9>;
 +									};
 +								};
 +							};
@@ -569,7 +569,7 @@ index 000000000..e0363ce1e
 +								port@0 {
 +									reg = <0>;
 +									status = "okay";
-+									g2xx_csi_in10: endpoint@20 {
++									g300_csi_in10: endpoint@20 {
 +										status = "okay";
 +										port-index = <2>; //2
 +										bus-width = <4>;
@@ -579,9 +579,9 @@ index 000000000..e0363ce1e
 +								port@1 {
 +									reg = <1>;
 +									status = "okay";
-+									g2xx_csi_out10: endpoint@21 {
++									g300_csi_out10: endpoint@21 {
 +										status = "okay";
-+										remote-endpoint = <&g2xx_vi_in10>;
++										remote-endpoint = <&g300_vi_in10>;
 +									};
 +								};
 +							};
@@ -596,7 +596,7 @@ index 000000000..e0363ce1e
 +								port@0 {
 +									reg = <0>;
 +									status = "okay";
-+									g2xx_csi_in11: endpoint@22 {
++									g300_csi_in11: endpoint@22 {
 +										status = "okay";
 +										port-index = <2>; //2
 +										bus-width = <4>;
@@ -606,9 +606,9 @@ index 000000000..e0363ce1e
 +								port@1 {
 +									reg = <1>;
 +									status = "okay";
-+									g2xx_csi_out11: endpoint@23 {
++									g300_csi_out11: endpoint@23 {
 +										status = "okay";
-+										remote-endpoint = <&g2xx_vi_in11>;
++										remote-endpoint = <&g300_vi_in11>;
 +									};
 +								};
 +							};
@@ -624,7 +624,7 @@ index 000000000..e0363ce1e
 +								port@0 {
 +									reg = <0>;
 +									status = "okay";
-+									g2xx_csi_in12: endpoint@24 {
++									g300_csi_in12: endpoint@24 {
 +										status = "okay";
 +										port-index = <2>; //3
 +										bus-width = <4>;
@@ -634,9 +634,9 @@ index 000000000..e0363ce1e
 +								port@1 {
 +									reg = <1>;
 +									status = "okay";
-+									g2xx_csi_out12: endpoint@25 {
++									g300_csi_out12: endpoint@25 {
 +										status = "okay";
-+										remote-endpoint = <&g2xx_vi_in12>;
++										remote-endpoint = <&g300_vi_in12>;
 +									};
 +								};
 +							};
@@ -651,7 +651,7 @@ index 000000000..e0363ce1e
 +								port@0 {
 +									reg = <0>;
 +									status = "okay";
-+									g2xx_csi_in13: endpoint@26 {
++									g300_csi_in13: endpoint@26 {
 +										status = "okay";
 +										port-index = <2>; //3
 +										bus-width = <4>;
@@ -661,9 +661,9 @@ index 000000000..e0363ce1e
 +								port@1 {
 +									reg = <1>;
 +									status = "okay";
-+									g2xx_csi_out13: endpoint@27 {
++									g300_csi_out13: endpoint@27 {
 +										status = "okay";
-+										remote-endpoint = <&g2xx_vi_in13>;
++										remote-endpoint = <&g300_vi_in13>;
 +									};
 +								};
 +							};
@@ -678,7 +678,7 @@ index 000000000..e0363ce1e
 +								port@0 {
 +									reg = <0>;
 +									status = "okay";
-+									g2xx_csi_in14: endpoint@28 {
++									g300_csi_in14: endpoint@28 {
 +										status = "okay";
 +										port-index = <2>; //3
 +										bus-width = <4>;
@@ -688,9 +688,9 @@ index 000000000..e0363ce1e
 +								port@1 {
 +									reg = <1>;
 +									status = "okay";
-+									g2xx_csi_out14: endpoint@29 {
++									g300_csi_out14: endpoint@29 {
 +										status = "okay";
-+										remote-endpoint = <&g2xx_vi_in14>;
++										remote-endpoint = <&g300_vi_in14>;
 +									};
 +								};
 +							};
@@ -705,7 +705,7 @@ index 000000000..e0363ce1e
 +								port@0 {
 +									reg = <0>;
 +									status = "okay";
-+									g2xx_csi_in15: endpoint@30 {
++									g300_csi_in15: endpoint@30 {
 +										status = "okay";
 +										port-index = <2>; //3
 +										bus-width = <4>;
@@ -715,9 +715,9 @@ index 000000000..e0363ce1e
 +								port@1 {
 +									reg = <1>;
 +									status = "okay";
-+									g2xx_csi_out15: endpoint@31 {
++									g300_csi_out15: endpoint@31 {
 +										status = "okay";
-+										remote-endpoint = <&g2xx_vi_in15>;
++										remote-endpoint = <&g300_vi_in15>;
 +									};
 +								};
 +							};
@@ -778,7 +778,7 @@ index 000000000..e0363ce1e
 +								status = "okay";
 +								def-addr = <0x66>;
 +								reg = <0x6D>;
-+								compatible = "orbbec,g2xx";
++								compatible = "orbbec,g300";
 +								use_sensor_mode_id = "true";
 +								cam-type = "IR_R";
 +								orbbec_cam_num = <1>;
@@ -794,7 +794,7 @@ index 000000000..e0363ce1e
 +											vc-id = <1>;
 +											port-index = <2>;
 +											bus-width = <4>;
-+											remote-endpoint = <&g2xx_csi_in7>;
++											remote-endpoint = <&g300_csi_in7>;
 +										};
 +									};
 +								};
@@ -830,7 +830,7 @@ index 000000000..e0363ce1e
 +								status = "okay";
 +								def-addr = <0x66>;
 +								reg = <0x6C>;
-+								compatible = "orbbec,g2xx";
++								compatible = "orbbec,g300";
 +								use_sensor_mode_id = "true";
 +								vcc-supply = <&vdd_1v8_ls>;
 +								cam-type = "IR_L";
@@ -847,7 +847,7 @@ index 000000000..e0363ce1e
 +											vc-id = <0>;
 +											port-index = <2>;
 +											bus-width = <4>;
-+											remote-endpoint = <&g2xx_csi_in6>;
++											remote-endpoint = <&g300_csi_in6>;
 +										};
 +									};
 +								};
@@ -883,7 +883,7 @@ index 000000000..e0363ce1e
 +								status = "okay";
 +								def-addr = <0x66>;
 +								reg = <0x6B>;
-+								compatible = "orbbec,g2xx";
++								compatible = "orbbec,g300";
 +								use_sensor_mode_id = "true";
 +								vcc-supply = <&vdd_1v8_ls>;
 +								cam-type = "RGB";
@@ -900,7 +900,7 @@ index 000000000..e0363ce1e
 +											vc-id = <3>;
 +											port-index = <2>;
 +											bus-width = <4>;
-+											remote-endpoint = <&g2xx_csi_in5>;
++											remote-endpoint = <&g300_csi_in5>;
 +										};
 +									};
 +								};
@@ -936,7 +936,7 @@ index 000000000..e0363ce1e
 +								status = "okay";
 +								def-addr = <0x66>;
 +								reg = <0x6A>;
-+								compatible = "orbbec,g2xx";
++								compatible = "orbbec,g300";
 +								use_sensor_mode_id = "true";
 +								vcc-supply = <&vdd_1v8_ls>;
 +								cam-type = "Depth";
@@ -953,7 +953,7 @@ index 000000000..e0363ce1e
 +											vc-id = <2>;
 +											port-index = <2>;
 +											bus-width = <4>;
-+											remote-endpoint = <&g2xx_csi_in4>;
++											remote-endpoint = <&g300_csi_in4>;
 +										};
 +									};
 +								};
@@ -991,7 +991,7 @@ index 000000000..e0363ce1e
 +								status = "okay";
 +								def-addr = <0x66>;
 +								reg = <0x69>;
-+								compatible = "orbbec,g2xx";
++								compatible = "orbbec,g300";
 +								use_sensor_mode_id = "true";
 +								vcc-supply = <&vdd_1v8_ls>;
 +								cam-type = "IR_R";
@@ -1008,7 +1008,7 @@ index 000000000..e0363ce1e
 +											vc-id = <3>;
 +											port-index = <0>; //0
 +											bus-width = <4>;
-+											remote-endpoint = <&g2xx_csi_in3>;
++											remote-endpoint = <&g300_csi_in3>;
 +										};
 +									};
 +								};
@@ -1045,7 +1045,7 @@ index 000000000..e0363ce1e
 +								status = "okay";
 +								def-addr = <0x66>;
 +								reg = <0x68>;
-+								compatible = "orbbec,g2xx";
++								compatible = "orbbec,g300";
 +								use_sensor_mode_id = "true";
 +								vcc-supply = <&vdd_1v8_ls>;
 +								cam-type = "IR_L";
@@ -1062,7 +1062,7 @@ index 000000000..e0363ce1e
 +											vc-id = <2>;
 +											port-index = <0>;
 +											bus-width = <4>;
-+											remote-endpoint = <&g2xx_csi_in2>;
++											remote-endpoint = <&g300_csi_in2>;
 +										};
 +									};
 +								};
@@ -1099,7 +1099,7 @@ index 000000000..e0363ce1e
 +								status = "okay";
 +								def-addr = <0x66>;
 +								reg = <0x67>;
-+								compatible = "orbbec,g2xx";
++								compatible = "orbbec,g300";
 +								use_sensor_mode_id = "true";
 +								vcc-supply = <&vdd_1v8_ls>;
 +								cam-type = "RGB";
@@ -1116,7 +1116,7 @@ index 000000000..e0363ce1e
 +											vc-id = <1>;
 +											port-index = <0>;
 +											bus-width = <4>;
-+											remote-endpoint = <&g2xx_csi_in1>;
++											remote-endpoint = <&g300_csi_in1>;
 +										};
 +									};
 +								};
@@ -1153,7 +1153,7 @@ index 000000000..e0363ce1e
 +								status = "okay";
 +								def-addr = <0x66>;
 +								reg = <0x66>;
-+								compatible = "orbbec,g2xx";
++								compatible = "orbbec,g300";
 +								use_sensor_mode_id = "true";
 +								vcc-supply = <&vdd_1v8_ls>;
 +								cam-type = "Depth";
@@ -1170,7 +1170,7 @@ index 000000000..e0363ce1e
 +											vc-id = <0>;
 +											port-index = <0>;
 +											bus-width = <4>;
-+											remote-endpoint = <&g2xx_csi_in0>;
++											remote-endpoint = <&g300_csi_in0>;
 +										};
 +									};
 +								};
@@ -1234,6 +1234,7 @@ index 000000000..e0363ce1e
 +								csi-mode = "2x4";
 +								max-src = <2>;
 +								reset-gpios = <&gpio_exp0 0 GPIO_ACTIVE_HIGH>;
++								vdd_supply_1v2;   //if max9296 VDD supply 1.2V
 +							};
 +						};
 +						i2c@1 {
@@ -1247,7 +1248,7 @@ index 000000000..e0363ce1e
 +								status = "okay";
 +								def-addr = <0x66>;
 +								reg = <0x6D>;
-+								compatible = "orbbec,g2xx";
++								compatible = "orbbec,g300";
 +								use_sensor_mode_id = "true";
 +								vcc-supply = <&vdd_1v8_ls>;
 +								cam-type = "IR_R";
@@ -1264,7 +1265,7 @@ index 000000000..e0363ce1e
 +											vc-id = <1>;
 +											port-index = <2>;
 +											bus-width = <4>;
-+											remote-endpoint = <&g2xx_csi_in15>;
++											remote-endpoint = <&g300_csi_in15>;
 +										};
 +									};
 +								};
@@ -1300,7 +1301,7 @@ index 000000000..e0363ce1e
 +								status = "okay";
 +								def-addr = <0x66>;
 +								reg = <0x6C>;
-+								compatible = "orbbec,g2xx";
++								compatible = "orbbec,g300";
 +								use_sensor_mode_id = "true";
 +								vcc-supply = <&vdd_1v8_ls>;
 +								cam-type = "IR_L";
@@ -1317,7 +1318,7 @@ index 000000000..e0363ce1e
 +											vc-id = <0>;
 +											port-index = <2>;
 +											bus-width = <4>;
-+											remote-endpoint = <&g2xx_csi_in14>;
++											remote-endpoint = <&g300_csi_in14>;
 +										};
 +									};
 +								};
@@ -1353,7 +1354,7 @@ index 000000000..e0363ce1e
 +								status = "okay";
 +								def-addr = <0x66>;
 +								reg = <0x6B>;
-+								compatible = "orbbec,g2xx";
++								compatible = "orbbec,g300";
 +								use_sensor_mode_id = "true";
 +								vcc-supply = <&vdd_1v8_ls>;
 +								cam-type = "RGB";
@@ -1370,7 +1371,7 @@ index 000000000..e0363ce1e
 +											vc-id = <3>;
 +											port-index = <2>;
 +											bus-width = <4>;
-+											remote-endpoint = <&g2xx_csi_in13>;
++											remote-endpoint = <&g300_csi_in13>;
 +										};
 +									};
 +								};
@@ -1406,7 +1407,7 @@ index 000000000..e0363ce1e
 +								status = "okay";
 +								def-addr = <0x66>;
 +								reg = <0x6A>;
-+								compatible = "orbbec,g2xx";
++								compatible = "orbbec,g300";
 +								use_sensor_mode_id = "true";
 +								vcc-supply = <&vdd_1v8_ls>;
 +								cam-type = "Depth";
@@ -1423,7 +1424,7 @@ index 000000000..e0363ce1e
 +											vc-id = <2>;
 +											port-index = <2>;
 +											bus-width = <4>;
-+											remote-endpoint = <&g2xx_csi_in12>;
++											remote-endpoint = <&g300_csi_in12>;
 +										};
 +									};
 +								};
@@ -1460,7 +1461,7 @@ index 000000000..e0363ce1e
 +								status = "okay";
 +								def-addr = <0x66>;
 +								reg = <0x69>;
-+								compatible = "orbbec,g2xx";
++								compatible = "orbbec,g300";
 +								use_sensor_mode_id = "true";
 +								vcc-supply = <&vdd_1v8_ls>;
 +								cam-type = "IR_R";
@@ -1477,7 +1478,7 @@ index 000000000..e0363ce1e
 +											vc-id = <3>;
 +											port-index = <0>;
 +											bus-width = <4>;
-+											remote-endpoint = <&g2xx_csi_in11>;
++											remote-endpoint = <&g300_csi_in11>;
 +										};
 +									};
 +								};
@@ -1513,7 +1514,7 @@ index 000000000..e0363ce1e
 +								status = "okay";
 +								def-addr = <0x66>;
 +								reg = <0x68>;
-+								compatible = "orbbec,g2xx";
++								compatible = "orbbec,g300";
 +								use_sensor_mode_id = "true";
 +								vcc-supply = <&vdd_1v8_ls>;
 +								cam-type = "IR_L";
@@ -1530,7 +1531,7 @@ index 000000000..e0363ce1e
 +											vc-id = <2>;
 +											port-index = <0>;
 +											bus-width = <4>;
-+											remote-endpoint = <&g2xx_csi_in10>;
++											remote-endpoint = <&g300_csi_in10>;
 +										};
 +									};
 +								};
@@ -1566,7 +1567,7 @@ index 000000000..e0363ce1e
 +								status = "okay";
 +								def-addr = <0x66>;
 +								reg = <0x67>;
-+								compatible = "orbbec,g2xx";
++								compatible = "orbbec,g300";
 +								use_sensor_mode_id = "true";
 +								vcc-supply = <&vdd_1v8_ls>;
 +								cam-type = "RGB";
@@ -1583,7 +1584,7 @@ index 000000000..e0363ce1e
 +											vc-id = <1>;
 +											port-index = <0>;
 +											bus-width = <4>;
-+											remote-endpoint = <&g2xx_csi_in9>;
++											remote-endpoint = <&g300_csi_in9>;
 +										};
 +									};
 +								};
@@ -1619,7 +1620,7 @@ index 000000000..e0363ce1e
 +								status = "okay";
 +								def-addr = <0x66>;
 +								reg = <0x66>;
-+								compatible = "orbbec,g2xx";
++								compatible = "orbbec,g300";
 +								use_sensor_mode_id = "true";
 +								vcc-supply = <&vdd_1v8_ls>;
 +								cam-type = "Depth";
@@ -1636,7 +1637,7 @@ index 000000000..e0363ce1e
 +											vc-id = <0>;
 +											port-index = <0>;
 +											bus-width = <4>;
-+											remote-endpoint = <&g2xx_csi_in8>;
++											remote-endpoint = <&g300_csi_in8>;
 +										};
 +									};
 +								};
@@ -1699,7 +1700,176 @@ index 000000000..e0363ce1e
 +								csi-mode = "2x4";
 +								max-src = <2>;
 +								reset-gpios = <&gpio_exp0 1 GPIO_ACTIVE_HIGH>;
++								vdd_supply_1v2;   //if max9296 VDD supply 1.2V
 +							};
++						};
++					};
++				};
++			};
++			tegra-camera-platform {
++				compatible = "nvidia, tegra-camera-platform";
++				num_csi_lanes = <8>;
++				max_lane_speed = <1500000>;
++				min_bits_per_pixel = <8>;
++				vi_peak_byte_per_pixel = <2>;
++				vi_bw_margin_pct = <25>;
++				max_pixel_rate = <750000>;
++				isp_peak_byte_per_pixel = <5>;
++				isp_bw_margin_pct = <25>;
++				status = "okay";
++
++				modules {
++					status = "okay";
++					module0 {
++						status = "okay";
++						badge = "g300_0";
++						position = "topleft";
++						orientation = "1";
++						drivernode0 {
++							status = "okay";
++							/* Declare PCL support driver (classically known as guid)  */
++							pcl_id = "v4l2_sensor";
++							/* Declare the device-tree hierarchy to driver instance */
++							sysfs-device-tree = "/sys/firmware/devicetree/base/bus@0/i2c@3180000/tca9546@70/i2c@0/g2m0@66";
++						};
++
++						drivernode1 {
++							status = "okay";
++							/* Declare PCL support driver (classically known as guid)  */
++							pcl_id = "v4l2_sensor";
++							/* Declare the device-tree hierarchy to driver instance */
++							sysfs-device-tree = "/sys/firmware/devicetree/base/bus@0/i2c@3180000/tca9546@70/i2c@0/g2m1@67";
++						};
++
++						drivernode2 {
++							status = "okay";
++							/* Declare PCL support driver (classically known as guid)  */
++							pcl_id = "v4l2_sensor";
++							/* Declare the device-tree hierarchy to driver instance */
++							sysfs-device-tree = "/sys/firmware/devicetree/base/bus@0/i2c@3180000/tca9546@70/i2c@0/g2m2@68";
++						};
++
++						drivernode3 {
++							status = "okay";
++							/* Declare PCL support driver (classically known as guid)  */
++							pcl_id = "v4l2_sensor";
++							/* Declare the device-tree hierarchy to driver instance */
++							sysfs-device-tree = "/sys/firmware/devicetree/base/bus@0/i2c@3180000/tca9546@70/i2c@0/g2m3@69";
++						};
++					};
++					module1 {
++						status = "okay";
++						badge = "g300_1";
++						position = "topright";
++						orientation = "1";
++
++						drivernode0 {
++							status = "okay";
++							/* Declare PCL support driver (classically known as guid)  */
++							pcl_id = "v4l2_sensor";
++							/* Declare the device-tree hierarchy to driver instance */
++							sysfs-device-tree = "/sys/firmware/devicetree/base/bus@0/i2c@3180000/tca9546@70/i2c@0/g2m0@6A";
++						};
++
++						drivernode1 {
++							status = "okay";
++							/* Declare PCL support driver (classically known as guid)  */
++							pcl_id = "v4l2_sensor";
++							/* Declare the device-tree hierarchy to driver instance */
++							sysfs-device-tree = "/sys/firmware/devicetree/base/bus@0/i2c@3180000/tca9546@70/i2c@0/g2m1@6B";
++						};
++
++						drivernode2 {
++							status = "okay";
++							/* Declare PCL support driver (classically known as guid)  */
++							pcl_id = "v4l2_sensor";
++							/* Declare the device-tree hierarchy to driver instance */
++							sysfs-device-tree = "/sys/firmware/devicetree/base/bus@0/i2c@3180000/tca9546@70/i2c@0/g2m2@6C";
++						};
++
++						drivernode3 {
++							status = "okay";
++							/* Declare PCL support driver (classically known as guid)  */
++							pcl_id = "v4l2_sensor";
++							/* Declare the device-tree hierarchy to driver instance */
++							sysfs-device-tree = "/sys/firmware/devicetree/base/bus@0/i2c@3180000/tca9546@70/i2c@0/g2m3@6D";
++						};
++						
++					};
++
++					module2 {
++						status = "okay";
++						badge = "g300_2";
++						position = "bottomleft";
++						orientation = "1";
++
++						drivernode0 {
++							status = "okay";
++							/* Declare PCL support driver (classically known as guid)  */
++							pcl_id = "v4l2_sensor";
++							sysfs-device-tree = "/sys/firmware/devicetree/base/bus@0/i2c@3180000/tca9546@70/i2c@1/g2m0@66";
++						};
++
++						drivernode1 {
++							status = "okay";
++							/* Declare PCL support driver (classically known as guid)  */
++							pcl_id = "v4l2_sensor";
++							/* Declare the device-tree hierarchy to driver instance */
++							sysfs-device-tree = "/sys/firmware/devicetree/base/bus@0/i2c@3180000/tca9546@70/i2c@1/g2m1@67";
++						};
++
++						drivernode2 {
++							status = "okay";
++							/* Declare PCL support driver (classically known as guid)  */
++							pcl_id = "v4l2_sensor";
++							/* Declare the device-tree hierarchy to driver instance */
++							sysfs-device-tree = "/sys/firmware/devicetree/base/bus@0/i2c@3180000/tca9546@70/i2c@1/g2m2@68";
++						};
++
++						drivernode3 {
++							status = "okay";
++							/* Declare PCL support driver (classically known as guid)  */
++							pcl_id = "v4l2_sensor";
++							/* Declare the device-tree hierarchy to driver instance */
++							sysfs-device-tree = "/sys/firmware/devicetree/base/bus@0/i2c@3180000/tca9546@70/i2c@1/g2m3@69";
++						};
++					};
++					module3 {
++						status = "okay";
++						badge = "g300_3";
++						position = "bottomright";
++						orientation = "1";
++
++						drivernode0 {
++							status = "okay";
++								/* Declare PCL support driver (classically known as guid)  */
++							pcl_id = "v4l2_sensor";
++							/* Declare the device-tree hierarchy to driver instance */
++							sysfs-device-tree = "/sys/firmware/devicetree/base/bus@0/i2c@3180000/tca9546@70/i2c@1/g2m0@6A";
++						};
++
++						drivernode1 {
++							status = "okay";
++							/* Declare PCL support driver (classically known as guid)  */
++							pcl_id = "v4l2_sensor";
++							/* Declare the device-tree hierarchy to driver instance */
++							sysfs-device-tree = "/sys/firmware/devicetree/base/bus@0/i2c@3180000/tca9546@70/i2c@1/g2m1@6B";
++						};
++
++						drivernode2 {
++							status = "okay";
++							/* Declare PCL support driver (classically known as guid)  */
++							pcl_id = "v4l2_sensor";
++							/* Declare the device-tree hierarchy to driver instance */
++							sysfs-device-tree = "/sys/firmware/devicetree/base/bus@0/i2c@3180000/tca9546@70/i2c@1/g2m2@6C";
++						};
++
++						drivernode3 {
++							status = "okay";
++							/* Declare PCL support driver (classically known as guid)  */
++							pcl_id = "v4l2_sensor";
++							/* Declare the device-tree hierarchy to driver instance */
++							sysfs-device-tree = "/sys/firmware/devicetree/base/bus@0/i2c@3180000/tca9546@70/i2c@1/g2m3@6D";
 +						};
 +					};
 +				};
@@ -2178,7 +2348,7 @@ index 1aa2cc985..0b7067c1d 100644
  #define UVC_CTRL_CONTROL_TIMEOUT	5000
  #define UVC_CTRL_STREAMING_TIMEOUT	5000
 diff --git a/kernel/kernel/kernel-jammy-src/drivers/media/v4l2-core/v4l2-ioctl.c b/kernel/kernel/kernel-jammy-src/drivers/media/v4l2-core/v4l2-ioctl.c
-index 8375f9127..df6094919 100644
+index 8375f9127..dc9d6a440 100644
 --- a/kernel/kernel/kernel-jammy-src/drivers/media/v4l2-core/v4l2-ioctl.c
 +++ b/kernel/kernel/kernel-jammy-src/drivers/media/v4l2-core/v4l2-ioctl.c
 @@ -1258,6 +1258,7 @@ static void v4l_fill_fmtdesc(struct v4l2_fmtdesc *fmt)
@@ -2201,7 +2371,7 @@ index 8375f9127..df6094919 100644
  	case V4L2_META_FMT_VSP1_HGT:	descr = "R-Car VSP1 2-D Histogram"; break;
  	case V4L2_META_FMT_UVC:		descr = "UVC Payload Header Metadata"; break;
  	case V4L2_META_FMT_D4XX:	descr = "Intel D4xx UVC Metadata"; break;
-+	case V4L2_META_FMT_G2XX:	descr = "Orbbec G2xx UVC Metadata"; break; //orbbec modify
++	case V4L2_META_FMT_G300:	descr = "Orbbec G300 UVC Metadata"; break; //orbbec modify
  	case V4L2_META_FMT_VIVID:       descr = "Vivid Metadata"; break;
  	case V4L2_META_FMT_RK_ISP1_PARAMS:	descr = "Rockchip ISP1 3A Parameters"; break;
  	case V4L2_META_FMT_RK_ISP1_STAT_3A:	descr = "Rockchip ISP1 3A Statistics"; break;
@@ -2262,7 +2432,7 @@ index df6b711b2..02d0db3c1 100644
  #define MEDIA_BUS_FMT_VYUY8_1X16		0x2010
  #define MEDIA_BUS_FMT_YUYV8_1X16		0x2011
 diff --git a/kernel/kernel/kernel-jammy-src/include/uapi/linux/videodev2.h b/kernel/kernel/kernel-jammy-src/include/uapi/linux/videodev2.h
-index e6de9926c..efd67975d 100644
+index e6de9926c..065897430 100644
 --- a/kernel/kernel/kernel-jammy-src/include/uapi/linux/videodev2.h
 +++ b/kernel/kernel/kernel-jammy-src/include/uapi/linux/videodev2.h
 @@ -734,14 +734,32 @@ struct v4l2_pix_format {
@@ -2302,32 +2472,32 @@ index e6de9926c..efd67975d 100644
  #define V4L2_META_FMT_VSP1_HGT    v4l2_fourcc('V', 'S', 'P', 'T') /* R-Car VSP1 2-D Histogram */
  #define V4L2_META_FMT_UVC         v4l2_fourcc('U', 'V', 'C', 'H') /* UVC Payload Header metadata */
  #define V4L2_META_FMT_D4XX        v4l2_fourcc('D', '4', 'X', 'X') /* D4XX Payload Header metadata */
-+#define V4L2_META_FMT_G2XX        v4l2_fourcc('G', '2', 'X', 'X') /* G2XX Payload Header metadata, orbbec modify */
++#define V4L2_META_FMT_G300        v4l2_fourcc('G', '2', 'X', 'X') /* G300 Payload Header metadata, orbbec modify */
  #define V4L2_META_FMT_VIVID	  v4l2_fourcc('V', 'I', 'V', 'D') /* Vivid Metadata */
  
  /* Vendor specific - used for RK_ISP1 camera sub-system */
 diff --git a/kernel/nvidia-oot/drivers/media/i2c/Makefile b/kernel/nvidia-oot/drivers/media/i2c/Makefile
-index 7c5913c64..e7ec63679 100644
+index 7c5913c64..58fd31b61 100644
 --- a/kernel/nvidia-oot/drivers/media/i2c/Makefile
 +++ b/kernel/nvidia-oot/drivers/media/i2c/Makefile
 @@ -5,6 +5,9 @@ subdir-ccflags-y += -Werror
  
  obj-m += max9295.o
  obj-m += max9296.o
-+subdir-ccflags-y += -DCONFIG_VIDEO_G2XX_SERDES
++subdir-ccflags-y += -DCONFIG_VIDEO_G300_SERDES
 +subdir-ccflags-y += -DCONFIG_TEGRA_CAMERA_PLATFORM
-+obj-m += g2xx.o
++obj-m += g300.o
  ifeq ($(findstring ack_src,$(NV_BUILD_KERNEL_OPTIONS)),)
  obj-m += max96712.o
  
-diff --git a/kernel/nvidia-oot/drivers/media/i2c/g2xx.c b/kernel/nvidia-oot/drivers/media/i2c/g2xx.c
+diff --git a/kernel/nvidia-oot/drivers/media/i2c/g300.c b/kernel/nvidia-oot/drivers/media/i2c/g300.c
 new file mode 100644
-index 000000000..db38c3a9f
+index 000000000..74977e36f
 --- /dev/null
-+++ b/kernel/nvidia-oot/drivers/media/i2c/g2xx.c
-@@ -0,0 +1,4156 @@
++++ b/kernel/nvidia-oot/drivers/media/i2c/g300.c
+@@ -0,0 +1,4228 @@
 +/*
-+ * orb.c - Orbbec G2XX camera driver
++ * orb.c - Orbbec G300 camera driver
 + *
 + * Copyright (c) 2023-2025, ORBBEC CORPORATION.  All rights reserved.
 + *
@@ -2370,11 +2540,11 @@ index 000000000..db38c3a9f
 +#define I2C_RETRY_TIME 1
 +
 +//#define ORB_DRIVER_NAME "ORB RealSense camera driver"
-+#define ORB_DRIVER_NAME "g2xx"
-+#define ORB_DRIVER_NAME_AWG "g2xx-awg"
-+#define ORB_DRIVER_NAME_ASR "g2xx-asr"
-+#define ORB_DRIVER_NAME_CLASS "g2xx-class"
-+#define ORB_DRIVER_NAME_DFU "g2xx-dfu"
++#define ORB_DRIVER_NAME "g300"
++#define ORB_DRIVER_NAME_AWG "g300-awg"
++#define ORB_DRIVER_NAME_ASR "g300-asr"
++#define ORB_DRIVER_NAME_CLASS "g300-class"
++#define ORB_DRIVER_NAME_DFU "g300-dfu"
 +
 +
 +enum orb_mux_pad {
@@ -2406,6 +2576,7 @@ index 000000000..db38c3a9f
 +static int get_data_len = 10;
 +static int orbbec_get_frame_profile_flag = 0;
 +static int orbbec_communicate_finish_flag = 0;
++static int orbbec_link_flag = 0;
 +static int probe_cam_num = -1;
 +struct orbbec_msg_body{
 +	uint16_t res;
@@ -2490,10 +2661,11 @@ index 000000000..db38c3a9f
 +    RESOLUTION_1280_800,
 +    RESOLUTION_1920_1080,
 +	RESOLUTION_1280_960,
++	RESOLUTION_424_266,
 +    RESOLUTION_MAX,
 +} Resolution_t;
 +
-+static int resolution_map[16]={
++static int resolution_map[17]={
 +	256*144,
 +    320*180,
 +   	320*240,
@@ -2510,6 +2682,7 @@ index 000000000..db38c3a9f
 +    1280*800,
 +    1920*1080,
 +	1280*960,
++	424*266,
 +};
 +
 +enum _PixFmt
@@ -2758,12 +2931,19 @@ index 000000000..db38c3a9f
 +
 +static struct orb_resolution orb_depth_sizes[15];
 +static struct orb_resolution orb_depth_sizes1[15];
++static struct orb_resolution orb_depth_sizes2[15];
 +
 +static struct orb_resolution orb_mono_sizes[15];
 +static struct orb_resolution orb_mono_sizes1[15];
++static struct orb_resolution orb_mono_sizes2[15];
 +
 +static struct orb_resolution orb_rgb_sizes[15];
 +static struct orb_resolution orb_rgb_sizes1[15];
++static struct orb_resolution orb_rgb_sizes2[15];
++
++static struct orb_resolution orb_default_sizes[15];
++static struct orb_resolution orb_default_sizes1[15];
++static struct orb_resolution orb_default_sizes2[15];
 +
 +struct orb_mbus_type_map{
 +	uint32_t map_mbus_code;
@@ -2799,24 +2979,47 @@ index 000000000..db38c3a9f
 +};
 +
 +static int orb_depth_formats_num = 0;
-+static struct orb_format orb_depth_formats[2] = { //use this
++static struct orb_format orb_depth_formats[3] = { 
 +	{
-+		// TODO: 0x31 is replaced with 0x1e since it caused low FPS in Jetson.
 +		.data_type = PIXEL_FORMAT_PACKED_16BIT,	// Z16 
 +		.mbus_code = MEDIA_BUS_FMT_UYVY8_1X16,
 +		.n_resolutions = 0,
 +		.resolutions = orb_depth_sizes,
 +	}, {
-+		.data_type = PIXEL_FORMAT_PACKED_14BIT,	// Y8 
++		.data_type = PIXEL_FORMAT_PACKED_8BIT,	// Y8 
 +		.mbus_code = MEDIA_BUS_FMT_Y8_1X8,
 +		.n_resolutions = 0,
 +		.resolutions = orb_depth_sizes1,
++	}, {
++		.data_type = PIXEL_FORMAT_PACKED_12BIT,	// Y12 
++		.mbus_code = MEDIA_BUS_FMT_Y12_1X12,
++		.n_resolutions = 0,
++		.resolutions = orb_depth_sizes2,
 +	}, 
 +};
 +
-+//#define ORB_DEPTH_N_FORMATS 1
++static int orb_default_formats_num = 0;
++static struct orb_format orb_default_formats[3] = {
++	{
++		.data_type = PIXEL_FORMAT_PACKED_16BIT,	// Z16 
++		.mbus_code = MEDIA_BUS_FMT_UYVY8_1X16,
++		.n_resolutions = 0,
++		.resolutions = orb_default_sizes,
++	}, {
++		.data_type = PIXEL_FORMAT_PACKED_8BIT,	// Y8 
++		.mbus_code = MEDIA_BUS_FMT_Y8_1X8,
++		.n_resolutions = 0,
++		.resolutions = orb_default_sizes1,
++	}, {
++		.data_type = PIXEL_FORMAT_PACKED_12BIT,	// Y12 
++		.mbus_code = MEDIA_BUS_FMT_Y12_1X12,
++		.n_resolutions = 0,
++		.resolutions = orb_default_sizes2,
++	}, 
++};
++
 +static int orb_mono_formats_num = 0;
-+static struct orb_format orb_mono_formats[2] = {
++static struct orb_format orb_mono_formats[3] = {
 +	{
 +		// First format: default 
 +		.data_type = PIXEL_FORMAT_PACKED_8BIT,	// Y8 
@@ -2824,20 +3027,23 @@ index 000000000..db38c3a9f
 +		.n_resolutions = 0,
 +		.resolutions = orb_mono_sizes,
 +	}, {
-+		.data_type = PIXEL_FORMAT_PACKED_12BIT,	// Y8I 
-+		.mbus_code = MEDIA_BUS_FMT_VYUY8_1X16,
++		.data_type = PIXEL_FORMAT_PACKED_12BIT,	// Y12 
++		.mbus_code = MEDIA_BUS_FMT_Y12_1X12,
 +		.n_resolutions = 0,
 +		.resolutions = orb_mono_sizes1,
++	},{
++		.data_type = PIXEL_FORMAT_PACKED_16BIT,	// Y16 
++		.mbus_code = MEDIA_BUS_FMT_VYUY8_1X16,
++		.n_resolutions = 0,
++		.resolutions = orb_mono_sizes2,
 +	},
 +};
 +
 +static int orb_rgb_formats_num = 0;
-+static struct orb_format orb_rgb_formats[2]= { //use this
++static struct orb_format orb_rgb_formats[3]= { //use this
 +	{
 +		.data_type = PIXEL_FORMAT_YUV422,	// UYVY 
 +		.mbus_code = MEDIA_BUS_FMT_YUYV8_1X16, //Different from depth in MEDIA_BUS_FMT_UYVY8_1X16(map to Z16)
-+		// .data_type = 0x2b, // RAW10 
-+		// .mbus_code = MEDIA_BUS_FMT_Y10_1X10, //MEDIA_BUS_FMT_SRGGB10_1X10
 +		.n_resolutions = 0,
 +		.resolutions = orb_rgb_sizes,
 +	}, {
@@ -2845,6 +3051,11 @@ index 000000000..db38c3a9f
 +		.mbus_code = MEDIA_BUS_FMT_RGB888_1X24,	// FIXME 
 +		.n_resolutions = 0,
 +		.resolutions = orb_rgb_sizes1,
++	},  {
++		.data_type = PIXEL_FORMAT_PACKED_8BIT,	//Y8
++		.mbus_code = MEDIA_BUS_FMT_Y8_1X8,	
++		.n_resolutions = 0,
++		.resolutions = orb_rgb_sizes2,
 +	}, 
 +};
 +
@@ -3754,6 +3965,34 @@ index 000000000..db38c3a9f
 +		}
 +		
 +		for (n =0; n < num;n++){
++
++			dev_dbg(&state->client->dev, "n = %d \n",n);
++			dev_dbg(&state->client->dev, "sensor_type = %d \n",(orbbec_frame_profile_t+n)->orbbec_sensor_type);
++			dev_dbg(&state->client->dev, "pixel_format = %d \n",(orbbec_frame_profile_t+n)->orbbec_pixel_format);
++			dev_dbg(&state->client->dev, "height = %d \n",(orbbec_frame_profile_t+n)->height);
++			dev_dbg(&state->client->dev, "width = %d \n",(orbbec_frame_profile_t+n)->width);
++			dev_dbg(&state->client->dev, "max_rate = %d \n",(orbbec_frame_profile_t+n)->max_rate);
++			
++			if((orbbec_frame_profile_t+n)->orbbec_pixel_format > 25 ) {
++				dev_err(&state->client->dev, "orbbec_pixel_format err \n");
++				continue;
++			}
++
++			if((orbbec_frame_profile_t+n)->width > 2560 || (orbbec_frame_profile_t+n)->height > 2560) {
++				dev_err(&state->client->dev, "orbbec_resolution err \n");
++				continue;
++			}
++
++			if((orbbec_frame_profile_t+n)->orbbec_sensor_type > 9) {
++				dev_err(&state->client->dev, "orbbec_sensor_type err \n");
++				continue;
++			}
++
++			if((orbbec_frame_profile_t+n)->max_rate > 200) {
++				dev_err(&state->client->dev, "orbbec_max_rate err \n");
++				continue;
++			}
++
 +			switch ((orbbec_frame_profile_t+n)->orbbec_sensor_type)
 +			{
 +				case SENSOR_IR:
@@ -3772,21 +4011,16 @@ index 000000000..db38c3a9f
 +					orb_formats_num = &orb_depth_formats_num;
 +					break;
 +				default :
++					dev_err(&state->client->dev, "sensor_type err \n");
++					orbbec_format_t = orb_default_formats;
++					orb_formats_num = &orb_default_formats_num;
 +					break;
 +			}
 +
-+			dev_dbg(&state->client->dev, "n = %d \n",n);
-+			dev_dbg(&state->client->dev, "sensor_type = %d \n",(orbbec_frame_profile_t+n)->orbbec_sensor_type);
-+			dev_dbg(&state->client->dev, "pixel_format = %d \n",(orbbec_frame_profile_t+n)->orbbec_pixel_format);
-+			dev_dbg(&state->client->dev, "height = %d \n",(orbbec_frame_profile_t+n)->height);
-+			dev_dbg(&state->client->dev, "width = %d \n",(orbbec_frame_profile_t+n)->width);
-+			dev_dbg(&state->client->dev, "max_rate = %d \n",(orbbec_frame_profile_t+n)->max_rate);
-+			dev_dbg(&state->client->dev, "formats_num = %d \n",*orb_formats_num);
 +			if(state->device_info.pid == 0x80b && orbbec_format_t == orb_rgb_formats ) {
 +				if((orbbec_frame_profile_t+n)->width == 1920 || (orbbec_frame_profile_t+n)->width == 960 || (orbbec_frame_profile_t+n)->width == 320) continue;
 +			}
 +			if(orbbec_format_t == orb_mono_formats && get_ir_frame_profile_flag != (orbbec_frame_profile_t+n)->orbbec_sensor_type) continue;
-+			if(*orb_formats_num > 2) continue;
 +
 +			if(*orb_formats_num == 0){
 +				(orbbec_format_t+*orb_formats_num)->mbus_code = orb_mbus_code_map[(orbbec_frame_profile_t+n)->orbbec_pixel_format].map_mbus_code;
@@ -3806,6 +4040,10 @@ index 000000000..db38c3a9f
 +				
 +				
 +				if(f == *orb_formats_num && (orbbec_format_t+f-1)->mbus_code != orb_mbus_code_map[(orbbec_frame_profile_t+n)->orbbec_pixel_format].map_mbus_code){
++					if(*orb_formats_num > 2) {
++						dev_err(&state->client->dev, "orb_formats_num is exceeded \n");
++						continue;
++					}
 +					(orbbec_format_t+*orb_formats_num)->mbus_code = orb_mbus_code_map[(orbbec_frame_profile_t+n)->orbbec_pixel_format].map_mbus_code;
 +					(orbbec_format_t+*orb_formats_num)->data_type = orb_mbus_code_map[(orbbec_frame_profile_t+n)->orbbec_pixel_format].map_data_type;
 +					orbbec_resolutions_t = (orbbec_format_t+*orb_formats_num)->resolutions;
@@ -3814,7 +4052,7 @@ index 000000000..db38c3a9f
 +				}
 +								
 +			}
-+			if(*orb_resolutions_num == 10) continue;
++			if(*orb_resolutions_num >= 15) continue;
 +			(orbbec_resolutions_t+*orb_resolutions_num)->width = (uint16_t)(orbbec_frame_profile_t+n)->width;
 +			(orbbec_resolutions_t+*orb_resolutions_num)->height = (uint16_t)(orbbec_frame_profile_t+n)->height;
 +			
@@ -3843,6 +4081,9 @@ index 000000000..db38c3a9f
 +					(orbbec_resolutions_t+*orb_resolutions_num)->n_framerates = ARRAY_SIZE(orb_framerate_100);
 +					break;
 +				default:
++					dev_err(&state->client->dev, "max_rate err \n");
++					(orbbec_resolutions_t+*orb_resolutions_num)->framerates = orb_framerate_to_30;
++					(orbbec_resolutions_t+*orb_resolutions_num)->n_framerates = ARRAY_SIZE(orb_framerate_to_30);
 +					break;
 +			}
 +
@@ -3897,18 +4138,6 @@ index 000000000..db38c3a9f
 +	if (err < 0) {
 +		dev_err(dev, "serializer reg not found\n");
 +		goto error;
-+	}
-+
-+	if(state->g_ctx.ser_reg == 0x42){
-+		dev_dbg(&state->client->dev,"state->client->addr ori=0x%02x\n", state->client->addr);
-+		state->g_ctx.sdev_reg = 0x1a;
-+		state->client->addr = 0x1a;
-+		dev_dbg(&state->client->dev,"state->client->addr change to 0x%02x\n", state->client->addr);
-+	}else if(state->g_ctx.ser_reg == 0x60){
-+		dev_dbg(&state->client->dev,"state->client->addr ori=0x%02x\n", state->client->addr);
-+		state->g_ctx.sdev_reg = 0x1b;
-+		state->client->addr = 0x1b;
-+		dev_dbg(&state->client->dev,"state->client->addr change to 0x%02x\n", state->client->addr);
 +	}
 +
 +	ser_i2c = of_find_i2c_device_by_node(ser_node);
@@ -4021,6 +4250,18 @@ index 000000000..db38c3a9f
 +	state->g_ctx.num_csi_lanes = value;
 +	state->g_ctx.s_dev = dev;
 +
++	if(state->g_ctx.serdes_csi_link == GMSL_SERDES_CSI_LINK_A){
++		dev_dbg(&state->client->dev,"state->client->addr ori=0x%02x\n", state->client->addr);
++		state->g_ctx.sdev_reg = 0x1a;
++		state->client->addr = 0x1a;
++		dev_dbg(&state->client->dev,"state->client->addr change to 0x%02x\n", state->client->addr);
++	}else if(state->g_ctx.serdes_csi_link == GMSL_SERDES_CSI_LINK_B){
++		dev_dbg(&state->client->dev,"state->client->addr ori=0x%02x\n", state->client->addr);
++		state->g_ctx.sdev_reg = 0x1b;
++		state->client->addr = 0x1b;
++		dev_dbg(&state->client->dev,"state->client->addr change to 0x%02x\n", state->client->addr);
++	}
++
 +	mode = of_get_child_by_name(node, "mode0");
 +	if (gmsl == NULL) {
 +		dev_err(dev, "missing mode0 device node\n");
@@ -4044,7 +4285,6 @@ index 000000000..db38c3a9f
 +	if (!err && !strncmp(str, "Depth", strlen("Depth"))){
 +		state->is_depth = 1;
 +		state->device_info.video_type = ORB_MUX_PAD_DEPTH;
-+		orbbec_communicate_finish_flag = 0;
 +	}
 +	if (!err && !strncmp(str, "IR_L", strlen("IR_L"))){
 +		state->is_ir_l = 1;
@@ -4124,9 +4364,11 @@ index 000000000..db38c3a9f
 +	}
 +	if(probe_cam_num == state->device_info.cam_num) 
 +		return 0;
-+	else 
++	else {
 +		probe_cam_num = state->device_info.cam_num;
-+
++		orbbec_communicate_finish_flag = 0;
++		orbbec_link_flag = 0;
++	}
 +	/* Pair sensor to serializer dev */
 +	ret = max9295_sdev_pair(state->ser_dev, &state->g_ctx);
 +	if (ret) {
@@ -4170,7 +4412,7 @@ index 000000000..db38c3a9f
 +			__func__);
 +		goto err_register;
 +	}
-+
++	orbbec_link_flag = 1;
 +	return ret;
 +	err_register:
 +	max9296_sdev_unregister(state->dser_dev, state->g_ctx.s_dev);
@@ -5432,8 +5674,8 @@ index 000000000..db38c3a9f
 +	sd->internal_ops = &orb_sensor_internal_ops;
 +	sd->grp_id = *dev_num;
 +	v4l2_set_subdevdata(sd, state);
-+	/*Format the string and store the result in the variable sd->name, resulting in the final format of sd->name = "G2XX name adapter_id-addr".*/
-+	snprintf(sd->name, sizeof(sd->name), "G2XX %s %d-%04x",
++	/*Format the string and store the result in the variable sd->name, resulting in the final format of sd->name = "G300 name adapter_id-addr".*/
++	snprintf(sd->name, sizeof(sd->name), "G300 %s %d-%04x",
 +		 name, i2c_adapter_id(c->adapter), c->addr);
 +
 +	sd->flags |= V4L2_SUBDEV_FL_HAS_DEVNODE;
@@ -6205,9 +6447,9 @@ index 000000000..db38c3a9f
 +
 +#ifdef CONFIG_TEGRA_CAMERA_PLATFORM
 +	state->mux.sd.dev = &c->dev;
-+	ret = camera_common_initialize(&state->mux.sd, "g2xx");
++	ret = camera_common_initialize(&state->mux.sd, "g300");
 +	if (ret) {
-+		dev_err(&c->dev, "Failed to initialize g2xx.\n");
++		dev_err(&c->dev, "Failed to initialize g300.\n");
 +		goto e_ctrl;
 +	}
 +#endif
@@ -6362,18 +6604,18 @@ index 000000000..db38c3a9f
 +	if (ret < 0)
 +		goto e_regulator;
 +	// wait after power on firmware init finish 
-+	if(orbbec_communicate_finish_flag == 0) msleep_range(3000);
++	if(orbbec_communicate_finish_flag == 0 && orbbec_link_flag == 1) msleep_range(3000);
 +	for (i = 0; i < 10 ; i++){
 +		ret = orbbec_get_frame_profile_len(state, &size);
 +		if(ret == 0 && size > 0) {
-+			dev_info(&c->dev, "communicate with G2XX\n");
++			dev_info(&c->dev, "communicate with G300\n");
 +			orbbec_communicate_finish_flag = 1;
 +			break;
 +		}
 +		msleep_range(100);
 +	}
 +	if (ret < 0) {
-+		dev_err(&c->dev, "%s(): cannot communicate with G2XX: %d\n",
++		dev_err(&c->dev, "%s(): cannot communicate with G300: %d\n",
 +			__func__, ret);
 +		goto e_regulator;
 +	}
@@ -6382,7 +6624,7 @@ index 000000000..db38c3a9f
 +	orbbec_get_deviceinfo(state, &state->device_info.sn, G2R_GET_FIRMWARE_DATA_CMD_LEN, G2R_GET_FIRMWARE_DATA_CODE, G2R_GET_SN_PRO_ID,G2R_GET_SN_DATA_LEN);
 +	orbbec_get_deviceinfo(state, &state->device_info.asic_sn, G2R_GET_FIRMWARE_DATA_CMD_LEN, G2R_GET_FIRMWARE_DATA_CODE, G2R_GET_ASIC_SN_PRO_ID,G2R_GET_SN_DATA_LEN);
 +
-+	if(orbbec_get_frame_profile_flag == 0 || state->is_depth){
++	if(orbbec_get_frame_profile_flag == 0){
 +		ret = orbbec_get_frame_profile(state);
 +		if(ret <0 ) {
 +			dev_err(&c->dev, "%s(): orbbec_get_frame_profile err: %d\n" , __func__, ret);
@@ -6440,7 +6682,7 @@ index 000000000..db38c3a9f
 +				mutex_unlock(&serdes_lock__);
 +			}
 +			
-+			dev_info(&c->dev, "G2XX remove %s\n", orb_get_sensor_name(state));
++			dev_info(&c->dev, "G300 remove %s\n", orb_get_sensor_name(state));
 +			if (state->vcc) regulator_disable(state->vcc);
 +			mutex_destroy(&state->lock);
 +			orb_mux_remove(state);
@@ -6459,17 +6701,17 @@ index 000000000..db38c3a9f
 +};
 +MODULE_DEVICE_TABLE(i2c, orb_id);
 +
-+static const struct of_device_id g2xx_of_match[] = {
-+	{ .compatible = "orbbec,g2xx", },
++static const struct of_device_id g300_of_match[] = {
++	{ .compatible = "orbbec,g300", },
 +	{ },
 +};
-+MODULE_DEVICE_TABLE(of, g2xx_of_match);
++MODULE_DEVICE_TABLE(of, g300_of_match);
 +
 +static struct i2c_driver orb_i2c_driver = {
 +	.driver = {
 +		.owner = THIS_MODULE,
 +		.name = ORB_DRIVER_NAME,
-+		.of_match_table = of_match_ptr(g2xx_of_match),
++		.of_match_table = of_match_ptr(g300_of_match),
 +	},
 +	.probe		= orb_probe,
 +	.remove		= orb_remove,
@@ -6478,10 +6720,10 @@ index 000000000..db38c3a9f
 +
 +module_i2c_driver(orb_i2c_driver);
 +
-+MODULE_DESCRIPTION("Orbbec G2XX Camera Driver");
++MODULE_DESCRIPTION("Orbbec G300 Camera Driver");
 +MODULE_AUTHOR("yezhenhao <yanxiao@orbbec.com>");
 +MODULE_LICENSE("GPL v2");
-+MODULE_VERSION("1.0.02");
++MODULE_VERSION("1.0.05");
 \ No newline at end of file
 diff --git a/kernel/nvidia-oot/drivers/media/i2c/max9295.c b/kernel/nvidia-oot/drivers/media/i2c/max9295.c
 index b363d5f67..cfa080682 100644
@@ -6990,7 +7232,7 @@ index b363d5f67..cfa080682 100644
 +MODULE_VERSION("1.0.05");
  MODULE_LICENSE("GPL v2");
 diff --git a/kernel/nvidia-oot/drivers/media/i2c/max9296.c b/kernel/nvidia-oot/drivers/media/i2c/max9296.c
-index 1ceaf3cd5..edae8c722 100644
+index 1ceaf3cd5..9b48072f2 100644
 --- a/kernel/nvidia-oot/drivers/media/i2c/max9296.c
 +++ b/kernel/nvidia-oot/drivers/media/i2c/max9296.c
 @@ -1,11 +1,21 @@
@@ -7019,7 +7261,7 @@ index 1ceaf3cd5..edae8c722 100644
  #include <linux/gpio.h>
  #include <linux/module.h>
  #include <linux/of.h>
-@@ -34,12 +44,17 @@
+@@ -34,12 +44,18 @@
  #define MAX9296_PIPE_X_DST_1_MAP_ADDR 0x410
  #define MAX9296_PIPE_X_SRC_2_MAP_ADDR 0x411
  #define MAX9296_PIPE_X_DST_2_MAP_ADDR 0x412
@@ -7031,13 +7273,14 @@ index 1ceaf3cd5..edae8c722 100644
  #define MAX9296_PWDN_PHYS_ADDR 0x332
  #define MAX9296_PHY1_CLK_ADDR 0x320
  #define MAX9296_CTRL0_ADDR 0x10
++#define MAX9296_CTRL2_ADDR 0x12
 +#define MAX9296_CTRL3_ADDR 0x13
 +
 +#define MAX9296_LOCKED_MASK 0x08
  
  /* data defines */
  #define MAX9296_CSI_MODE_4X2 0x1
-@@ -94,11 +109,13 @@ struct pipe_ctx {
+@@ -94,11 +110,13 @@ struct pipe_ctx {
  	u32 st_id_sel;
  };
  
@@ -7051,19 +7294,20 @@ index 1ceaf3cd5..edae8c722 100644
  	u32 num_src_found;
  	u32 src_link;
  	bool splitter_enabled;
-@@ -112,8 +129,11 @@ struct max9296 {
+@@ -112,8 +130,12 @@ struct max9296 {
  	u8 lane_mp1;
  	u8 lane_mp2;
  	int reset_gpio;
 +	int fsync_mfp_x;
 +	int pps_mfp_x;
  	int pw_ref;
++	int vdd_supply_1v2;
  	struct regulator *vdd_cam_1v2;
 +
  };
  
  static int max9296_write_reg(struct device *dev,
-@@ -135,6 +155,44 @@ static int max9296_write_reg(struct device *dev,
+@@ -135,6 +157,44 @@ static int max9296_write_reg(struct device *dev,
  
  	return err;
  }
@@ -7108,7 +7352,7 @@ index 1ceaf3cd5..edae8c722 100644
  
  static int max9296_get_sdev_idx(struct device *dev,
  			struct device *s_dev, unsigned int *idx)
-@@ -209,8 +267,12 @@ int max9296_power_on(struct device *dev)
+@@ -209,8 +269,12 @@ int max9296_power_on(struct device *dev)
  	mutex_lock(&priv->lock);
  	if (priv->pw_ref == 0) {
  		usleep_range(1, 2);
@@ -7123,7 +7367,7 @@ index 1ceaf3cd5..edae8c722 100644
  
  		usleep_range(30, 50);
  
-@@ -224,14 +286,20 @@ int max9296_power_on(struct device *dev)
+@@ -224,14 +288,20 @@ int max9296_power_on(struct device *dev)
  
  		/*exit reset mode: XCLR */
  		if (priv->reset_gpio) {
@@ -7147,7 +7391,7 @@ index 1ceaf3cd5..edae8c722 100644
  	}
  
  	priv->pw_ref++;
-@@ -250,12 +318,17 @@ void max9296_power_off(struct device *dev)
+@@ -250,12 +320,17 @@ void max9296_power_off(struct device *dev)
  	mutex_lock(&priv->lock);
  	priv->pw_ref--;
  
@@ -7168,18 +7412,38 @@ index 1ceaf3cd5..edae8c722 100644
  		if (priv->vdd_cam_1v2)
  			regulator_disable(priv->vdd_cam_1v2);
  	}
-@@ -272,7 +345,9 @@ static int max9296_write_link(struct device *dev, u32 link)
+@@ -266,17 +341,25 @@ EXPORT_SYMBOL(max9296_power_off);
+ 
+ static int max9296_write_link(struct device *dev, u32 link)
+ {
++	struct max9296 *priv = dev_get_drvdata(dev);
++	int i =0;
++	if(priv->vdd_supply_1v2 == 1) i = 0x4;  //VDD LDO regulator enable
+ 	if (link == GMSL_SERDES_CSI_LINK_A) {
+-		max9296_write_reg(dev, MAX9296_CTRL0_ADDR, 0x01);
+-		max9296_write_reg(dev, MAX9296_CTRL0_ADDR, 0x21);
++		max9296_write_reg(dev, MAX9296_CTRL0_ADDR, 0x01 + i);
++		max9296_write_reg(dev, MAX9296_CTRL0_ADDR, 0x21 + i);
  	} else if (link == GMSL_SERDES_CSI_LINK_B) {
- 		max9296_write_reg(dev, MAX9296_CTRL0_ADDR, 0x02);
- 		max9296_write_reg(dev, MAX9296_CTRL0_ADDR, 0x22);
+-		max9296_write_reg(dev, MAX9296_CTRL0_ADDR, 0x02);
+-		max9296_write_reg(dev, MAX9296_CTRL0_ADDR, 0x22);
 -	} else {
++		max9296_write_reg(dev, MAX9296_CTRL0_ADDR, 0x02 + i);
++		max9296_write_reg(dev, MAX9296_CTRL0_ADDR, 0x22 + i);
 +	} else if (link == GMSL_SERDES_CSI_LINK_AUTO) {
-+		max9296_write_reg(dev, MAX9296_CTRL0_ADDR, 0x31);
++		max9296_write_reg(dev, MAX9296_CTRL0_ADDR, 0x31 + i);
 +	}else {
  		dev_err(dev, "%s: invalid gmsl link\n", __func__);
  		return -EINVAL;
  	}
-@@ -336,13 +411,12 @@ int max9296_setup_control(struct device *dev, struct device *s_dev)
+ 
++	if(priv->vdd_supply_1v2 == 1) 
++		//Enable regulator manual mode to allow regulator to be forced on or off via REG_ENABLE
++		max9296_write_reg(dev, MAX9296_CTRL2_ADDR, 0x10);  
+ 	/* delay to settle link */
+ 	msleep(100);
+ 
+@@ -336,13 +419,12 @@ int max9296_setup_control(struct device *dev, struct device *s_dev)
  
  	/* Enable splitter mode */
  	if ((priv->max_src > 1U) &&
@@ -7196,7 +7460,7 @@ index 1ceaf3cd5..edae8c722 100644
  		/* delay to settle link */
  		msleep(100);
  	}
-@@ -354,14 +428,11 @@ int max9296_setup_control(struct device *dev, struct device *s_dev)
+@@ -354,14 +436,11 @@ int max9296_setup_control(struct device *dev, struct device *s_dev)
  
  	/* Reset splitter mode if all devices are not found */
  	if ((priv->sdev_ref == priv->max_src) &&
@@ -7213,7 +7477,7 @@ index 1ceaf3cd5..edae8c722 100644
  	}
  
  error:
-@@ -373,6 +444,7 @@ EXPORT_SYMBOL(max9296_setup_control);
+@@ -373,6 +452,7 @@ EXPORT_SYMBOL(max9296_setup_control);
  int max9296_reset_control(struct device *dev, struct device *s_dev)
  {
  	struct max9296 *priv = dev_get_drvdata(dev);
@@ -7221,7 +7485,7 @@ index 1ceaf3cd5..edae8c722 100644
  
  	mutex_lock(&priv->lock);
  	if (!priv->sdev_ref) {
-@@ -380,7 +452,16 @@ int max9296_reset_control(struct device *dev, struct device *s_dev)
+@@ -380,7 +460,16 @@ int max9296_reset_control(struct device *dev, struct device *s_dev)
  		goto ret;
  	}
  
@@ -7239,7 +7503,7 @@ index 1ceaf3cd5..edae8c722 100644
  	if (priv->sdev_ref == 0) {
  		max9296_reset_ctx(priv);
  		max9296_write_reg(dev, MAX9296_CTRL0_ADDR, MAX9296_RESET_ALL);
-@@ -392,7 +473,7 @@ int max9296_reset_control(struct device *dev, struct device *s_dev)
+@@ -392,7 +481,7 @@ int max9296_reset_control(struct device *dev, struct device *s_dev)
  ret:
  	mutex_unlock(&priv->lock);
  
@@ -7248,7 +7512,7 @@ index 1ceaf3cd5..edae8c722 100644
  }
  EXPORT_SYMBOL(max9296_reset_control);
  
-@@ -411,7 +492,7 @@ int max9296_sdev_register(struct device *dev, struct gmsl_link_ctx *g_ctx)
+@@ -411,7 +500,7 @@ int max9296_sdev_register(struct device *dev, struct gmsl_link_ctx *g_ctx)
  
  	mutex_lock(&priv->lock);
  
@@ -7257,7 +7521,7 @@ index 1ceaf3cd5..edae8c722 100644
  		dev_err(dev,
  			"%s: MAX9296 inputs size exhausted\n", __func__);
  		err = -ENOMEM;
-@@ -431,6 +512,11 @@ int max9296_sdev_register(struct device *dev, struct gmsl_link_ctx *g_ctx)
+@@ -431,6 +520,11 @@ int max9296_sdev_register(struct device *dev, struct gmsl_link_ctx *g_ctx)
  	}
  
  	for (i = 0; i < priv->num_src; i++) {
@@ -7269,7 +7533,7 @@ index 1ceaf3cd5..edae8c722 100644
  		if (g_ctx->serdes_csi_link ==
  			priv->sources[i].g_ctx->serdes_csi_link) {
  			dev_err(dev,
-@@ -448,7 +534,7 @@ int max9296_sdev_register(struct device *dev, struct gmsl_link_ctx *g_ctx)
+@@ -448,7 +542,7 @@ int max9296_sdev_register(struct device *dev, struct gmsl_link_ctx *g_ctx)
  		if (g_ctx->num_csi_lanes !=
  				priv->sources[i].g_ctx->num_csi_lanes) {
  			dev_err(dev,
@@ -7278,7 +7542,7 @@ index 1ceaf3cd5..edae8c722 100644
  			err = -EINVAL;
  			goto error;
  		}
-@@ -457,6 +543,7 @@ int max9296_sdev_register(struct device *dev, struct gmsl_link_ctx *g_ctx)
+@@ -457,6 +551,7 @@ int max9296_sdev_register(struct device *dev, struct gmsl_link_ctx *g_ctx)
  	priv->sources[priv->num_src].g_ctx = g_ctx;
  	priv->sources[priv->num_src].st_enabled = false;
  
@@ -7286,7 +7550,7 @@ index 1ceaf3cd5..edae8c722 100644
  	priv->num_src++;
  
  error:
-@@ -486,6 +573,9 @@ int max9296_sdev_unregister(struct device *dev, struct device *s_dev)
+@@ -486,6 +581,9 @@ int max9296_sdev_unregister(struct device *dev, struct device *s_dev)
  	}
  
  	for (i = 0; i < priv->num_src; i++) {
@@ -7296,7 +7560,7 @@ index 1ceaf3cd5..edae8c722 100644
  		if (s_dev == priv->sources[i].g_ctx->s_dev) {
  			priv->sources[i].g_ctx = NULL;
  			break;
-@@ -558,7 +648,7 @@ static int max9296_setup_pipeline(struct device *dev,
+@@ -558,7 +656,7 @@ static int max9296_setup_pipeline(struct device *dev,
  	u32 i = 0;
  	u32 j = 0;
  	u32 vc_idx = 0;
@@ -7305,7 +7569,7 @@ index 1ceaf3cd5..edae8c722 100644
  	for (i = 0; i < g_ctx->num_streams; i++) {
  		/* Base data type mapping: pipeX/RAW12/CSICNTR1 */
  		struct reg_pair map_pipe_raw12[] = {
-@@ -719,7 +809,7 @@ int max9296_setup_streaming(struct device *dev, struct device *s_dev)
+@@ -719,7 +817,7 @@ int max9296_setup_streaming(struct device *dev, struct device *s_dev)
  		goto ret;
  
  	/* Derive CSI lane map register */
@@ -7314,7 +7578,7 @@ index 1ceaf3cd5..edae8c722 100644
  	case GMSL_CSI_PORT_A:
  	case GMSL_CSI_PORT_D:
  		lane_ctrl_addr = MAX9296_LANE_CTRL1_ADDR;
-@@ -769,6 +859,242 @@ ret:
+@@ -769,6 +867,249 @@ ret:
  }
  EXPORT_SYMBOL(max9296_setup_streaming);
  
@@ -7480,16 +7744,19 @@ index 1ceaf3cd5..edae8c722 100644
 +		// 0x02: ALT_MEM_MAP8, 0x10: ALT2_MEM_MAP8
 +		{0x0473, 0x10},
 +	};
-+	
++	struct reg_pair map_disable_uart1[] = {
++		{0x0003, 0x40}, // LOCK_CFG[7]: 0->GMSL2 link locked, 1->GMSL2 link locked and MIPI output started; UART_1_EN[4]:0->disable, 1->enable
++		{0x0B08, 0x20},
++	};
 +	struct reg_pair map_fsync_trigger[] = {
 +		/* MFP10 SYNC IN, Tx*/
-+		{0x02CE, 0x82}, // RES_CFG[7]: 0->40K, 1->1M; GPIO_RX_EN[2]; GPIO_TX_EN[1], GPIO_OUT[4]; GPIO_IN[3]; 
++		{0x02CE, 0x83}, // RES_CFG[7]: 0->40K, 1->1M; GPIO_RX_EN[2]; GPIO_TX_EN[1], GPIO_OUT[4]; GPIO_IN[3]; GPIO_OUT_DIS[0]: 1->disable
 +		{0x02CF, 0x1F}, // PULL_UPDN_SEL[7:6]: 0->no pullup, 1->Pullup, 2->Pulldown; OUT_TYPE[5]: 1->Push-pull, 0->Open-drain; GPIO_TX_ID[4:0]
 +	};
 +
 +	struct reg_pair map_pps_trigger[] = {
 +		/* MFP9 pps, TX */
-+		{0x02CB, 0x82}, // RES_CFG[7]: 0->40K, 1->1M; GPIO_RX_EN[2]; GPIO_TX_EN[1], GPIO_OUT[4]; GPIO_IN[3]; 
++		{0x02CB, 0x83}, // RES_CFG[7]: 0->40K, 1->1M; GPIO_RX_EN[2]; GPIO_TX_EN[1], GPIO_OUT[4]; GPIO_IN[3]; 
 +		{0x02CC, 0x1D}, // PULL_UPDN_SEL[7:6]: 0->no pullup, 1->Pullup, 2->Pulldown; OUT_TYPE[5]: 1->Push-pull, 0->Open-drain; GPIO_TX_ID[4:0]
 +	};
 +
@@ -7509,6 +7776,10 @@ index 1ceaf3cd5..edae8c722 100644
 +					  GMSL_CSI_DT_EMBED, i, i);
 +
 +	// FSYNC Trigger
++	if(priv->fsync_mfp_x == 5 || priv->fsync_mfp_x == 6 || priv->pps_mfp_x == 5 || priv->pps_mfp_x == 6)
++		err |= max9296_set_registers(dev, map_disable_uart1,
++				     ARRAY_SIZE(map_disable_uart1));
++
 +	map_fsync_trigger[0].addr = 0x2B0 + priv->fsync_mfp_x * 3;
 +	map_fsync_trigger[1].addr = map_fsync_trigger[0].addr + 1;
 +	err |= max9296_set_registers(dev, map_fsync_trigger,
@@ -7557,7 +7828,7 @@ index 1ceaf3cd5..edae8c722 100644
  static const struct of_device_id max9296_of_match[] = {
  	{ .compatible = "maxim,max9296", },
  	{ },
-@@ -819,6 +1145,22 @@ static int max9296_parse_dt(struct max9296 *priv,
+@@ -819,15 +1160,37 @@ static int max9296_parse_dt(struct max9296 *priv,
  	}
  	priv->max_src = value;
  
@@ -7580,8 +7851,15 @@ index 1ceaf3cd5..edae8c722 100644
  	priv->reset_gpio = of_get_named_gpio(node, "reset-gpios", 0);
  	if (priv->reset_gpio < 0) {
  		dev_err(&client->dev, "reset-gpios not found %d\n", err);
-@@ -827,7 +1169,7 @@ static int max9296_parse_dt(struct max9296 *priv,
+ 		return err;
+ 	}
  
++	if (of_get_property(node, "vdd_supply_1v2", NULL)) {
++		priv->vdd_supply_1v2 = 1;
++	} else {
++		priv->vdd_supply_1v2 = 0;
++	}
++
  	/* digital 1.2v */
  	if (of_get_property(node, "vdd_cam_1v2-supply", NULL)) {
 -		priv->vdd_cam_1v2 = regulator_get(&client->dev, "vdd_cam_1v2");
@@ -7589,7 +7867,7 @@ index 1ceaf3cd5..edae8c722 100644
  		if (IS_ERR(priv->vdd_cam_1v2)) {
  			dev_err(&client->dev,
  				"vdd_cam_1v2 regulator get failed\n");
-@@ -845,15 +1187,11 @@ static int max9296_parse_dt(struct max9296 *priv,
+@@ -845,15 +1208,11 @@ static int max9296_parse_dt(struct max9296 *priv,
  static struct regmap_config max9296_regmap_config = {
  	.reg_bits = 16,
  	.val_bits = 8,
@@ -7606,7 +7884,7 @@ index 1ceaf3cd5..edae8c722 100644
  {
  	struct max9296 *priv;
  	int err = 0;
-@@ -870,7 +1208,7 @@ static int max9296_probe(struct i2c_client *client,
+@@ -870,7 +1229,7 @@ static int max9296_probe(struct i2c_client *client,
  		return -ENODEV;
  	}
  
@@ -7615,7 +7893,7 @@ index 1ceaf3cd5..edae8c722 100644
  	if (err) {
  		dev_err(&client->dev, "unable to parse dt\n");
  		return -EFAULT;
-@@ -891,26 +1229,22 @@ static int max9296_probe(struct i2c_client *client,
+@@ -891,26 +1250,22 @@ static int max9296_probe(struct i2c_client *client,
  	/* dev communication gets validated when GMSL link setup is done */
  	dev_info(&client->dev, "%s:  success\n", __func__);
  
@@ -7646,7 +7924,7 @@ index 1ceaf3cd5..edae8c722 100644
  }
  
  static const struct i2c_device_id max9296_id[] = {
-@@ -931,8 +1265,21 @@ static struct i2c_driver max9296_i2c_driver = {
+@@ -931,8 +1286,21 @@ static struct i2c_driver max9296_i2c_driver = {
  	.id_table = max9296_id,
  };
  
@@ -7669,24 +7947,81 @@ index 1ceaf3cd5..edae8c722 100644
 +MODULE_AUTHOR("yezhenhao <yanxiao@orbbec.com");
 +MODULE_VERSION("1.0.06");
  MODULE_LICENSE("GPL v2");
-diff --git a/kernel/nvidia-oot/drivers/media/platform/tegra/camera/fusa-capture/capture-vi.c b/kernel/nvidia-oot/drivers/media/platform/tegra/camera/fusa-capture/capture-vi.c
-index f1a3e19ce..7942a1bb8 100644
---- a/kernel/nvidia-oot/drivers/media/platform/tegra/camera/fusa-capture/capture-vi.c
-+++ b/kernel/nvidia-oot/drivers/media/platform/tegra/camera/fusa-capture/capture-vi.c
-@@ -943,11 +943,11 @@ int vi_capture_release(
+diff --git a/kernel/nvidia-oot/drivers/media/platform/tegra/camera/fusa-capture/capture-vi-channel.c b/kernel/nvidia-oot/drivers/media/platform/tegra/camera/fusa-capture/capture-vi-channel.c
+index 0e6b74ac6..1d075be36 100644
+--- a/kernel/nvidia-oot/drivers/media/platform/tegra/camera/fusa-capture/capture-vi-channel.c
++++ b/kernel/nvidia-oot/drivers/media/platform/tegra/camera/fusa-capture/capture-vi-channel.c
+@@ -242,7 +242,7 @@ int vi_channel_close_ex(
  
- 		tegra_camrtc_reboot(chan->rtcpu_dev);
+ 	mutex_lock(&chan_drv->lock);
  
--		err = -EIO;
-+		//err = -EIO;  //orb modify
- 	} else if (resp_msg->channel_release_resp.result != CAPTURE_OK) {
- 		dev_err(chan->dev, "%s: control failed, errno %d", __func__,
- 			resp_msg->channel_release_resp.result);
--		err = -EIO;
-+		//err = -EIO; //orb modify
- 	}
+-	WARN_ON(rcu_access_pointer(chan_drv->channels[channel]) != chan);
++	//WARN_ON(rcu_access_pointer(chan_drv->channels[channel]) != chan);
+ 	RCU_INIT_POINTER(chan_drv->channels[channel], NULL);
  
- 	if (capture->requests_memoryinfo) {
+ 	mutex_unlock(&chan_drv->lock);
+@@ -297,7 +297,8 @@ static int vi_channel_release(
+ 	struct tegra_vi_channel *chan = file->private_data;
+ 	unsigned int channel = iminor(inode);
+ 
+-	vi_channel_close_ex(channel, chan);
++	if(chan != NULL)
++		vi_channel_close_ex(channel, chan);
+ 
+ 	return 0;
+ }
+@@ -417,8 +418,10 @@ static long vi_channel_ioctl(
+ 		if (err < 0) {
+ 			dev_err(chan->dev,
+ 				"%s: memory setup failed\n", __func__);
+-			destroy_buffer_table(capture->buf_ctx);
+-			capture->buf_ctx = NULL;
++			if(capture->buf_ctx != NULL) {
++				destroy_buffer_table(capture->buf_ctx);
++				capture->buf_ctx = NULL;
++			}
+ 			return -EFAULT;
+ 		}
+ 
+@@ -429,8 +432,10 @@ static long vi_channel_ioctl(
+ 				"%s: descriptor buffer is too small for given queue depth\n",
+ 				__func__);
+ 			capture_common_unpin_memory(&capture->requests);
+-			destroy_buffer_table(capture->buf_ctx);
+-			capture->buf_ctx = NULL;
++			if(capture->buf_ctx != NULL) {
++				destroy_buffer_table(capture->buf_ctx);
++				capture->buf_ctx = NULL;
++			}
+ 			return -ENOMEM;
+ 		}
+ 
+@@ -439,8 +444,10 @@ static long vi_channel_ioctl(
+ 		if (err < 0) {
+ 			dev_err(chan->dev, "vi capture setup failed\n");
+ 			capture_common_unpin_memory(&capture->requests);
+-			destroy_buffer_table(capture->buf_ctx);
+-			capture->buf_ctx = NULL;
++			if(capture->buf_ctx != NULL) {
++				destroy_buffer_table(capture->buf_ctx);
++				capture->buf_ctx = NULL;
++			}
+ 			return err;
+ 		}
+ 		break;
+@@ -478,8 +485,10 @@ static long vi_channel_ioctl(
+ 			for (i = 0; i < capture->queue_depth; i++)
+ 				vi_capture_request_unpin(chan, i);
+ 			capture_common_unpin_memory(&capture->requests);
+-			destroy_buffer_table(capture->buf_ctx);
+-			capture->buf_ctx = NULL;
++			if(capture->buf_ctx != NULL) {
++				destroy_buffer_table(capture->buf_ctx);
++				capture->buf_ctx = NULL;
++			}
+ 			vfree(capture->unpins_list);
+ 			capture->unpins_list = NULL;
+ 		}
 diff --git a/kernel/nvidia-oot/drivers/media/platform/tegra/camera/sensor_common.c b/kernel/nvidia-oot/drivers/media/platform/tegra/camera/sensor_common.c
 index 92cc2fdf9..69139eeed 100644
 --- a/kernel/nvidia-oot/drivers/media/platform/tegra/camera/sensor_common.c
@@ -7703,7 +8038,7 @@ index 92cc2fdf9..69139eeed 100644
  		pr_err("%s: Need to extend format%s\n", __func__, pixel_t);
  		return -EINVAL;
 diff --git a/kernel/nvidia-oot/drivers/media/platform/tegra/camera/vi/channel.c b/kernel/nvidia-oot/drivers/media/platform/tegra/camera/vi/channel.c
-index 91f8d5f83..735761280 100644
+index 91f8d5f83..09d1a0468 100644
 --- a/kernel/nvidia-oot/drivers/media/platform/tegra/camera/vi/channel.c
 +++ b/kernel/nvidia-oot/drivers/media/platform/tegra/camera/vi/channel.c
 @@ -202,7 +202,8 @@ static void tegra_channel_fmt_align(struct tegra_channel *chan,
@@ -7872,8 +8207,8 @@ index 91f8d5f83..735761280 100644
 +	if (f->index)
 +		return -EINVAL;
 +
-+	f->pixelformat = V4L2_META_FMT_G2XX;
-+	strlcpy(f->description, "G2XX metadata format", sizeof(f->description));
++	f->pixelformat = V4L2_META_FMT_G300;
++	strlcpy(f->description, "G300 metadata format", sizeof(f->description));
 +
 +	return 0;
 +}
@@ -7889,7 +8224,7 @@ index 91f8d5f83..735761280 100644
 +
 +	memset(fmt, 0, sizeof(*fmt));
 +
-+	fmt->dataformat = V4L2_META_FMT_G2XX;
++	fmt->dataformat = V4L2_META_FMT_G300;
 +	fmt->buffersize = 96; //255, orbbec modify
 +
 +	return 0;
@@ -8275,7 +8610,7 @@ index ae6b49274..6288d712d 100644
  	if (ports == NULL)
  		ports = node;
 diff --git a/kernel/nvidia-oot/drivers/media/platform/tegra/camera/vi/vi5_fops.c b/kernel/nvidia-oot/drivers/media/platform/tegra/camera/vi/vi5_fops.c
-index 7b16dcaf3..12b49d306 100644
+index 7b16dcaf3..4f39fb807 100644
 --- a/kernel/nvidia-oot/drivers/media/platform/tegra/camera/vi/vi5_fops.c
 +++ b/kernel/nvidia-oot/drivers/media/platform/tegra/camera/vi/vi5_fops.c
 @@ -426,6 +426,39 @@ static void vi5_setup_surface(struct tegra_channel *chan,
@@ -8358,7 +8693,7 @@ index 7b16dcaf3..12b49d306 100644
  				frame_err = true;
  			}
  		} else if (!vi_port) {
-@@ -583,13 +626,15 @@ static int vi5_channel_error_recover(struct tegra_channel *chan,
+@@ -583,10 +626,13 @@ static int vi5_channel_error_recover(struct tegra_channel *chan,
  	struct tegra_mc_vi *vi = chan->vi;
  	struct v4l2_subdev *csi_subdev;
  
@@ -8373,11 +8708,8 @@ index 7b16dcaf3..12b49d306 100644
 +				CAPTURE_CHANNEL_RESET_FLAG_IMMEDIATE);
  		if (err) {
  			dev_err(&chan->video->dev, "vi capture release failed\n");
--			goto done;
- 		}
- 		vi_channel_close_ex(chan->vi_channel_id[vi_port],
- 					chan->tegra_vi_channel[vi_port]);
-@@ -930,10 +975,11 @@ err_set_stream:
+ 			goto done;
+@@ -930,10 +976,11 @@ err_set_stream:
  
  err_start_kthreads:
  	if (!chan->bypass)
@@ -8393,7 +8725,7 @@ index 7b16dcaf3..12b49d306 100644
  err_setup:
  	if (!chan->bypass)
  		for (vi_port = 0; vi_port < chan->valid_ports; vi_port++) {
-@@ -962,8 +1008,9 @@ static int vi5_channel_stop_streaming(struct vb2_queue *vq)
+@@ -962,8 +1009,9 @@ static int vi5_channel_stop_streaming(struct vb2_queue *vq)
  
  	if (!chan->bypass) {
  		for (vi_port = 0; vi_port < chan->valid_ports; vi_port++) {
