@@ -16,7 +16,7 @@ Apply G335Lg patches and build the kernel image, dtb and G335Lg driver.
 
 ```
 # Apply G335Lg patches :
-git apply mic_733ao_g2xx_driver_v1002.patch
+git apply mic_733ao_6.0_v1005.patch
 
 # build kernel, dtb and G335Lg driver
 # install dependencies
