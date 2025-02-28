@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sudo cp tegra234-camera-g2xx-nomtd-overlay.dtbo /boot/tegra234-camera-g2xx-overlay.dtbo
+sudo cp tegra234-camera-g300-nomtd-overlay.dtbo /boot/tegra234-camera-g300-overlay.dtbo
 
 # backup:
 back_file=/lib/modules/$(uname -r)/modules_$(uname -r)_updates.tar.bz2
@@ -35,7 +35,6 @@ if [ -e /boot/dtb/kernel_tegra234-p3737-0000+p3701-0005-nv.dtb ]; then
         echo "bakckup DTB"
         sudo cp /boot/dtb/kernel_tegra234-p3737-0000+p3701-0005-nv.dtb /boot/dtb/kernel_tegra234-p3737-0000+p3701-0005-nv.dtb.orig
     fi
-   
     sudo cp tegra234-p3737-0000+p3701-0005-nv.dtb /boot/dtb/kernel_tegra234-p3737-0000+p3701-0005-nv.dtb
 fi
 
