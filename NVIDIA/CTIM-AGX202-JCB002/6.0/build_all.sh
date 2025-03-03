@@ -35,7 +35,7 @@ make ARCH=arm64 -C kernel
 make ARCH=arm64 modules
 make ARCH=arm64 dtbs
 mkdir -p $TEGRA_KERNEL_OUT/rootfs/boot/dtb
-cp $SRCS/nvidia-oot/device-tree/platform/generic-dts/dtbs/tegra234-orin-agx-cti-AGX202-JCB002-G2XX.dtb $TEGRA_KERNEL_OUT/rootfs/boot/dtb/
+cp $SRCS/nvidia-oot/device-tree/platform/generic-dts/dtbs/tegra234-orin-agx-cti-AGX202-JCB002-G300.dtb $TEGRA_KERNEL_OUT/rootfs/boot/dtb/
 export INSTALL_MOD_PATH=$TEGRA_KERNEL_OUT/rootfs/
 make ARCH=arm64 install -C kernel
 make ARCH=arm64 modules_install

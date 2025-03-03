@@ -16,7 +16,7 @@ tar -czf $OUTPUT_DIR/updates.tar.gz -C images/6.0/rootfs/lib/modules/5.15.136-te
 cp images/6.0/rootfs/lib/modules/5.15.136-tegra/kernel/drivers/media/v4l2-core/videodev.ko $OUTPUT_DIR
 
 # Copy dtb
-cp images/6.0/rootfs/boot/dtb/tegra234-orin-agx-cti-AGX202-JCB002-G2XX.dtb $OUTPUT_DIR
+cp images/6.0/rootfs/boot/dtb/tegra234-orin-agx-cti-AGX202-JCB002-G300.dtb $OUTPUT_DIR
 
 # Copy kernel image
 cp images/6.0/rootfs/boot/Image $OUTPUT_DIR
@@ -26,5 +26,5 @@ cp extlinux.conf $OUTPUT_DIR
 cp copy_to_target.sh $OUTPUT_DIR
 
 # Copy to remote target board by SSH
-scp -r $OUTPUT_DIR orbbec@10.8.170.11:~/
+scp -r $OUTPUT_DIR orbbec@10.8.170.72:~/
 
