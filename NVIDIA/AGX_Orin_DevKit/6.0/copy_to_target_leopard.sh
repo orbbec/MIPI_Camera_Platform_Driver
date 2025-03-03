@@ -1,8 +1,8 @@
 #!/bin/bash
 
-sudo cp tegra234-camera-g300-cti-overlay.dtbo /boot/tegra234-camera-g300-overlay.dtbo
+sudo cp tegra234-camera-g300-leopard-overlay.dtbo /boot/tegra234-camera-g300-overlay.dtbo
 
-# backup:
+# copy driver modules updates
 back_file=/lib/modules/$(uname -r)/modules_$(uname -r)_updates.tar.bz2
 if [ ! -f $back_file ];then
     echo "bakckup updates"
@@ -10,11 +10,11 @@ if [ ! -f $back_file ];then
 fi
 sudo cp -r updates /lib/modules/$(uname -r)/
 
-# enable metadata:
+# copy driver ko file
 sudo cp uvcvideo.ko /lib/modules/$(uname -r)/kernel/drivers/media/usb/uvc/uvcvideo.ko
 sudo cp videodev.ko /lib/modules/$(uname -r)/kernel/drivers/media/v4l2-core/videodev.ko
-# backup kernel (better to have additional boot entry in extlinux.conf)
 
+# copy Image
 if [ ! -f "/boot/Image.orig" ];then
     echo "bakckup Image"
     sudo cp /boot/Image /boot/Image.orig
@@ -22,6 +22,7 @@ fi
 
 sudo cp Image /boot/Image
 
+# copy dtb
 if [ -e /boot/dtb/kernel_tegra234-p3737-0000+p3701-0000-nv.dtb ]; then
     if [ ! -f "/boot/dtb/kernel_tegra234-p3737-0000+p3701-0000-nv.dtb.orig" ];then
         echo "bakckup DTB"
@@ -38,6 +39,9 @@ if [ -e /boot/dtb/kernel_tegra234-p3737-0000+p3701-0005-nv.dtb ]; then
     sudo cp tegra234-p3737-0000+p3701-0005-nv.dtb /boot/dtb/kernel_tegra234-p3737-0000+p3701-0005-nv.dtb
 fi
 
+
+# Modified /boot/extlinux/extlinux.conf to add following DTBO entries
 sudo /opt/nvidia/jetson-io/config-by-hardware.py -n 2="Jetson Orbbec Camera G335Lg"
+
 sudo depmod
 

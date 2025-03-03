@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sudo cp tegra234-camera-g300-cti-overlay.dtbo /boot/tegra234-camera-g300-overlay.dtbo
+sudo cp tegra234-camera-g300-nomtd-xc-overlay.dtbo /boot/tegra234-camera-g300-overlay.dtbo
 
 # backup:
 back_file=/lib/modules/$(uname -r)/modules_$(uname -r)_updates.tar.bz2

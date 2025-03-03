@@ -1,6 +1,8 @@
-# ORBBEC camera driver for GMSL* interface
+# ORBBEC camera driver for GMSL
 
 ## Build kernel, dtb and G335Lg driver
+
+Download the source code and toolchain.
 
 ```
 # JetPack 6.0
@@ -22,7 +24,7 @@ Apply G335Lg patches and build the kernel image, dtb and G335Lg driver.
 
 ```
 # Apply G335Lg patches :
-git apply agx_orin_devkit_g2xx_driver_v1013.patch
+git apply agx_orin_devkit_6.0_v1.0.19.patch
 
 # build kernel, dtb and G335Lg driver
 # install dependencies
@@ -40,7 +42,7 @@ Debian packages will be generated in `images` folder.
 
 - kernel image (not modified): `images/6.0/rootfs/boot/Image`
 - dtb : `images/6.0/rootfs/boot/dtb/tegra234-p3737-0000+p3701-000x-nv.dtb`
-- dtb overlay: `images/6.0/rootfs/boot/tegra234-camera-g2xx-overlay.dtbo`
+- dtb overlay: `images/6.0/rootfs/boot/tegra234-camera-g300-overlay.dtbo`
 - oot modules: `images/6.0/rootfs/lib/modules/5.15.136-tegra/update`
 - oot modules: `images/6.0/rootfs/lib/modules/5.15.136-tegra/kernel/drivers/media/v4l2-core/videodev.ko`
 - oot modules: `images/6.0/rootfs/lib/modules/5.15.136-tegra/kernel/drivers/media/usb/uvc/uvcvideo.ko`
@@ -56,21 +58,24 @@ on target Jetson Orin Copy them to the right places:
 
 ```
 cd gmsl-driver
-
-# if use XC Dser board
+# G335Lg: if use FG96_8CH_GMSL_V2 Dser board and use hrtimer generate multi-camera synchronization signals.
 sh copy_to_target.sh
 
-# if use CTI Dser board
-sh copy_to_target_cti.sh
-
-# if use PWM01 generate multi-camera synchronization signals.
+# G335Lg: if use FG96_8CH_GMSL_V2 Dser board and use PWM01 generate multi-camera synchronization signals.
 sh copy_to_target_pwm.sh
 
-# if use G345Lg
+# G335Lg: if use Leopard LI-JAG-ADP-GMSL2-8CH Dser board and use PWM01 generate multi-camera synchronization signals.
+sh copy_to_target_leopard.sh
+
+# G335Lg: if use CTI Dser board and use PWM01 generate multi-camera synchronization signals.
+sh copy_to_target_cti.sh 
+
+# G335Lg: if use XC Dser board and use hrtimer generate multi-camera synchronization signals.
+sh copy_to_target_xc.sh 
+
+# G345Lg: if use FG96_8CH_GMSL_V2 Dser board and use hrtimer generate multi-camera synchronization signals.
 sh copy_to_target_nomtd.sh
 
+# G345Lg: if use XC Dser board and use hrtimer generate multi-camera synchronization signals.
+sh copy_to_target_nomtd_xc.sh
 ```
-
-
-
-
