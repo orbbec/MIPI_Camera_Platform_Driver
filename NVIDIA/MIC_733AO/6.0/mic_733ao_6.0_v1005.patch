@@ -813,7 +813,7 @@ index 000000000..1a9cf1bb6
 +									cil_settletime = "0";
 +									line_length = "1280";
 +									mclk_multiplier = "15.625";
-+									embedded_metadata_height = "1";
++									embedded_metadata_height = "0";
 +									vc_id = "1";
 +								};
 +								gmsl-link {
@@ -866,7 +866,7 @@ index 000000000..1a9cf1bb6
 +									cil_settletime = "0";
 +									line_length = "1280";
 +									mclk_multiplier = "15.625";
-+									embedded_metadata_height = "1";
++									embedded_metadata_height = "0";
 +									vc_id = "0";
 +								};
 +								gmsl-link {
@@ -919,7 +919,7 @@ index 000000000..1a9cf1bb6
 +									cil_settletime = "0";
 +									line_length = "1280";
 +									mclk_multiplier = "15.625";
-+									embedded_metadata_height = "1";
++									embedded_metadata_height = "0";
 +									vc_id = "3";
 +								};
 +								gmsl-link {
@@ -972,7 +972,7 @@ index 000000000..1a9cf1bb6
 +									cil_settletime = "0";
 +									line_length = "1280";
 +									mclk_multiplier = "15.625";
-+									embedded_metadata_height = "1";
++									embedded_metadata_height = "0";
 +									vc_id = "2";
 +								};
 +								gmsl-link {
@@ -1027,7 +1027,7 @@ index 000000000..1a9cf1bb6
 +									cil_settletime = "0";
 +									line_length = "1280";
 +									mclk_multiplier = "15.625";
-+									embedded_metadata_height = "1";
++									embedded_metadata_height = "0";
 +									vc_id = "3";
 +								};
 +								gmsl-link {
@@ -1081,7 +1081,7 @@ index 000000000..1a9cf1bb6
 +									cil_settletime = "0";
 +									line_length = "1280";
 +									mclk_multiplier = "15.625";
-+									embedded_metadata_height = "1";
++									embedded_metadata_height = "0";
 +									vc_id = "2";
 +								};
 +								gmsl-link {
@@ -1135,7 +1135,7 @@ index 000000000..1a9cf1bb6
 +									cil_settletime = "0";
 +									line_length = "1280";
 +									mclk_multiplier = "15.625";
-+									embedded_metadata_height = "1"; 
++									embedded_metadata_height = "0"; 
 +									vc_id = "1";
 +								};
 +								gmsl-link {
@@ -1189,7 +1189,7 @@ index 000000000..1a9cf1bb6
 +									cil_settletime = "0";
 +									line_length = "1280";
 +									mclk_multiplier = "15.625";
-+									embedded_metadata_height = "1"; 
++									embedded_metadata_height = "0"; 
 +									vc_id = "0";
 +								};
 +								gmsl-link {
@@ -1284,7 +1284,7 @@ index 000000000..1a9cf1bb6
 +									cil_settletime = "0";
 +									line_length = "1280";
 +									mclk_multiplier = "15.625";
-+									embedded_metadata_height = "1";
++									embedded_metadata_height = "0";
 +									vc_id = "1";
 +								};
 +								gmsl-link {
@@ -1337,7 +1337,7 @@ index 000000000..1a9cf1bb6
 +									cil_settletime = "0";
 +									line_length = "1280";
 +									mclk_multiplier = "15.625";
-+									embedded_metadata_height = "1";
++									embedded_metadata_height = "0";
 +									vc_id = "0";
 +								};
 +								gmsl-link {
@@ -1390,7 +1390,7 @@ index 000000000..1a9cf1bb6
 +									cil_settletime = "0";
 +									line_length = "1280";
 +									mclk_multiplier = "15.625";
-+									embedded_metadata_height = "1"; 
++									embedded_metadata_height = "0"; 
 +									vc_id = "3";
 +								};
 +								gmsl-link {
@@ -1443,7 +1443,7 @@ index 000000000..1a9cf1bb6
 +									cil_settletime = "0";
 +									line_length = "1280";
 +									mclk_multiplier = "15.625";
-+									embedded_metadata_height = "1"; 
++									embedded_metadata_height = "0"; 
 +									vc_id = "2";
 +								};
 +								gmsl-link {
@@ -1497,7 +1497,7 @@ index 000000000..1a9cf1bb6
 +									cil_settletime = "0";
 +									line_length = "1280";
 +									mclk_multiplier = "15.625";
-+									embedded_metadata_height = "1";
++									embedded_metadata_height = "0";
 +									vc_id = "3";
 +								};
 +								gmsl-link {
@@ -1550,7 +1550,7 @@ index 000000000..1a9cf1bb6
 +									cil_settletime = "0";
 +									line_length = "1280";
 +									mclk_multiplier = "15.625";
-+									embedded_metadata_height = "1";
++									embedded_metadata_height = "0";
 +									vc_id = "2";
 +								};
 +								gmsl-link {
@@ -1603,7 +1603,7 @@ index 000000000..1a9cf1bb6
 +									cil_settletime = "0";
 +									line_length = "1280";
 +									mclk_multiplier = "15.625";
-+									embedded_metadata_height = "1";
++									embedded_metadata_height = "0";
 +									vc_id = "1";
 +								};
 +								gmsl-link {
@@ -1656,7 +1656,7 @@ index 000000000..1a9cf1bb6
 +									cil_settletime = "0";
 +									line_length = "1280";
 +									mclk_multiplier = "15.625";
-+									embedded_metadata_height = "1";
++									embedded_metadata_height = "0";
 +									vc_id = "0";
 +								};
 +								gmsl-link {
