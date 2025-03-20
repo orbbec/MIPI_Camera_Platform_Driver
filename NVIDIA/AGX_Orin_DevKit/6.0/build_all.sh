@@ -11,9 +11,15 @@ fi
 export DEVDIR=$(cd `dirname $0` && pwd)
 NPROC=$(nproc)
 
-. $DEVDIR/scripts/setup-common "$1"
+export JETPACK_VERSION="$1"
+export L4T_VERSION="jetson_36.3"
+export KERNEL_DIR="kernel/kernel-jammy-src"
 
-SRCS="$DEVDIR/sources_$JETPACK_VERSION"
+if [ -z "$1" ] && [ -z "$2" ]; then
+    JETPACK_VERSION="6.0"
+    SRCS="$DEVDIR/Linux_for_Tegra/source"
+fi
+
 if [[ -n "$2" ]]; then
     SRCS=$(realpath $2)
 fi
@@ -37,7 +43,7 @@ export KERNEL_MODULES_OUT=$TEGRA_KERNEL_OUT/modules
 
 # Build jp6 out-of-tree modules
 # following: 
-# https://docs.nvidia.com/jetson/archives/r36.2/DeveloperGuide/SD/Kernel/KernelCustomization.html#building-the-jetson-linux-kernel
+# https://docs.nvidia.com/jetson/archives/r36.3/DeveloperGuide/SD/Kernel/KernelCustomization.html#building-the-jetson-linux-kernel
 if [[ "$JETPACK_VERSION" == "6.0" ]]; then
     cd $SRCS
     export KERNEL_HEADERS=$SRCS/kernel/kernel-jammy-src
