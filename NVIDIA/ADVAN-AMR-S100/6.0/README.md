@@ -13,7 +13,7 @@ tar xf aarch64--glibc--stable-final.tar.bz2 --strip-components 1
 cd ../..
 wget https://developer.nvidia.com/downloads/embedded/l4t/r36_release_v3.0/sources/public_sources.tbz2
 tar xjf public_sources.tbz2
-cd Linux_for_Tegra/source
+cd Linux_for_Tegra/sources
 tar xjf kernel_src.tbz2
 tar xjf kernel_oot_modules_src.tbz2
 tar xjf nvidia_kernel_display_driver_source.tbz2
@@ -24,7 +24,7 @@ Apply G335Lg patches and build the kernel image, dtb and G335Lg driver.
 
 ```
 # Apply G335Lg patches :
-git apply advan_amr-s100_g300_driver_v1.0.1.patch
+patch -p1 < advan_amr-s100_g300_driver_v1.0.1.patch
 
 # build kernel, dtb and G335Lg driver
 
