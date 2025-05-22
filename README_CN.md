@@ -14,7 +14,7 @@
   - gemini-345lg：适配Gemini-345Lg的开发分支
   
 ### GMSL接入流程
-
+![](./doc/image/liucheng.png)
 
 ## 支持相机和平台
    ### 支持相机
