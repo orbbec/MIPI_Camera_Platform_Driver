@@ -60,7 +60,7 @@ GMSL cameras interface with various deserializer chips such as MAX9296 and MAX92
   - Depth stream from one camera cannot coexist with the left IR stream from another camera.
   - The combined maximum number of active streams from both cameras is limited to four (satisfying the above two conditions ensures compliance).
 
-For further known limitations, please refer to [Usage Limitations of Orbbec GMSL Cameras](./doc/Orbbec GMSL Series Camera Usage Limitations.pdf).
+For further known limitations, please refer to [Usage Limitations of Orbbec GMSL Cameras](./doc/Instructions%20for%20Using%20GMSL%20Camera.md).
 
 ## Issue Reporting for GMSL Usage
 To streamline issue resolution for developers and customers during GMSL camera integration, we adopt GitHub Issues for tracking feedback due to variations in hardware and software environments. Please follow the guidelines below for issue reporting:

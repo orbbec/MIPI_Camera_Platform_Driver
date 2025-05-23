@@ -15,19 +15,17 @@
   
 ### GMSL接入流程
 ![](./doc/image/liucheng.png)
+  流程说明：
+ 接入过程中优先查看bin目录中是否有针对平台适配的二进制文件，如果有则直接使用；如果没有优先使用patch做代码修改；使用patch需要保证代码一致性；如果使用patch失败或硬件接口有差异，需要根据kernel的源码自行修改，这部分需要较高的技术能力；
 
 ## 支持相机和平台
-   ### 支持相机
-    - Gemini-335Lg
-    - Gemini-345Lg
-  ### 支持平台
-- Jetson AGX Orin DevKit
-  - Jetpack 6.0 (r36_release_v3.0)
-  - Jetpack 6.1 (r36_release_v4.0)
-  - Jetpack 6.2 (r36_release_v4.3)
-- MIC-733-AO
-  - Jetpack 6.0 (r36_release_v3.0)
-  - Jetpack 6.1 (r36_release_v4.0)
+| 相机型号         | 硬件平台                | 软件版本                        | GMSL适配板         |
+|------------------|-------------------------|---------------------------------|--------------------|
+| Gemini 335Lg     | Jetson AGX Orin DevKit  | Jetpack 6.0/6.1/6.2             | max9296 Board  |
+| Gemini 345Lg     | Jetson AGX Orin DevKit  | Jetpack 6.0/6.1/6.2             |   |
+| Gemini 335Lg     | MIC-733-AO              | Jetpack 6.0/6.1                 | Orbbec GMSL Board  |
+| Gemini 345Lg     | MIC-733-AO              | Jetpack 6.0/6.1                 | Orbbec GMSL Board  |
+
   
 
 ## GMSL接入操作步骤
@@ -58,7 +56,7 @@
      -  一个相机的DEPTH 跟另一个相机的左IR 不能同时开
      -  两个相机加起来最多开4路流（同时满足前两个条件即满足这个条件）
     
-  针对更多已知的限制条件，参考[GMSL相机使用限制说明](./doc/Orbbec%20GMSL系列相机使用说明.pdf)
+  针对更多已知的限制条件，参考[GMSL相机使用限制说明](./doc/Orbbec%20GMSL相机限制说明.md)
 ## 使用问题反馈
 
   为了方便众多开发者/客户快速接入gmsl相机，由于各自硬件、软件的差异，可能会遇到各种问题；这些问题可能存在共性，因此采用Github的issue来跟进反馈的问题，针对开发者，规定如下问题反馈流程；
