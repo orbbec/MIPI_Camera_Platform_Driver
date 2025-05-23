@@ -15,7 +15,7 @@ The OrbbecSDK_ROS2 package is required to run GMSL multi-device synchro
 
 ## Running GMSL multi-device synchronization
 
-The OrbbecSDK_ROS2 package provides a [example](https://github.com/orbbec/OrbbecSDK_ROS2/tree/v2-main/orbbec_camera/examples/gmsl_camera), the example describes how to use GMSL single-device, GMSL multi-device, and GMSL multi-device synchronization.
+The OrbbecSDK_ROS2 package provides a [Example](https://github.com/orbbec/OrbbecSDK_ROS2/tree/v2-main/orbbec_camera/examples/gmsl_camera), the example describes how to use GMSL single-device, GMSL multi-device, and GMSL multi-device synchronization.
 
 ### GMSL multi-device synchronization configuration
 
@@ -48,7 +48,7 @@ ros2 launch orbbec_camera multi_gmsl_camera_synced.launch.py
 
 ## GMSL multi-device synchronization effect verification
 
-The OrbbecSDK\_ROS2 package provides a [example](https://github.com/orbbec/OrbbecSDK_ROS2/tree/v2-main/orbbec_camera/examples/multi_camera_synced_verification_tool), the example describes how to verify the effect of multi-device synchronization.
+The OrbbecSDK\_ROS2 package provides a [Example](https://github.com/orbbec/OrbbecSDK_ROS2/tree/v2-main/orbbec_camera/examples/multi_camera_synced_verification_tool), the example describes how to verify the effect of multi-device synchronization.
 
 ### Synchronize Tool Configuration
 
