@@ -24,8 +24,6 @@ This repository contains driver files for Orbbec GMSL interface cameras, designe
 | Camera Model | Hardware Platform      | Manufacturer | Software Version    | GMSL Adapter Board |
 | ------------ | ---------------------- | ------------ | ------------------- | ------------------ |
 | Gemini 335Lg | Jetson AGX Orin DevKit | NVIDIA       | Jetpack 6.0/6.1/6.2 | FG96-8CH-V2        |
-| Gemini 335Lg | MIC-733-AO             | Advantech    | Jetpack 6.0/6.1     | MIC-FG-4G2C1       |
-| Gemini 335Lg | CTIM-AGX202-JCB002     | Connect Tech | Jetpack 6.0         | JCB002             |
 
 ## GMSL Integration Procedures
 

@@ -20,11 +20,10 @@
   接入过程中优先查看bin目录中是否有针对平台适配的二进制文件，如果有则直接使用；如果没有优先使用patch做代码修改；使用patch需要保证代码一致性；如果使用patch失败或硬件接口有差异，需要根据kernel的源码自行修改，这部分需要较高的技术能力；
 
   ## 支持相机和平台
-| 相机型号     | 硬件平台               | 厂商         | 软件版本            | GMSL 相机板  |
-| ------------ | ---------------------- | ------------ | ------------------- | ------------ |
-| Gemini 335Lg | Jetson AGX Orin DevKit | NVIDIA       | Jetpack 6.0/6.1/6.2 | FG96-8CH-V2  |
-| Gemini 335Lg | MIC-733-AO             | Advantech    | Jetpack 6.0/6.1     | MIC-FG-4G2C1 |
-| Gemini 335Lg | CTIM-AGX202-JCB002     | Connect Tech | Jetpack 6.0         | JCB002       |
+| 相机型号     | 硬件平台               | 厂商   | 软件版本            | GMSL 相机板 |
+| ------------ | ---------------------- | ------ | ------------------- | ----------- |
+| Gemini 335Lg | Jetson AGX Orin DevKit | NVIDIA | Jetpack 6.0/6.1/6.2 | FG96-8CH-V2 |
+
 
 
 
