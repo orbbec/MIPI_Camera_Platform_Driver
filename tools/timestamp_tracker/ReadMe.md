@@ -1,27 +1,39 @@
-# Camera Timestamp Tracker Tool
+# C++ Sample: 3.advanced.timestamp_tracker
 
-## Background
+## Overview
 
-Frame rate and timestamp stability are two important performance indicators for cameras. We need a tool that can record frame rate and timestamps in order to analyze their stability.
+Frame rate and timestamp stability are two important performance indicators for cameras.  
+We need a tool that can record frame rate and timestamps in order to analyze their stability.
 
 ## Features
 
 The tool mainly supports the following features:
 1. Load the first connected camera device on the system and start all supported data streams;
 2. Capture each frame from the data streams and save frame rate, timestamp, and other information into a CSV file. The CSV files are saved in the `output` directory under the tool’s folder. The filename format is:  
-   `{DeviceName}.{DeviceSerial}.{Sensor}.{Resolution}.{FrameRate}fps.{Timestamp}.csv`  
+   `{DeviceName}_{DeviceSN}_{Sensor}_{Resolution}_{FrameRate}fps_{Timestamp}.csv`  
    For example:  
-   `Orbbec Gemini 335Lg.CP1S34D0002D.COLOR.848x480.30fps.20250517164457.csv`
-3. Frame rate monitoring: The tool periodically analyzes and prints the frame rate of the data streams, allowing you to directly detect any dropped frames.
+   `Orbbec Gemini 335Lg_CP1S34D0002D_Color_848x480_30fps_20250517164457.csv`.  
+   Data saved to the CSV file is as follows:  
+   1. Number: frame index
+   2. systemTimeStampUs: the system timestamp (in microseconds) when the frame was received
+   3. globalTimeStampUs: global timestamp (in microseconds) derived from the device timestamp through linear fitting.
+   4. timeStampUs: device timestamp (in microseconds)
+   5. indexDiff: the difference between the current frame index and the previous frame index
+   6. globalTimeStampUsDiff: the difference between the current global timestamp and the previous global timestamp
+   7. timeStampUsDiff: the difference between the current device timestamp and the previous device timestamp
+3. Calculate the current frame rate every second and save it to a CSV file. The CSV file is saved in the `output` directory under the tool’s folder. The filename format is:  
+   `{DeviceName}_{DeviceSN}_AverageFrameRate_{Timestamp}.csv`  
+   For example:  
+   `Orbbec Gemini 335Lg_CP1S34D0002D_AverageFrameRate_20250517164457.csv`
 4. Supported devices: Various cameras supported by the OpenOrbbecSDK.
 
 ## Usage
 
 ### Launch
 
-Double-click the `timestamp_tracker` executable file to start the tool. By default, it captures up to 20,000 frames.  
-Alternatively, run the tool in a terminal and specify the number of frames to capture:  
-`./timestamp_tracker -n 50000`
+Double-click the `ob_timestamp_tracker` executable file to start the tool. By default, it will keep running unless the user exits manually.  
+Alternatively, run the tool in a terminal and specify the runtime duration (in minutes):  
+`./ob_timestamp_tracker -t 10`
 
 ### Exit
 
@@ -30,4 +42,18 @@ Alternatively, run the tool in a terminal and specify the number of frames to ca
 
 ## Data Analysis
 
-TODO
+### Timestamp
+
+1. First, locate the CSV file corresponding to the data stream, such as the Color stream, and open it with Excel.
+![image](./docs/images/timestampsList.jpg)
+2. Then, select the data column you want to visualize
+3. Go to the Insert tab on the ribbon at the top
+4. In the Charts group, click on the Insert Line or Area Chart icon
+5. Choose the Line chart style you prefer (e.g., “Line,” “Line with Markers”).  
+   The chart will be inserted into your worksheet
+
+#### Deivce timestamp difference
+![image](./docs/images/timestampDiff.jpg)
+
+#### Global timestamp difference
+![image](./docs/images/globalTimestampDiff.jpg)
