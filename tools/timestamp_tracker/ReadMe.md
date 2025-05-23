@@ -1,4 +1,4 @@
-# C++ Sample: 3.advanced.timestamp_tracker
+# Camera Timestamp Tracker Tool
 
 ## Overview
 
@@ -29,11 +29,16 @@ The tool mainly supports the following features:
 
 ## Usage
 
-### Launch
+### Build and Launch
 
-Double-click the `ob_timestamp_tracker` executable file to start the tool. By default, it will keep running unless the user exits manually.  
-Alternatively, run the tool in a terminal and specify the runtime duration (in minutes):  
-`./ob_timestamp_tracker -t 10`
+1. Extract the OrbbecSDK sample package OrbbecSDK_v2.4.3_20250523_linux_aarch64.zip to the current directory
+2. Open a terminal and run cd to enter the extracted directory
+3. Run the setup script to build and configure the environment: `sudo ./setup.sh`
+4. cd into the bin directory: `cd ./bin`
+5. Start: `sudo ./ob_timestamp_tracker`  
+   By default, the tool will keep running unless the user exits manually.  
+   Alternatively, run the tool in a terminal and specify the runtime duration (in minutes):  
+   `sudo ./ob_timestamp_tracker -t 10`
 
 ### Exit
 
@@ -45,7 +50,7 @@ Alternatively, run the tool in a terminal and specify the runtime duration (in m
 ### Timestamp
 
 1. First, locate the CSV file corresponding to the data stream, such as the Color stream, and open it with Excel.
-![image](./docs/images/timestampsList.jpg)
+![image](./images/timestampsList.jpg)
 2. Then, select the data column you want to visualize
 3. Go to the Insert tab on the ribbon at the top
 4. In the Charts group, click on the Insert Line or Area Chart icon
@@ -53,7 +58,7 @@ Alternatively, run the tool in a terminal and specify the runtime duration (in m
    The chart will be inserted into your worksheet
 
 #### Deivce timestamp difference
-![image](./docs/images/timestampDiff.jpg)
+![image](./images/timestampDiff.jpg)
 
 #### Global timestamp difference
-![image](./docs/images/globalTimestampDiff.jpg)
+![image](./images/globalTimestampDiff.jpg)
