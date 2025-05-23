@@ -87,7 +87,7 @@ ros2 service call /save_rgbir/start_capture orbbec_camera_msgs/srv/SetInt32 '{da
 
 After running the content of the second terminal, you need to modify it.[DevicesInfo.txt](https://github.com/orbbec/OrbbecSDK_ROS2/blob/v2-main/orbbec_camera/examples/multi_camera_synced_verification_tool/multicamera_sync/output/20250218102900/DevicesInfo.txt) and [Config.ini](https://github.com/orbbec/OrbbecSDK_ROS2/blob/v2-main/orbbec_camera/examples/multi_camera_synced_verification_tool/multicamera_sync/Python/Config.ini)
 
-* **Modification**[**DevicesInfo.txt**](https://github.com/orbbec/OrbbecSDK_ROS2/blob/v2-main/orbbec_camera/examples/multi_camera_synced_verification_tool/multicamera_sync/output/20250218102900/DevicesInfo.txt)
+* Modification [**DevicesInfo.txt**](https://github.com/orbbec/OrbbecSDK_ROS2/blob/v2-main/orbbec_camera/examples/multi_camera_synced_verification_tool/multicamera_sync/output/20250218102900/DevicesInfo.txt)
 
   * `primarySerialNumber`: main device SN serial number (GMSL multi-device synchronous filling [Multi\_camera\_synced\_verify.launch.py](https://github.com/orbbec/OrbbecSDK_ROS2/blob/v2-main/orbbec_camera/examples/multi_camera_synced_verification_tool/multi_camera_synced_verify.launch.py) SN number of camera\_01 device)
   * `index`: Index of the device
@@ -95,7 +95,7 @@ After running the content of the second terminal, you need to modify�
 
 ![image.png](https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4jKqm0bNDEm4vnw1/img/1c8ff145-6063-4c17-8b09-26d724bd3201.png)
 
-* [**Config.ini**](https://github.com/orbbec/OrbbecSDK_ROS2/blob/v2-main/orbbec_camera/examples/multi_camera_synced_verification_tool/multicamera_sync/Python/Config.ini)
+* Modification [**Config.ini**](https://github.com/orbbec/OrbbecSDK_ROS2/blob/v2-main/orbbec_camera/examples/multi_camera_synced_verification_tool/multicamera_sync/Python/Config.ini)
 
   * `frameRate`: Fill in the actual frame rate of the acquired data
   * `tspRangeThreshold`: Fill in the timestamp extreme difference card control of a group of data frames after matching (default is 4)
