@@ -28,7 +28,7 @@ With two pieces of Gemini 335Lg device [Example launch](https://github.co
 ros2 run orbbec_camera list_devices_node
 ```
 
-3. `device_num`: number of devices
+3. `device_num`: Number of devices
 4. `sync_mode`: The synchronization mode of the device, optional value:`secondary_synced`and `hardware_triggering`(Note: sync\_mode needs to be set the same for both cameras).
 5. `gmsl_trigger_fps`: Enter the synchronous FPS (frames per second) (for example: 3000, which means 30fps). Only the first device camera\_01 needs to be set. (If `sync_mode`set `hardware_triggering`, set to half the frame rate)
 6. `enable_gmsl_trigger`: Enable GMSL synchronization. Only the first device camera\_01 needs to be turned on, the other cameras do not need to be turned on
@@ -89,7 +89,7 @@ After running the content of the second terminal, you need to modify�
 
 * Modification [**DevicesInfo.txt**](https://github.com/orbbec/OrbbecSDK_ROS2/blob/v2-main/orbbec_camera/examples/multi_camera_synced_verification_tool/multicamera_sync/output/20250218102900/DevicesInfo.txt)
 
-  * `primarySerialNumber`: main device SN serial number (GMSL multi-device synchronous filling [Multi\_camera\_synced\_verify.launch.py](https://github.com/orbbec/OrbbecSDK_ROS2/blob/v2-main/orbbec_camera/examples/multi_camera_synced_verification_tool/multi_camera_synced_verify.launch.py) SN number of camera\_01 device)
+  * `primarySerialNumber`: Main device SN serial number (GMSL multi-device synchronous filling [Multi\_camera\_synced\_verify.launch.py](https://github.com/orbbec/OrbbecSDK_ROS2/blob/v2-main/orbbec_camera/examples/multi_camera_synced_verification_tool/multi_camera_synced_verify.launch.py) SN number of camera\_01 device)
   * `index`: Index of the device
   * `serialNumber`: SN serial number of the device
 
@@ -102,7 +102,7 @@ After running the content of the second terminal, you need to modify�
 
 ![image.png](https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4jKqm0bNDEm4vnw1/img/d0f7bb97-5a83-4e79-997f-459a7c53409d.png)
 
-The modified [Python folder](https://github.com/orbbec/OrbbecSDK_ROS2/tree/v2-main/orbbec_camera/examples/multi_camera_synced_verification_tool/multicamera_sync/Python) Copy the modified multi\_camera\_synced subdirectory to the newly generated multi\_camera\_synced subdirectory [DevicesInfo.txt](https://github.com/orbbec/OrbbecSDK_ROS2/blob/v2-main/orbbec_camera/examples/multi_camera_synced_verification_tool/multicamera_sync/output/20250218102900/DevicesInfo.txt) and [StreamProfileInfo.txt](https://github.com/orbbec/OrbbecSDK_ROS2/blob/v2-main/orbbec_camera/examples/multi_camera_synced_verification_tool/multicamera_sync/output/20250218102900/StreamProfileInfo.txt) copy to the directory at the same level as the TotalModeFrames folder.
+The modified [Python folder](https://github.com/orbbec/OrbbecSDK_ROS2/tree/v2-main/orbbec_camera/examples/multi_camera_synced_verification_tool/multicamera_sync/Python) copy the modified multi\_camera\_synced subdirectory to the newly generated multi\_camera\_synced subdirectory [DevicesInfo.txt](https://github.com/orbbec/OrbbecSDK_ROS2/blob/v2-main/orbbec_camera/examples/multi_camera_synced_verification_tool/multicamera_sync/output/20250218102900/DevicesInfo.txt) and [StreamProfileInfo.txt](https://github.com/orbbec/OrbbecSDK_ROS2/blob/v2-main/orbbec_camera/examples/multi_camera_synced_verification_tool/multicamera_sync/output/20250218102900/StreamProfileInfo.txt) copy to the directory at the same level as the TotalModeFrames folder.
 
 * **Third Terminal:**
 
@@ -120,9 +120,9 @@ The matched data is in the result folder, and the prefix of the fil
 
 * **The folder definition in Results:**
 
-  * **abnormal**: data exceeding the tspRangeThreshold setting (timestamp extreme difference card control) will be added with "xxxxxx" at the end of the file name ".
-  * **matchFrames**: the matched data, including the data in the abnormal.
-  * **notMatchFrames**: data not matched due to dropped frames.
+  * **abnormal**: Data exceeding the tspRangeThreshold setting (timestamp extreme difference card control) will be added with "xxxxxx" at the end of the file name.
+  * **matchFrames**: The matched data, including the data in the abnormal.
+  * **notMatchFrames**: Data not matched due to dropped frames.
 
 ![image.png](https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/3BMqYybv9D8z8qwZ/img/b173b443-78bb-4beb-8708-19f829f5c7cd.png)
 
@@ -134,7 +134,7 @@ The matched data is in the result folder, and the prefix of the fil
 
 **GMSL multi-device no video streaming**
 
-* The usbfs\_memory\_mb value needs to be increased
+* The usbfs_memory_mb value needs to be increased
 
 ```c++
 Echo 128 | sys/module/usbcore/parameters/usbfs_memory_mb
