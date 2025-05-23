@@ -1,0 +1,2 @@
+## Patch Installation Instructions
+This repository contains driver files for Orbbec GMSL interface cameras, designed to facilitate integration of GMSL interface cameras for developers and customers. Please select the corresponding patch based on your platform. For detailed installation steps, please refer to the README file in this directory.

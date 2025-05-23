@@ -5,7 +5,7 @@ This repository contains driver files for Orbbec GMSL interface cameras, designe
 
 ### Directory Structure
 - **bin**: Pre-built binary files for Orbbec GMSL cameras; ready for direct integration.
-- **doc**: Documentation related to GMSL integration, primarily in PDF format.
+- **doc**: Documentation related to GMSL integration, primarily in MD or PDF format.
 - **src**: 
   - **kernel**: Source code for driver adaptation.
   - **patch**: Platform-specific patch files.
@@ -13,38 +13,49 @@ This repository contains driver files for Orbbec GMSL interface cameras, designe
 
 ### Branch Description
 - **main**: Stable release branch containing tested code and binary files.
-- **gemini-335Lg**: Development branch for Gemini-335Lg camera adaptation.
-- **gemini-345lg**: Development branch for Gemini-345Lg camera adaptation.
+- **gemini-335Lg**: Development branch for Gemini 335Lg camera adaptation.
+- **gemini-345lg**: Development branch for Gemini 345Lg camera adaptation.
 
 ### GMSL Integration Workflow
 ![](./doc/image/flowchart.png)
 
 ## Supported Camera Models and Platforms
 
-| Camera Model         | Hardware Platform                | Manufacturer      | Software Version                        | GMSL Adapter Board         |
-|----------------------|-----------------------------------|-------------------|-----------------------------------------|----------------------------|
-| Gemini 335Lg         | Jetson AGX Orin DevKit           | NVIDIA            | Jetpack 6.0/6.1/6.2                     | 4x MAX9296 Board          |
-| Gemini 335Lg         | MIC-733-AO                       | Advantech         | Jetpack 6.0/6.1                         | 2x MAX9296A Board         |
-| Gemini 335Lg         | ADVAN-ARM-S100                   | Advantech         | Jetpack 6.0/6.2                         | 2x MAX96712B Board        |
-| Gemini 335Lg         | CTIM-AGX202-JCB002              | Connect Tech      | Jetpack 6.0                             | 4x MAX9296A Board         |
+| Camera Model | Hardware Platform      | Manufacturer | Software Version    | GMSL Adapter Board |
+| ------------ | ---------------------- | ------------ | ------------------- | ------------------ |
+| Gemini 335Lg | Jetson AGX Orin DevKit | NVIDIA       | Jetpack 6.0/6.1/6.2 | FG96-8CH-V2        |
+| Gemini 335Lg | MIC-733-AO             | Advantech    | Jetpack 6.0/6.1     | MIC-FG-4G2C1       |
+| Gemini 335Lg | CTIM-AGX202-JCB002     | Connect Tech | Jetpack 6.0         | JCB002             |
 
 ## GMSL Integration Procedures
 
+ 
+#### System Block Diagram
+- **Hardware Connection Diagram**
+
+![](./doc/image/hardware_integration.png)
+
+The diagram above illustrates a complete hardware connection setup for GMSL cameras. When adapting to different hardware platforms, design differences mainly exist between the Carrier Board and the GMSL Camera Board, requiring both software and hardware adaptation. For detailed hardware and software design specifications, please refer to the steps below.
+
+- **Software Data Flow Diagram**
+
+![](./doc/image/software_flowchat.png)
+
 ### Hardware Integration Requirements
 
-Orbbec has adapted various deserializer chips such as MAX9296/92716. For detailed hardware design specifications and instructions, please refer to "Hardware Integration Guide.pdf".
+Orbbec has adapted various deserializer chips such as MAX9296/96712. For detailed hardware design specifications and instructions, please refer to [Hardware Design Guide](./doc/GMSL%20Camera%20Board%20Hardware%20Design%20Guide.pdf).
 
 ### Software Driver Installation
-The GMSL driver for the development board has been adapted for Gemini 335Lg, Gemini 345Lg and different platforms with deserializer chips. Binary ko files, patches, and source code methods are provided for driver installation according to your platform.
-Developers/customers need to choose the appropriate driver installation method based on their motherboard, software version and deserializer chip model:
+Orbbec has adapted the Gemini 335Lg and Gemini 345Lg cameras for different platforms and deserializer chips. For each platform, pre-compiled binaries, source code patches, and kernel source code are provided to facilitate integration for various customers. Developers and customers should select the appropriate driver installation method based on their carrier board, software version, and deserializer chip model.
 
-- Binary (bin) driver installation
+- **Pre-compiled Driver Installation**
+  - For detailed installation steps, refer to the [ReadMe](/bin/readme.md) in the `bin` directory.
 
+- **Patch Driver Installation**
+  - For detailed installation steps, refer to the [ReadMe](/src/patch/readme.md) in the `patch` directory.
 
-- Patch-based driver installation
-
-
-- Kernel source code installation
+- **Kernel Source Installation**
+  - Under development, coming soon.
 
 ## GMSL Camera Performance Metrics
 After successful GMSL camera integration, the following performance metrics should be monitored:
@@ -70,5 +81,3 @@ To streamline issue resolution for developers and customers during GMSL camera i
 - First check existing issues before submitting a new one.
 - If no solution is found, submit a new issue using the provided template to expedite problem diagnosis.
 
-## Frequently Asked Questions (FAQ)
-A list of common questions and answers is provided for reference.
