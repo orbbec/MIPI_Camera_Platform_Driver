@@ -62,7 +62,7 @@ The OrbbecSDK_ROS2 package provides a [Example](https://github.com/orbbec/O
 
 * Modification [**Multi_camera_synced_verify.launch.py**](https://github.com/orbbec/OrbbecSDK_ROS2/blob/v2-main/orbbec_camera/examples/multi_camera_synced_verification_tool/multi_camera_synced_verify.launch.py)
 
-  * Please refer to [GMSL multi device synchronization configuration](#gmsl-multi-device-synchronization-configuration)
+  * Please refer to [GMSL multi device synchronization configuration](https://github.com/orbbec/MIPI_Camera_Platform_Driver/tree/main/tools/multi-devices-sync-ros#gmslmulti-devicesynchronizationconfiguration)
 * Run save_rgbir tool 4 seconds after all GMSL start nodes
 
 ![image.png](https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4jKqm0bNDEm4vnw1/img/2f88f4db-571b-4add-a245-fd3b951fe244.png)
@@ -106,7 +106,7 @@ You need to copy the modified [Python folder](https://github.com/orbbec/OrbbecS
 
 * **Third Terminal:**
 
-```c++
+```bash
 # Select a group of data to be matched
 cd multicamera_sync/Python
 python3 ./SyncFramesMain.py
@@ -136,8 +136,8 @@ The matched data is in the result folder, and the prefix of the fil
 
 * The usbfs_memory_mb value needs to be increased
 
-```c++
-Echo 128 | sys/module/usbcore/parameters/usbfs_memory_mb
+```bash
+echo 128 | sys/module/usbcore/parameters/usbfs_memory_mb
 ```
 
 **GMSL multi device Image theme frame rate too low**
