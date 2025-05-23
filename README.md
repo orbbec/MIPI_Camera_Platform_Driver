@@ -8,8 +8,8 @@ This repository contains driver files for Orbbec GMSL interface cameras, designe
 - **doc**: Documentation related to GMSL integration, primarily in PDF format.
 - **src**: 
   - **kernel**: Source code for driver adaptation.
-  - **patch**: Patch files for specific platforms.
-- **tools**: Demo examples for validating GMSL functionality.
+  - **patch**: Platform-specific patch files.
+- **tools**: Example programs for validating GMSL functionality.
 
 ### Branch Description
 - **main**: Stable release branch containing tested code and binary files.
@@ -19,29 +19,31 @@ This repository contains driver files for Orbbec GMSL interface cameras, designe
 ### GMSL Integration Workflow
 ![](./doc/image/flowchart.png)
 
-## Supported Cameras and Platforms
+## Supported Camera Models and Platforms
 
-### Supported Cameras
-- Gemini-335Lg
-- Gemini-345Lg
-
-### Supported Platforms
-- Jetson AGX Orin DevKit
-  - Jetpack 6.0 (r36_release_v3.0)
-  - Jetpack 6.1 (r36_release_v4.0)
-  - Jetpack 6.2 (r36_release_v4.3)
-- MIC-733-AO
-  - Jetpack 6.0 (r36_release_v3.0)
-  - Jetpack 6.1 (r36_release_v4.0)
+| Camera Model         | Hardware Platform                | Manufacturer      | Software Version                        | GMSL Adapter Board         |
+|----------------------|-----------------------------------|-------------------|-----------------------------------------|----------------------------|
+| Gemini 335Lg         | Jetson AGX Orin DevKit           | NVIDIA            | Jetpack 6.0/6.1/6.2                     | 4x MAX9296 Board          |
+| Gemini 335Lg         | MIC-733-AO                       | Advantech         | Jetpack 6.0/6.1                         | 2x MAX9296A Board         |
+| Gemini 335Lg         | ADVAN-ARM-S100                   | Advantech         | Jetpack 6.0/6.2                         | 2x MAX96712B Board        |
+| Gemini 335Lg         | CTIM-AGX202-JCB002              | Connect Tech      | Jetpack 6.0                             | 4x MAX9296A Board         |
 
 ## GMSL Integration Procedures
 
 ### Hardware Integration Requirements
 
+Orbbec has adapted various deserializer chips such as MAX9296/92716. For detailed hardware design specifications and instructions, please refer to "Hardware Integration Guide.pdf".
 
 ### Software Driver Installation
+The GMSL driver for the development board has been adapted for Gemini 335Lg, Gemini 345Lg and different platforms with deserializer chips. Binary ko files, patches, and source code methods are provided for driver installation according to your platform.
+Developers/customers need to choose the appropriate driver installation method based on their motherboard, software version and deserializer chip model:
+
 - Binary (bin) driver installation
+
+
 - Patch-based driver installation
+
+
 - Kernel source code installation
 
 ## GMSL Camera Performance Metrics
@@ -49,7 +51,7 @@ After successful GMSL camera integration, the following performance metrics shou
 - Timestamp stability
 - Frame rate stability
 - Synchronization accuracy
-For testing methodology and tools, please refer to [Performance Test Guide.pdf](./doc/Performance Test Guide.pdf).
+For testing methodology and tools, please refer to [Performance Test Guide](./tools/readme.md)
 
 ## Usage Limitations of GMSL Cameras
 GMSL cameras interface with various deserializer chips such as MAX9296 and MAX92716. Orbbec GMSL cameras support multiple streams including depth, color, IR, and IMU data, but certain usage limitations apply:
@@ -60,7 +62,7 @@ GMSL cameras interface with various deserializer chips such as MAX9296 and MAX92
   - Depth stream from one camera cannot coexist with the left IR stream from another camera.
   - The combined maximum number of active streams from both cameras is limited to four (satisfying the above two conditions ensures compliance).
 
-For further known limitations, please refer to [Usage Limitations of Orbbec GMSL Cameras](./doc/Instructions%20for%20Using%20GMSL%20Camera.md).
+For further known limitations, please refer to [Usage Limitations of Orbbec GMSL Cameras](./doc/Instructions%20for%20Using%20GMSL%20Camera.md)
 
 ## Issue Reporting for GMSL Usage
 To streamline issue resolution for developers and customers during GMSL camera integration, we adopt GitHub Issues for tracking feedback due to variations in hardware and software environments. Please follow the guidelines below for issue reporting:
@@ -69,4 +71,4 @@ To streamline issue resolution for developers and customers during GMSL camera i
 - If no solution is found, submit a new issue using the provided template to expedite problem diagnosis.
 
 ## Frequently Asked Questions (FAQ)
-A list of common questions is provided for reference.
+A list of common questions and answers is provided for reference.

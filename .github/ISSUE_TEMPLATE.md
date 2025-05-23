@@ -1,3 +1,9 @@
+---
+title: "Issue Template"
+labels: "bug"
+assignees: ""
+---
+
 <!-- Before filing an issue, please check the existing issues to avoid duplicates. -->
 
 ### Description
