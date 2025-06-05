@@ -14,14 +14,14 @@ This repository contains driver files for Orbbec GMSL interface cameras, designe
 ### Branch Description
 - **main**: Stable release branch containing tested code and binary files.
 - **gemini-335Lg**: Development branch for Gemini 335Lg camera adaptation.
-- **gemini-345lg**: Development branch for Gemini 345Lg camera adaptation.
+
 
 ### GMSL Integration Workflow
 ![](./doc/image/flowchart.png)
 
 ## Supported Camera Models and Platforms
 
-| Camera Model | Hardware Platform      | Manufacturer | Software Version    | 			  GMSL Adapter Board 	     		   |
+| Camera Model | Hardware Platform      | Manufacturer | Software Version    | GMSL Adapter Board                                          |
 | ------------ | ---------------------- | ------------ | ------------------- | ----------------------------------------------------------- |
 | Gemini 335Lg | Jetson AGX Orin DevKit | NVIDIA       | Jetpack 6.0/6.1/6.2 | FG96-8CH-V2(Max9296)/Leopard LI-JAG-ADP-GMSL2-8CH(Max96712) |
 
@@ -44,7 +44,7 @@ The diagram above illustrates a complete hardware connection setup for GMSL came
 Orbbec has adapted various deserializer chips such as MAX9296/96712. For detailed hardware design specifications and instructions, please refer to [Hardware Design Guide](./doc/GMSL%20Camera%20Board%20Hardware%20Design%20Guide.pdf).
 
 ### Software Driver Installation
-Orbbec has adapted the Gemini 335Lg and Gemini 345Lg cameras for different platforms and deserializer chips. For each platform, pre-compiled binaries, source code patches, and kernel source code are provided to facilitate integration for various customers. Developers and customers should select the appropriate driver installation method based on their carrier board, software version, and deserializer chip model.
+Orbbec has adapted the Gemini 335Lg  for different platforms and deserializer chips. For each platform, pre-compiled binaries, source code patches, and kernel source code are provided to facilitate integration for various customers. Developers and customers should select the appropriate driver installation method based on their carrier board, software version, and deserializer chip model.
 
 - **Pre-compiled Driver Installation**
   - For detailed installation steps, refer to the [ReadMe](/bin/readme.md) in the `bin` directory.
