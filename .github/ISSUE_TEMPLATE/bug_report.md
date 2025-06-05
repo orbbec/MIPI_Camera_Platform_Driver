@@ -1,10 +1,11 @@
 ---
-title: "Issue Template"
-labels: "bug"
-assignees: ""
----
+name: Bug report
+about: Create a report to help us improve
+title: ''
+labels: ''
+assignees: ''
 
-<!-- Before filing an issue, please check the existing issues to avoid duplicates. -->
+---
 
 ### Description
 
