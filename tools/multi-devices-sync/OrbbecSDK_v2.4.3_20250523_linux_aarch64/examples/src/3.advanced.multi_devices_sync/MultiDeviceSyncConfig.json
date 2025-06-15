@@ -1,0 +1,132 @@
+{
+    "version": "1.0.0",
+    "configTime": "2023/01/01",
+    "streamProfile": {
+        "color": {
+            "width": 1280,
+            "height": 800,
+            "format": "YUYV",
+            "fps": 30
+        },
+        "depth": {
+            "width": 1280,
+            "height": 800,
+            "format": "Y16",
+            "fps": 30
+        }
+    },
+    "sensorControl": {
+        "enable": true,
+        "depthPreset": "Default",
+        "laserPowerLevel ": 6,
+        "laserOn": true,
+        "disparitySearchRange ": "256",
+        "hardwareD2d": true,
+        "hardwareNoiseRemoval": true,
+        "softwareNoiseRemoval": false,
+        "colorAutoExposure": true,
+        "colorExposure": 50,
+        "colorGain": 16,
+        "irAutoExposure": false,
+        "irExposure": 7500,
+        "irGain": 16
+    },
+    "devices": [
+        {
+            "sn": "CP4R84P0008J",
+            "syncConfig": {
+                "syncMode": "OB_MULTI_DEVICE_SYNC_MODE_SECONDARY",
+                "depthDelayUs": 0,
+                "colorDelayUs": 0,
+                "trigger2ImageDelayUs": 0,
+                "triggerOutEnable": true,
+                "triggerOutDelayUs": 0,
+                "framesPerTrigger": 1
+            }
+        },
+        {
+            "sn": "CP4R84P000B5",
+            "syncConfig": {
+                "syncMode": "OB_MULTI_DEVICE_SYNC_MODE_SECONDARY",
+                "depthDelayUs": 0,
+                "colorDelayUs": 0,
+                "trigger2ImageDelayUs": 0,
+                "triggerOutEnable": true,
+                "triggerOutDelayUs": 0,
+                "framesPerTrigger": 1
+            }
+        },
+        {
+            "sn": "CP4R84P0006H",
+            "syncConfig": {
+                "syncMode": "OB_MULTI_DEVICE_SYNC_MODE_SECONDARY",
+                "depthDelayUs": 0,
+                "colorDelayUs": 0,
+                "trigger2ImageDelayUs": 0,
+                "triggerOutEnable": true,
+                "triggerOutDelayUs": 0,
+                "framesPerTrigger": 1
+            }
+        },
+        {
+            "sn": "CP4R84P000A3",
+            "syncConfig": {
+                "syncMode": "OB_MULTI_DEVICE_SYNC_MODE_SECONDARY",
+                "depthDelayUs": 0,
+                "colorDelayUs": 0,
+                "trigger2ImageDelayUs": 0,
+                "triggerOutEnable": true,
+                "triggerOutDelayUs": 0,
+                "framesPerTrigger": 1
+            }
+        },
+        {
+            "sn": "CP4H74D0002K",
+            "syncConfig": {
+                "syncMode": "OB_MULTI_DEVICE_SYNC_MODE_SECONDARY",
+                "depthDelayUs": 0,
+                "colorDelayUs": 0,
+                "trigger2ImageDelayUs": 0,
+                "triggerOutEnable": true,
+                "triggerOutDelayUs": 0,
+                "framesPerTrigger": 1
+            }
+        },
+        {
+            "sn": "CP4H74D00041",
+            "syncConfig": {
+                "syncMode": "OB_MULTI_DEVICE_SYNC_MODE_SECONDARY",
+                "depthDelayUs": 0,
+                "colorDelayUs": 0,
+                "trigger2ImageDelayUs": 0,
+                "triggerOutEnable": true,
+                "triggerOutDelayUs": 0,
+                "framesPerTrigger": 1
+            }
+        },
+        {
+            "sn": "CP4H74D0003X",
+            "syncConfig": {
+                "syncMode": "OB_MULTI_DEVICE_SYNC_MODE_SECONDARY",
+                "depthDelayUs": 0,
+                "colorDelayUs": 0,
+                "trigger2ImageDelayUs": 0,
+                "triggerOutEnable": true,
+                "triggerOutDelayUs": 0,
+                "framesPerTrigger": 1
+            }
+        },
+        {
+            "sn": "CP4R84P0003W",
+            "syncConfig": {
+                "syncMode": "OB_MULTI_DEVICE_SYNC_MODE_SECONDARY",
+                "depthDelayUs": 0,
+                "colorDelayUs": 0,
+                "trigger2ImageDelayUs": 0,
+                "triggerOutEnable": true,
+                "triggerOutDelayUs": 0,
+                "framesPerTrigger": 1
+            }
+        }
+    ]
+}
