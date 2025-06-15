@@ -43,9 +43,9 @@ Using eight Gemini 335Lg device as an example, If fewer than eight devices are c
     "sensorControl": {
         "enable": true,
         "depthPreset": "Default",
-        "laserPowerLevel ": 6,
+        "laserPowerLevel": 6,
         "laserOn": true,
-        "disparitySearchRange ": "256",
+        "disparitySearchRange": "256",
         "hardwareD2d": true,
         "hardwareNoiseRemoval": true,
         "softwareNoiseRemoval": false,
@@ -175,9 +175,9 @@ The differences between the two sync modes are as follows:
    "sensorControl": {
         "enable": true,
         "depthPreset": "Default",
-        "laserPowerLevel ": 6,
+        "laserPowerLevel": 6,
         "laserOn": true,
-        "disparitySearchRange ": "256",
+        "disparitySearchRange": "256",
         "hardwareD2d": true,
         "hardwareNoiseRemoval": true,
         "softwareNoiseRemoval": false,
