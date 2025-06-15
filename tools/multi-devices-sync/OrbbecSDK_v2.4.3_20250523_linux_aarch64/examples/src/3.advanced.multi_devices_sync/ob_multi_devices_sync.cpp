@@ -323,6 +323,25 @@ void startDeviceStreams(const std::vector<std::shared_ptr<ob::Device>> &devices,
 
                 dev->setBoolProperty(OB_PROP_HW_NOISE_REMOVE_FILTER_ENABLE_BOOL, sensorControlInfo->hardwareNoiseRemoval);
                 dev->setBoolProperty(OB_PROP_DEPTH_NOISE_REMOVAL_FILTER_BOOL, sensorControlInfo->softwareNoiseRemoval);
+                /*
+                //start print param
+                auto hwD2D = dev->getBoolProperty(OB_PROP_DISPARITY_TO_DEPTH_BOOL);
+                auto colorAE = dev->getBoolProperty(OB_PROP_COLOR_AUTO_EXPOSURE_BOOL);
+                auto colorExp = dev->getIntProperty(OB_PROP_COLOR_EXPOSURE_INT);
+                auto colorGain = dev->getIntProperty(OB_PROP_COLOR_GAIN_INT);
+
+                auto depthAE = dev->getBoolProperty(OB_PROP_IR_AUTO_EXPOSURE_BOOL);
+                auto depthExp = dev->getIntProperty(OB_PROP_IR_EXPOSURE_INT);
+                auto depthGain = dev->getIntProperty(OB_PROP_IR_GAIN_INT);
+
+                auto laserPowerLevel = dev->getIntProperty(OB_PROP_LASER_POWER_LEVEL_CONTROL_INT);
+                auto dispSearchRange = dev->getIntProperty(OB_PROP_DISP_SEARCH_RANGE_MODE_INT);
+                auto hwNoiseRemoval = dev->getBoolProperty(OB_PROP_HW_NOISE_REMOVE_FILTER_ENABLE_BOOL);
+                auto swNoiseRemoval = dev->getBoolProperty(OB_PROP_DEPTH_NOISE_REMOVAL_FILTER_BOOL);
+                std::cout << "hwD2D: " << hwD2D << " colorAE: " << colorAE << " colorExp: " << colorExp << " colorGain: " << colorGain << " depthAE: " << depthAE << " depthExp: " << depthExp << "depthGain: " << depthGain << std::endl;
+                std::cout << "laserPowerLevel: " << laserPowerLevel << " dispSearchRange: " << dispSearchRange << " hwNoiseRemoval: " << hwNoiseRemoval << " swNoiseRemoval: " << swNoiseRemoval << std::endl;
+                //end print param
+                */
             }
             catch(ob::Error &e) {
                 std::cerr << "set camera param failed! \n";
