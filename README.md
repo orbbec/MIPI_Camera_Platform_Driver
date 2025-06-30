@@ -66,6 +66,7 @@ For testing methodology and tools, please refer to [Performance Test Guide](./to
 GMSL cameras interface with various deserializer chips such as MAX9296 and MAX92716. Orbbec GMSL cameras support multiple streams including depth, color, IR, and IMU data, but certain usage limitations apply:
 - GMSL only supports V4L2 and YUYV format; MJPG format is not supported. RGB output is derived from YUYV format conversion.
 - Metadata for Gemini-335Lg is provided via a separate node, while metadata for other models is embedded within video frames, which remains transparent to users.
+- When using the Max96712 as a deserializer chip, due to the characteristics of the Max96712 chip, a multi - machine synchronous trigger signal must be provided in the secondary_synced mode. Otherwise, data flow interruption will occur when switching the data stream
 - Two cameras connected on the same MAX9296, MAX96712 LinkA/B, or MAX96712 LinkC/D have the following limitations:
   - RGB stream from one camera cannot coexist with the right IR stream from another camera.
   - Depth stream from one camera cannot coexist with the left IR stream from another camera.
