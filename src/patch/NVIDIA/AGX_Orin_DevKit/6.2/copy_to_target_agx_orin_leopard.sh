@@ -4,7 +4,7 @@
 if [ -e /boot/tegra234-camera-g300-overlay.dtbo ];then
     sudo rm /boot/tegra234-camera-g300-overlay.dtbo
 fi
-if [ -e /lib/modules/$(uname -r)/updates/drivers/media/i2c/max96712_orb.ko];then
+if [ -e /lib/modules/$(uname -r)/updates/drivers/media/i2c/max96712_orb.ko ];then
     sudo rm /lib/modules/$(uname -r)/updates/drivers/media/i2c/max96712_orb.ko
 fi
 

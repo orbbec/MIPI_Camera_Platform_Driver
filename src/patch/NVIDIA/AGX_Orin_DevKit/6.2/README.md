@@ -24,7 +24,7 @@ Apply G335Lg patches and build the kernel image, dtb and G335Lg driver.
 
 ```
 # Apply G335Lg patches :
-git apply AGX_Orin_6.2_v1201.patch
+git apply agx_orin_devkit_6.2_v1.2.03.patch
 
 # build kernel, dtb and G335Lg driver
 # install dependencies
@@ -66,17 +66,8 @@ sh copy_to_target_agx_orin_leopard.sh
 # AGX_Orin + G335Lg: if use ADVANTECH MIC-FG-8G Dser board and use PWM01 generate multi-camera synchronization signals.
 sh copy_to_target_agx_orin_mic_fg_8g.sh
 
-# AGX_Orin + G335Lg: if use CTI Dser board and use PWM01 generate multi-camera synchronization signals.
-sh copy_to_target_agx_orin_cti.sh 
-
-# AGX_Orin + G335Lg: if use XC Dser board and use hrtimer generate multi-camera synchronization signals.
-sh copy_to_target_agx_orin_xc.sh
-
 # AGX_Orin + G345Lg: if use FG96_8CH_GMSL_V2 Dser board and use PWM01 generate multi-camera synchronization signals.
 sh copy_to_target_agx_orin_nomtd_fg96.sh
-
-# AGX_Orin + G345Lg: if use XC Dser board and use hrtimer generate multi-camera synchronization signals.
-sh copy_to_target_agx_orin_nomtd_xc.sh
 
 # Orin_NX +  G335Lg: if use FG96_2CH_V2 Dser board and use pwm8 generate multi-camera synchronization signals.
 sh copy_to_target_orin_nx_fg96.sh    
