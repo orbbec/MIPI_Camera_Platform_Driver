@@ -7,28 +7,19 @@ Copy gmsl-driver compressed package to the target Jetson and Copy them to the ri
 ```
 #Extract the archive and cd into the folder
 
-# AGX_Orin + G335Lg: if use FG96_8CH_GMSL_V2 Dser board and use PWM01 generate multi-camera synchronization signals.
+# AGX_Orin + G335Lg + FG96_8CH_GMSL (EVK): if use FG96_8CH_GMSL_V2 Dser board and use PWM01/TSC3 generate multi-camera synchronization signals.
 sh copy_to_target_agx_orin_fg96.sh
 
-# AGX_Orin + G335Lg: if use Leopard LI-JAG-ADP-GMSL2-8CH Dser board and use PWM01 generate multi-camera synchronization signals.
+# AGX_Orin + G335Lg + LI-JAG-ADP-GMSL2-8CH: if use Leopard LI-JAG-ADP-GMSL2-8CH Dser board and use TSC1 generate multi-camera synchronization signals.
 sh copy_to_target_agx_orin_leopard.sh
 
-# AGX_Orin + G335Lg: if use ADVANTECH MIC-FG-8G Dser board and use PWM01 generate multi-camera synchronization signals.
+# AGX_Orin + G335Lg + MIC-FG-8G: if use ADVANTECH MIC-FG-8G Dser board and use TSC1 generate multi-camera synchronization signals.
 sh copy_to_target_agx_orin_mic_fg_8g.sh
 
-# AGX_Orin + G335Lg: if use CTI Dser board and use PWM01 generate multi-camera synchronization signals.
-sh copy_to_target_agx_orin_cti.sh 
-
-# AGX_Orin + G335Lg: if use XC Dser board and use hrtimer generate multi-camera synchronization signals.
-sh copy_to_target_agx_orin_xc.sh
-
-# AGX_Orin + G345Lg: if use FG96_8CH_GMSL_V2 Dser board and use PWM01 generate multi-camera synchronization signals.
+# AGX_Orin + G345Lg + FG96_8CH_GMSL: if use FG96_8CH_GMSL_V2 Dser board and usePWM01/TSC generate multi-camera synchronization signals.
 sh copy_to_target_agx_orin_nomtd_fg96.sh
 
-# AGX_Orin + G345Lg: if use XC Dser board and use hrtimer generate multi-camera synchronization signals.
-sh copy_to_target_agx_orin_nomtd_xc.sh
-
-# Orin_NX +  G335Lg: if use FG96_2CH_V2 Dser board and use pwm8 generate multi-camera synchronization signals.
+# Orin_NX +  G335Lg + FG96_2CH: if use FG96_2CH_V2 Dser board and use pwm8 generate multi-camera synchronization signals.
 sh copy_to_target_orin_nx_fg96.sh    
 
 #Reboot system to reconfigure
