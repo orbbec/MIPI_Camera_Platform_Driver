@@ -7,8 +7,8 @@ Orbbec 的 Gemini-335Lg、Gemini-345Lg 相机与传统 RGB GMSL 接口相机在�
 - **G335Lg**：仅支持 Secondary 模式，不支持 Primary 模式，需主机（SoC）下发触发信号。具体方法可参考 SDK 示例（`ob_multi_devices_sync_gmsltrigger.cpp`）。
 - **Max96712 解串器 Secondary 模式**：需同步下发 FSIN 信号，否则开关流可能导致深度流停止。
 - **同一解串器多相机限制**（如 Max9296、Max96712 LinkA/B、Max96712 LinkC/D）：
-    - 一个相机的 RGB 与另一相机的右 IR 不能同时开启
-    - 一个相机的 DEPTH 与另一相机的左 IR 不能同时开启
+    - 驱动版本v12.02前限制为一个相机的RGB 跟另一个相机的右IR 不能同时开流,驱动版本v12.02后修改限制为一个相机的RGB 跟另一个相机的左IR 不能同时开流
+    - 驱动版本v12.02前限制为一个相机的DEPTH 跟另一个相机的左IR 不能同时开流，驱动版本v12.02后修改限制为一个相机的DEPTH 跟另一个相机的右IR 不能同时开流
     - 两个相机最多可同时开启 4 路流（需同时满足前两项）
 - **1.4.60 之前版本**：
     - Secondary 模式下，需先下发 FSIN 信号，再开流
