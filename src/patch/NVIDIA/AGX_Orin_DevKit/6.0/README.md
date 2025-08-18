@@ -24,7 +24,7 @@ Apply G335Lg patches and build the kernel image, dtb and G335Lg driver.
 
 ```
 # Apply G335Lg patches :
-git apply AGX_Orin_6.0_v1021.patch
+git apply agx_orin_devkit_6.0_v1.2.05.patch
 
 # build kernel, dtb and G335Lg driver
 # install dependencies
@@ -58,19 +58,22 @@ on target Jetson Devkit Copy them to the right places:
 ```
 cd gmsl-driver-jetson
 
-# AGX_Orin + G335Lg: if use FG96_8CH_GMSL_V2 Dser board and use PWM01 generate multi-camera synchronization signals.
+# AGX_Orin + G335Lg + FG96_8CH_GMSL (EVK): if use FG96_8CH_GMSL_V2 Dser board and use PWM01/TSC3 generate multi-camera synchronization signals.
 sh copy_to_target_agx_orin_fg96.sh
 
-# AGX_Orin + G335Lg: if use Leopard LI-JAG-ADP-GMSL2-8CH Dser board and use PWM01 generate multi-camera synchronization signals.
+# AGX_Orin + G335Lg + LI-JAG-ADP-GMSL2-8CH: if use Leopard LI-JAG-ADP-GMSL2-8CH Dser board and use TSC1 generate multi-camera synchronization signals.
 sh copy_to_target_agx_orin_leopard.sh
 
-# AGX_Orin + G335Lg: if use ADVANTECH MIC-FG-8G Dser board and use PWM01 generate multi-camera synchronization signals.
+# AGX_Orin + G335Lg/G345Lg + LI-JAG-ADP-GMSL2-8CH: If use LI-JAG-ADP-GMSL2-8CH Dser board, use TSC1 generate multi-camera synchronization signals and place the Metadata data in the first row of the image.
+sh copy_to_target_agx_orin_nomtd_leopard.sh
+
+# AGX_Orin + G335Lg + MIC-FG-8G: if use ADVANTECH MIC-FG-8G Dser board and use TSC1 generate multi-camera synchronization signals.
 sh copy_to_target_agx_orin_mic_fg_8g.sh
 
-# AGX_Orin + G345Lg: if use FG96_8CH_GMSL_V2 Dser board and use PWM01 generate multi-camera synchronization signals.
+# AGX_Orin + G335Lg/G345Lg + FG96_8CH_GMSL (EVK): If use FG96_8CH_GMSL_V2 Dser board, use TSC1 generate multi-camera synchronization signals and place the Metadata data in the first row of the image.
 sh copy_to_target_agx_orin_nomtd_fg96.sh
 
-# Orin_NX +  G335Lg: if use FG96_2CH_V2 Dser board and use pwm8 generate multi-camera synchronization signals.
-sh copy_to_target_orin_nx_fg96.sh    
+# Orin_NX +  G335Lg + FG96_2CH: if use FG96_2CH_V2 Dser board and use pwm8 generate multi-camera synchronization signals.
+sh copy_to_target_orin_nx_fg96.sh
 
 ```

@@ -90,6 +90,7 @@ if [[ "$JETPACK_VERSION" == "6.0" ]]; then
     cp $SRCS/nvidia-oot/device-tree/platform/generic-dts/dtbs/tegra234-p3737-camera-g300-nomtd-fg96-overlay.dtbo $TEGRA_KERNEL_OUT/rootfs/boot/
     cp $SRCS/nvidia-oot/device-tree/platform/generic-dts/dtbs/tegra234-p3737-camera-g300-leopard-overlay.dtbo $TEGRA_KERNEL_OUT/rootfs/boot/
     cp $SRCS/nvidia-oot/device-tree/platform/generic-dts/dtbs/tegra234-p3737-camera-g300-mic-fg-8g-overlay.dtbo $TEGRA_KERNEL_OUT/rootfs/boot/
+    cp $SRCS/nvidia-oot/device-tree/platform/generic-dts/dtbs/tegra234-p3737-camera-g300-nomtd-leopard-overlay.dtbo $TEGRA_KERNEL_OUT/rootfs/boot/
     export INSTALL_MOD_PATH=$TEGRA_KERNEL_OUT/rootfs/
     make ARCH=arm64 install -C kernel
     make ARCH=arm64 modules_install
@@ -109,6 +110,7 @@ elif [[ "$JETPACK_VERSION" == "6.1" ]] || [[ "$JETPACK_VERSION" == "6.2" ]]; the
     cp $SRCS/kernel-devicetree/generic-dts/dtbs/tegra234-p3737-camera-g300-leopard-overlay.dtbo $TEGRA_KERNEL_OUT/rootfs/boot/
     cp $SRCS/kernel-devicetree/generic-dts/dtbs/tegra234-p3767-camera-p3768-g300-fg96-overlay.dtbo $TEGRA_KERNEL_OUT/rootfs/boot/
     cp $SRCS/kernel-devicetree/generic-dts/dtbs/tegra234-p3737-camera-g300-mic-fg-8g-overlay.dtbo $TEGRA_KERNEL_OUT/rootfs/boot/
+    cp $SRCS/kernel-devicetree/generic-dts/dtbs/tegra234-p3737-camera-g300-nomtd-leopard-overlay.dtbo $TEGRA_KERNEL_OUT/rootfs/boot/
     export INSTALL_MOD_PATH=$TEGRA_KERNEL_OUT/rootfs/
     make ARCH=arm64 install -C kernel
     make ARCH=arm64 modules_install
