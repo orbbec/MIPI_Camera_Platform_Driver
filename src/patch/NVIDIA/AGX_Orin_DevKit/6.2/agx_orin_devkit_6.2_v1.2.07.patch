@@ -18,10 +18,10 @@
  .../media/platform/tegra/camera/sensor_common.c    |    4 +
  .../media/platform/tegra/camera/vi/channel.c       |  338 +-
  .../drivers/media/platform/tegra/camera/vi/graph.c |   38 +-
- .../media/platform/tegra/camera/vi/vi5_fops.c      |   47 +-
+ .../media/platform/tegra/camera/vi/vi5_fops.c      |   55 +-
  .../media/platform/tegra/camera/vi/vi5_formats.h   |   61 +-
  .../source/nvidia-oot/drivers/misc/Makefile        |    2 +
- .../source/nvidia-oot/drivers/misc/obc_cam_sync.c  |  865 ++++++
+ .../source/nvidia-oot/drivers/misc/obc_cam_sync.c  |  874 ++++++
  .../platform/tegra/rtcpu/capture-ivc-priv.h        |    1 +
  .../drivers/platform/tegra/rtcpu/capture-ivc.c     |   12 +
  .../source/nvidia-oot/include/media/gmsl-link.h    |    7 +
@@ -30,7 +30,7 @@
  .../source/nvidia-oot/include/media/obc_max9296.h  |   53 +
  .../source/nvidia-oot/include/media/obc_max96712.h |   53 +
  .../nvidia-oot/include/media/tegra_camera_core.h   |   10 +-
- 32 files changed, 25457 insertions(+), 25 deletions(-)
+ 32 files changed, 25474 insertions(+), 25 deletions(-)
 
 diff --git a/Linux_for_Tegra/source/hardware/nvidia/t23x/nv-public/overlay/Makefile b/Linux_for_Tegra/source/hardware/nvidia/t23x/nv-public/overlay/Makefile
 index 93728f477..52e0ee1a9 100644
@@ -17777,7 +17777,7 @@ index a85d6e888..f3fce2e44 100644
  
 diff --git a/Linux_for_Tegra/source/nvidia-oot/drivers/media/i2c/obc_g300.c b/Linux_for_Tegra/source/nvidia-oot/drivers/media/i2c/obc_g300.c
 new file mode 100644
-index 000000000..ab18bd54a
+index 000000000..e541d3c32
 --- /dev/null
 +++ b/Linux_for_Tegra/source/nvidia-oot/drivers/media/i2c/obc_g300.c
 @@ -0,0 +1,1501 @@
@@ -19281,7 +19281,7 @@ index 000000000..ab18bd54a
 +MODULE_AUTHOR("chenwendong <xuanyuan@orbbec.com>");
 +MODULE_AUTHOR("yezhenhao <yanxiao@orbbec.com>");
 +MODULE_LICENSE("GPL v2");
-+MODULE_VERSION("1.2.06(JP6.2)");
++MODULE_VERSION("1.2.07(JP6.2)");
 \ No newline at end of file
 diff --git a/Linux_for_Tegra/source/nvidia-oot/drivers/media/i2c/obc_g300_ctrl.c b/Linux_for_Tegra/source/nvidia-oot/drivers/media/i2c/obc_g300_ctrl.c
 new file mode 100644
@@ -24406,7 +24406,7 @@ index 7c2d05e74..5e25cf6ad 100644
  		tegra_channel_cleanup_video(chan);
  		chan->link_status--;
 diff --git a/Linux_for_Tegra/source/nvidia-oot/drivers/media/platform/tegra/camera/vi/vi5_fops.c b/Linux_for_Tegra/source/nvidia-oot/drivers/media/platform/tegra/camera/vi/vi5_fops.c
-index c6093a759..6fb671665 100644
+index c6093a759..5fa9f585b 100644
 --- a/Linux_for_Tegra/source/nvidia-oot/drivers/media/platform/tegra/camera/vi/vi5_fops.c
 +++ b/Linux_for_Tegra/source/nvidia-oot/drivers/media/platform/tegra/camera/vi/vi5_fops.c
 @@ -445,6 +445,39 @@ static void vi5_setup_surface(struct tegra_channel *chan,
@@ -24478,6 +24478,21 @@ index c6093a759..6fb671665 100644
  				frame_err = true;
  			}
  		} else if (!vi_port) {
+@@ -622,6 +665,14 @@ static int vi5_channel_error_recover(struct tegra_channel *chan,
+ 		}
+ 		vi_channel_close_ex(chan->vi_channel_id[vi_port],
+ 					chan->tegra_vi_channel[vi_port]);
++
++		/* Release capture requests */
++		if (chan->request[vi_port] != NULL) {
++			dma_free_coherent(chan->tegra_vi_channel[vi_port]->rtcpu_dev,
++			chan->capture_queue_depth * sizeof(struct capture_descriptor),
++			chan->request[vi_port], chan->request_iova[vi_port]);
++		}
++		chan->request[vi_port] = NULL;
+ 		chan->tegra_vi_channel[vi_port] = NULL;
+ 	}
+ 
 diff --git a/Linux_for_Tegra/source/nvidia-oot/drivers/media/platform/tegra/camera/vi/vi5_formats.h b/Linux_for_Tegra/source/nvidia-oot/drivers/media/platform/tegra/camera/vi/vi5_formats.h
 index 1d0c1133c..044837036 100644
 --- a/Linux_for_Tegra/source/nvidia-oot/drivers/media/platform/tegra/camera/vi/vi5_formats.h
@@ -24604,10 +24619,10 @@ index ff42cb3d2..07df6939a 100644
 +obj-m += obc_cam_sync.o
 diff --git a/Linux_for_Tegra/source/nvidia-oot/drivers/misc/obc_cam_sync.c b/Linux_for_Tegra/source/nvidia-oot/drivers/misc/obc_cam_sync.c
 new file mode 100644
-index 000000000..a202a199c
+index 000000000..eb4a590a2
 --- /dev/null
 +++ b/Linux_for_Tegra/source/nvidia-oot/drivers/misc/obc_cam_sync.c
-@@ -0,0 +1,865 @@
+@@ -0,0 +1,874 @@
 +#include <linux/kernel.h>
 +#include <linux/module.h>
 +#include <linux/types.h>
@@ -24633,7 +24648,7 @@ index 000000000..a202a199c
 +#define TSC_FPS_SCALE   1000 //0.0001 fps
 +
 +#define SYNC_HWTIMER_OFFSET_TIME 100 // 100us
-+
++#define SYNC_TSC_OFFSET_TIME 50 // 50us
 +//--------------------------------------------------------------------------
 +#define CAM_SYNC_START  _IOW('c', 1, int)
 +#define CAM_SYNC_STOP   _IOW('c', 2, int)
@@ -25134,6 +25149,7 @@ index 000000000..a202a199c
 +    else
 +    {
 +        int offset = SYNC_HWTIMER_OFFSET_TIME;
++        int tsc_offset = SYNC_TSC_OFFSET_TIME;
 +
 +        switch (param->fps)
 +        {
@@ -25144,40 +25160,48 @@ index 000000000..a202a199c
 +                offset = 50;
 +            else
 +                offset = 20;
++            tsc_offset = 20;
 +            break;
 +
 +        case 3000:
-+            offset = 50;
++            offset = 100;
++            tsc_offset = 50;
 +            break;
 +
 +        case 1500:
-+            offset = 50;
++            offset = 100;
++            tsc_offset = 50;
 +            break;
 +
 +        case 2000:
 +            offset = 65;
++            tsc_offset = 65;
 +            break;
 +
 +        case 1000:
-+            offset = 50;
++            offset = 100;
++            tsc_offset = 50;
 +            break;
 +
 +        case 600:
-+            offset = 50;
++            offset = 100;
++            tsc_offset = 50;
 +            break;
 +
 +        case 500:
-+            offset = 50;
++            offset = 100;
++            tsc_offset = 50;
 +            break;
 +
 +        default:
 +            offset = SYNC_HWTIMER_OFFSET_TIME;
++            tsc_offset = SYNC_TSC_OFFSET_TIME;
 +            break;
 +        }
 +        sync_disable_irq();
 +        
 +        list_for_each_entry(generator, &cam_sync->controller.generators, list) {
-+            generator->config.freq_hz = (1000000 * TSC_FPS_SCALE) / (1000000 * FPS_SCALE / param->fps + offset);
++            generator->config.freq_hz = (1000000 * TSC_FPS_SCALE) / (1000000 * FPS_SCALE / param->fps + tsc_offset);
 +            dev_info(cam_sync->dev, "freq_hz:%d\n", generator->config.freq_hz);
 +        }
 +        cdi_tsc_start_generators(&cam_sync->controller);
