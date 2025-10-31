@@ -36,8 +36,10 @@ This repository contains driver files for Orbbec GMSL interface cameras, designe
 The diagram above illustrates a complete hardware connection setup for GMSL cameras. When adapting to different hardware platforms, design differences mainly exist between the Carrier Board and the GMSL Camera Board, requiring both software and hardware adaptation. For detailed hardware and software design specifications, please refer to the steps below.
 
 - **Software Data Flow Diagram**
-
-![](./doc/image/software_flowchat.png)
+  - MAX9296 Software Data Flow Diagram
+  ![](./doc/image/max9296_gmsl_software_flowchat.png)
+  - MAX96712 Software Data Flow Diagram
+  ![](./doc/image/max96712_gmsl_software_flowchat.png)
 
 ### Hardware Integration Requirements
 

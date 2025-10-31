@@ -34,8 +34,10 @@
   ![](./doc/image/hardware_integration.png)
     上述描述一个完整的GMSL相机硬件连接框图，在适配不同硬件平台时，主要Carrier Board和GMSL Camera Board存在设计差异，需要软件和硬件的适配；详细硬件、软件设计规范参考如下步骤；
   - 软件数据流框图
-  ![](./doc/image/software_flowchat.png)
-
+    - MAX9296 软件数据流框图
+  ![](./doc/image/max9296_gmsl_software_flowchat.png)
+    - MAX96712 软件数据流框图
+  ![](./doc/image/max96712_gmsl_software_flowchat.png)
 
 
   ### 硬件接入要求
