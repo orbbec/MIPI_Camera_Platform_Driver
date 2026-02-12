@@ -21,9 +21,13 @@ This repository contains driver files for Orbbec GMSL interface cameras, designe
 
 ## Supported Camera Models and Platforms
 
-| Camera Model | Hardware Platform      | Manufacturer | Software Version    | GMSL Adapter Board                                          |
-| ------------ | ---------------------- | ------------ | ------------------- | ----------------------------------------------------------- |
-| Gemini 335Lg | Jetson AGX Orin DevKit | NVIDIA       | Jetpack 6.0/6.1/6.2 | FG96-8CH-V2(Max9296)/Leopard LI-JAG-ADP-GMSL2-8CH(Max96712) |
+| Camera Model | Hardware Platform                     | Manufacturer | Software Version| GMSL Adapter Board                                          |
+| ------------ | ------------------------------- ----- | ------------ | --------------- | ----------------------------------------------------------- |
+| Gemini 335Lg | Jetson AGX Orin DevKit/Orin nx DevKit | NVIDIA       | Jetpack 6.0/6.2 | FG96-8CH-V2(Max9296)/Leopard LI-JAG-ADP-GMSL2-8CH(Max96712) |
+| Gemini 345Lg | Jetson AGX Orin DevKit/Orin nx DevKit | NVIDIA       | Jetpack 6.0/6.2 | FG96-8CH-V2(Max9296)/Leopard LI-JAG-ADP-GMSL2-8CH(Max96712) |
+| Gemini 305G  | Jetson AGX Orin DevKit/Orin nx DevKit | NVIDIA       | Jetpack 6.0/6.2 | FG96-8CH-V2(Max9296)/Leopard LI-JAG-ADP-GMSL2-8CH(Max96712) |
+| Gemini 301G  | Jetson AGX Orin DevKit/Orin nx DevKit | NVIDIA       | Jetpack 6.0/6.2 | FG96-8CH-V2(Max9296)/Leopard LI-JAG-ADP-GMSL2-8CH(Max96712) |
+
 
 ## GMSL Integration Procedures
 
