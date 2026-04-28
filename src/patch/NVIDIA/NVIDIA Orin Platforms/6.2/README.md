@@ -25,6 +25,8 @@ Apply G335Lg patches and build the kernel image, dtb and G335Lg driver.
 ```
 # Apply G335Lg patches :
 git apply nvidia_orin_platforms_6.2_vx.x.xx.patch
+or
+patch -p1 < nvidia_orin_platforms_6.2_vx.x.xx.patch
 
 # build kernel, dtb and G335Lg driver
 # install dependencies
@@ -66,6 +68,10 @@ sh copy_to_target_agx_orin_leopard.sh
 # AGX_Orin + G335Lg/G345Lg/G305g/G301g + LI-JAG-ADP-GMSL2-8CH: If use LI-JAG-ADP-GMSL2-8CH Dser board, use TSC1 generate multi-camera synchronization signals and G335Lg place the Metadata data in the first row of the image.
 sh copy_to_target_agx_orin_nomtd_leopard.sh
 
+# AGX_Orin + G335Lg/G345Lg/G305g/G301g + LI-JAG-ADP-GMSL2-8CH: if use Leopard LI-JAG-ADP-GMSL2-8CH Dser board and use each max96712 link A to connect to a camera, this demo can be used to quickly verify the camera.
+.
+sh copy_to_target_agx_orin_leopard_obcam.sh
+
 # AGX_Orin + G335Lg/G345Lg/G305g/G301g + MIC-FG-8G: if use ADVANTECH MIC-FG-8G Dser board and use TSC1 generate multi-camera synchronization signals.
 sh copy_to_target_agx_orin_mic_fg_8g.sh
 
@@ -73,6 +79,11 @@ sh copy_to_target_agx_orin_mic_fg_8g.sh
 sh copy_to_target_agx_orin_nomtd_fg96.sh
 
 # Orin_NX +  G335Lg/G345Lg/G305g/G301g + FG96_2CH: if use FG96_2CH_V2 Dser board and use pwm8 generate multi-camera synchronization signals.
-sh copy_to_target_orin_nx_fg96.sh    
+sh copy_to_target_orin_nx_fg96.sh
+
+# Orin_NX +  G335Lg/G345Lg/G305g/G301g + FG96_2CH: if use FG96_2CH_V2 Dser board and use pwm8 generate multi-camera synchronization signals and G335Lg place the Metadata data in the first row of the image.
+sh copy_to_target_orin_nx_nomtd_fg96.sh
+
+
 
 ```

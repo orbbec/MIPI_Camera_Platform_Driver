@@ -1,14 +1,12 @@
 #!/bin/bash
-
-
 if [ -e /boot/tegra234-camera-g300-overlay.dtbo ];then
     sudo rm /boot/tegra234-camera-g300-overlay.dtbo
 fi
-if [ -e /lib/modules/$(uname -r)/updates/drivers/media/i2c/max96712_orb.ko ];then
+if [ -e /lib/modules/$(uname -r)/updates/drivers/media/i2c/max96712_orb.ko];then
     sudo rm /lib/modules/$(uname -r)/updates/drivers/media/i2c/max96712_orb.ko
 fi
 
-sudo cp tegra234-p3737-camera-g300-nomtd-leopard-overlay.dtbo /boot/tegra234-p3737-camera-g300-overlay.dtbo
+sudo cp tegra234-p3767-camera-p3768-g300-nomtd-fg96-overlay.dtbo /boot/tegra234-p3767-camera-p3768-g300-overlay.dtbo
 
 ## copy tegra-camera.ko file ##
 tegra_camera_dir=/lib/modules/$(uname -r)/updates/drivers/media/platform/tegra/camera
@@ -50,4 +48,3 @@ sudo cp obc_cam_sync.ko /lib/modules/$(uname -r)/updates/drivers/misc/
 
 sudo /opt/nvidia/jetson-io/config-by-hardware.py -n 2="Jetson Orbbec Camera G335Lg"
 sudo depmod
-

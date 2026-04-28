@@ -7,15 +7,17 @@ fi
 cp -r images/6.2/rootfs/boot/tegra234-p3737-camera-g300-fg96-overlay.dtbo gmsl-driver-jetson
 cp -r images/6.2/rootfs/boot/tegra234-p3737-camera-g300-nomtd-fg96-overlay.dtbo gmsl-driver-jetson
 cp -r images/6.2/rootfs/boot/tegra234-p3737-camera-g300-leopard-overlay.dtbo gmsl-driver-jetson
-cp -r images/6.2/rootfs/boot/tegra234-p3767-camera-p3768-g300-fg96-overlay.dtbo gmsl-driver-jetson
-cp -r images/6.2/rootfs/boot/tegra234-p3737-camera-g300-mic-fg-8g-overlay.dtbo gmsl-driver-jetson
 cp -r images/6.2/rootfs/boot/tegra234-p3737-camera-g300-nomtd-leopard-overlay.dtbo gmsl-driver-jetson
-
+cp -r images/6.2/rootfs/boot/tegra234-p3767-camera-p3768-g300-fg96-overlay.dtbo gmsl-driver-jetson
+cp -r images/6.2/rootfs/boot/tegra234-p3767-camera-p3768-g300-nomtd-fg96-overlay.dtbo gmsl-driver-jetson
+cp -r images/6.2/rootfs/boot/tegra234-p3737-camera-g300-mic-fg-8g-overlay.dtbo gmsl-driver-jetson
+cp -r images/6.2/rootfs/boot/tegra234-p3737-camera-g300-leopard-obcam-overlay.dtbo gmsl-driver-jetson
 
 cp images/6.2/rootfs/lib/modules/5.15.148-tegra/updates/drivers/media/platform/tegra/camera/tegra-camera.ko gmsl-driver-jetson
 cp images/6.2/rootfs/lib/modules/5.15.148-tegra/updates/drivers/media/i2c/obc_max9296.ko gmsl-driver-jetson
 cp images/6.2/rootfs/lib/modules/5.15.148-tegra/updates/drivers/media/i2c/obc_max96712.ko gmsl-driver-jetson
 cp images/6.2/rootfs/lib/modules/5.15.148-tegra/updates/drivers/media/i2c/g300.ko gmsl-driver-jetson
+cp images/6.2/rootfs/lib/modules/5.15.148-tegra/updates/drivers/media/i2c/obcam.ko gmsl-driver-jetson
 cp images/6.2/rootfs/lib/modules/5.15.148-tegra/updates/drivers/misc/obc_cam_sync.ko gmsl-driver-jetson
 cp images/6.2/rootfs/lib/modules/5.15.148-tegra/updates/drivers/platform/tegra/rtcpu/capture-ivc.ko gmsl-driver-jetson
 cp images/6.2/rootfs/lib/modules/5.15.148-tegra/updates/drivers/video/tegra/host/nvcsi/nvhost-nvcsi-t194.ko gmsl-driver-jetson
@@ -26,10 +28,13 @@ cp -r images/6.2/rootfs/lib/modules/5.15.148-tegra/kernel/drivers/media/v4l2-cor
 cp copy_to_target_agx_orin_fg96.sh gmsl-driver-jetson
 cp copy_to_target_agx_orin_nomtd_fg96.sh gmsl-driver-jetson
 cp copy_to_target_agx_orin_leopard.sh gmsl-driver-jetson
-cp copy_to_target_orin_nx_fg96.sh gmsl-driver-jetson
-cp copy_to_target_agx_orin_mic_fg_8g.sh gmsl-driver-jetson
 cp copy_to_target_agx_orin_nomtd_leopard.sh gmsl-driver-jetson
+cp copy_to_target_orin_nx_fg96.sh gmsl-driver-jetson
+cp copy_to_target_orin_nx_nomtd_fg96.sh gmsl-driver-jetson
+cp copy_to_target_agx_orin_mic_fg_8g.sh gmsl-driver-jetson
+cp copy_to_target_agx_orin_leopard_obcam.sh gmsl-driver-jetson
+
 cp reconnect.sh gmsl-driver-jetson
 
-scp -r gmsl-driver-jetson orbbec@xx.x.xxx.xxx:~/
+scp -r gmsl-driver-jetson orbbec@10.9.171.57:~/
 
