@@ -52,6 +52,9 @@ Orbbec has adapted various deserializer chips such as MAX9296/96712. For detaile
 ### Software Driver Installation
 Orbbec has adapted the Gemini 335Lg  for different platforms and deserializer chips. For each platform, pre-compiled binaries, source code patches, and kernel source code are provided to facilitate integration for various customers. Developers and customers should select the appropriate driver installation method based on their carrier board, software version, and deserializer chip model.
 
+- **Orbbec G300 Series GMSL Camera Driver Quick Start Guide**
+  - For a complete build, installation, device tree adaptation, and verification flow, refer to the [Orbbec G300 Series GMSL Camera Driver Quick Start Guide](./doc/Orbbec_G300_Series_GMSL_Camera_Driver_Quick_Start_Guide.md).
+
 - **Pre-compiled Driver Installation**
   - For detailed installation steps, refer to the [ReadMe](/bin/readme.md) in the `bin` directory.
 
@@ -85,4 +88,3 @@ To streamline issue resolution for developers and customers during GMSL camera i
 
 - First check existing issues before submitting a new one.
 - If no solution is found, submit a new issue using the provided template to expedite problem diagnosis.
-
