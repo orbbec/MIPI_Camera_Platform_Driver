@@ -648,6 +648,8 @@ If the deserializer address is not detected, check power, reset GPIO, I2C bus nu
 
 ### 16.3 Modify the Deserializer Node
 
+The deserializer node is the first key point when adapting new hardware.
+
 MAX9296 example:
 
 ```dts
@@ -705,9 +707,30 @@ Modification rules:
 - `proxy-addr`: start address for camera proxy addresses. Avoid conflicts with serializer proxy addresses and other devices on the same I2C bus.
 - `real-addr`: G300 default real address is `0x66` unless firmware or hardware changes it.
 - `csi-mode`: must match the deserializer-to-Jetson hardware. `2x4` means two CSI PHY outputs, each up to 4 data lanes; `4x2` means four CSI PHY outputs, each up to 2 data lanes.
+
+  A common misunderstanding is that `2x4` always means that 4 data lanes are physically used. That is not correct. `2x4` describes the PHY output mode: each PHY can support up to 4 lanes, while the actual hardware can use 1, 2, 3, or 4 lanes. Common configurations use 2 lanes or 4 lanes.
+
+  MAX96712 has 4 PHYs. If the hardware connection supports it, either `2x4` or `4x2` can be selected.
+
+  2x4 lane mode:
+
+  ![](./image/Max96712_2x4.png)
+
+  4x2 lane mode:
+
+  ![](./image/Max96712_4x2.png)
+
+  MAX96712 CSI connection reference:
+
+  ![](./image/Max96712_csi_connect.png)
+
+  MAX9296 has only 2 PHYs and 2 clock lanes, so it can only use `2x4` mode:
+
+  ![](./image/Max9296_csi_connect.png)
+
 - `num_lanes`: data lane count per deserializer CSI port. `num_lanes = "4"` means 4 lanes.
 - `mipi_rate`: deserializer MIPI output rate. `mipi_rate = <15>` means 1.5 Gbps/lane.
-- `port_a_clk`: MAX96712-specific. Configure according to the schematic.
+- `port_a_clk`: MAX96712-specific. Configure according to the schematic. For example, if Jetson CSI 0/1 is connected to MAX96712 Port A and the CSI 0 clock lane is connected to MAX96712 CKC, configure `port_a_clk = "CKC"`. If the CSI 0 clock lane is connected to MAX96712 CKA, configure `port_a_clk = "CKA"`. Note that if the CSI 0 clock lane is connected to CKA, `2x4` mode is usually the only available mode. The hardware can support both `2x4` and `4x2` only when the CSI 0 clock lane is connected to CKC and the CSI 1 clock lane is connected to CKA.
 - `is_port_b_connected`: MAX96712-specific. Keep it if MAX96712 Port B is connected to Jetson CSI; otherwise comment it out or remove it.
 
 Common `link_mask` values:
@@ -722,6 +745,20 @@ Common `link_mask` values:
 ### 16.4 Modify G300 Camera Nodes
 
 Each physical G300 camera usually has multiple video sub-stream nodes, such as Depth, RGB, IR_L, and IR_R. They share the same `orbbec_cam_num`, but use different `cam-type`, `vc-id`, and `remote-endpoint` values.
+
+Single G300 sub-stream example:
+
+```mermaid
+flowchart LR
+    A[One physical G300 camera<br/>orbbec_cam_num = 0] --> B[Depth<br/>cam-type=Depth<br/>VC 0]
+    A --> C[RGB<br/>cam-type=RGB<br/>VC 1]
+    A --> D[IR_L<br/>cam-type=IR_L<br/>VC 2]
+    A --> E[IR_R<br/>cam-type=IR_R<br/>VC 3]
+    B --> V0["/dev/videoX"]
+    C --> V1["/dev/videoY"]
+    D --> V2["/dev/videoZ"]
+    E --> V3["/dev/videoN"]
+```
 
 Typical G300 subnode:
 
@@ -792,6 +829,117 @@ Pipe selection rules:
 | MAX96712 | Link A/B/C/D | Link A/B use `pipe_id = vc-id`; Link C/D use `pipe_id = 4 + vc-id`; in 2x4 with one CSI port, 4-7 may fold back to 0-3 | In 2x4 with `is_port_b_connected`, Link A/B map to Port A and Link C/D map to Port B; in 4x2, links usually map to four CSI controllers |
 
 `st-vc` is the source VC before the serializer/deserializer. `vc-id` is the target VC received by Jetson. The `vc-id` in sensor endpoints, NVCSI endpoints, and VI endpoints must be consistent, otherwise `/dev/video*` may exist but streaming can fail.
+
+MAX9296 reference data flow, suitable for 2-link deserializers such as FG96/2CH:
+
+```mermaid
+flowchart LR
+    subgraph L0["Link A: dser-link-port=\"a\""]
+        A0["Depth st-vc 0"] --> AS0["MAX9295 stream 0 / pipe X"]
+        A1["RGB st-vc 1"] --> AS1["MAX9295 stream 1 / pipe Y"]
+        A2["IR_L st-vc 2"] --> AS2["MAX9295 stream 2 / pipe Z"]
+        A3["IR_R st-vc 3"] --> AS3["MAX9295 stream 3 / pipe U"]
+    end
+
+    subgraph L1["Link B: dser-link-port=\"b\""]
+        B0["Depth st-vc 0"] --> BS0["MAX9295 stream 3 / pipe U"]
+        B1["RGB st-vc 1"] --> BS1["MAX9295 stream 2 / pipe Z"]
+        B2["IR_L st-vc 2"] --> BS2["MAX9295 stream 1 / pipe Y"]
+        B3["IR_R st-vc 3"] --> BS3["MAX9295 stream 0 / pipe X"]
+    end
+
+    AS0 --> DA0["MAX9296 pipe = vc-id"]
+    AS1 --> DA1["MAX9296 pipe = vc-id"]
+    AS2 --> DA2["MAX9296 pipe = vc-id"]
+    AS3 --> DA3["MAX9296 pipe = vc-id"]
+    BS0 --> DB0["MAX9296 pipe = vc-id"]
+    BS1 --> DB1["MAX9296 pipe = vc-id"]
+    BS2 --> DB2["MAX9296 pipe = vc-id"]
+    BS3 --> DB3["MAX9296 pipe = vc-id"]
+
+    DA0 --> CA["CSI output<br/>port-index / bus-width follow DTS"]
+    DA1 --> CA
+    DA2 --> CA
+    DA3 --> CA
+    DB0 --> CB["CSI output<br/>port-index / bus-width follow DTS"]
+    DB1 --> CB
+    DB2 --> CB
+    DB3 --> CB
+    CA --> VI["Jetson NVCSI / VI<br/>vc-id distinguishes sub-streams"]
+    CB --> VI
+```
+
+In common MAX9296 reference overlays, the four sub-streams of the same link enter the same `port-index`, and `vc-id` distinguishes Depth/RGB/IR_L/IR_R. Different MAX9296 chips or different physical outputs are assigned to different `port-index` values. If only Link A is enabled, keeping Depth/RGB/IR_L/IR_R as `vc-id = 0/1/2/3` is usually the most intuitive configuration. For Link B, Depth/RGB/IR_L/IR_R are usually kept as `vc-id = 3/2/1/0`, so Link A and Link B can start Depth and RGB at the same time. If Link A and Link B share the same CSI output and one deserializer, two cameras cannot enable all four streams at the same time because a single Jetson CSI path has only VC0-VC3 and the deserializer pipe count is also insufficient.
+
+MAX96712 reference data flow, suitable for 4-link deserializers such as Leopard/MIC-FG-8G:
+
+```mermaid
+flowchart LR
+    subgraph LA["Link A"]
+        A["Depth/RGB/IR_L/IR_R<br/>st-vc 0/1/2/3"]
+    end
+    subgraph LB["Link B"]
+        B["Depth/RGB/IR_L/IR_R<br/>st-vc 0/1/2/3"]
+    end
+    subgraph LC["Link C"]
+        C["Depth/RGB/IR_L/IR_R<br/>st-vc 0/1/2/3"]
+    end
+    subgraph LD["Link D"]
+        D["Depth/RGB/IR_L/IR_R<br/>st-vc 0/1/2/3"]
+    end
+
+    A --> PA["MAX96712 pipe 0~3<br/>pipe_id = vc-id"]
+    B --> PB["MAX96712 pipe 0~3<br/>pipe_id = vc-id"]
+    C --> PC["MAX96712 pipe 4~7<br/>pipe_id = 4 + vc-id"]
+    D --> PD["MAX96712 pipe 4~7<br/>pipe_id = 4 + vc-id"]
+
+    PA --> OA["CSI Port A / Controller1<br/>common port-index 0"]
+    PB --> OA
+    PC --> OB["CSI Port B / Controller2<br/>common port-index 2"]
+    PD --> OB
+    OA --> VI["Jetson NVCSI / VI"]
+    OB --> VI
+```
+
+When MAX96712 uses `csi-mode = "2x4"` and keeps `is_port_b_connected`, the driver maps Link A/B pipes to one CSI output and Link C/D pipes to another CSI output. A common Leopard overlay combination is Link A/B using `port-index = <0>` and Link C/D using `port-index = <2>`. If the board has a second MAX96712, later CSI ports such as `<4>` and `<6>` are used.
+
+If MAX96712 uses `csi-mode = "4x2"` and keeps `is_port_b_connected`, the data flow can be understood as each link being closer to an independent CSI controller:
+
+```mermaid
+flowchart LR
+    A["Link A<br/>4 VCs"] --> PA["pipe 0~3"] --> OA["CSI Controller 0"]
+    B["Link B<br/>4 VCs"] --> PB["pipe 0~3"] --> OB["CSI Controller 1"]
+    C["Link C<br/>4 VCs"] --> PC["pipe 4~7"] --> OC["CSI Controller 2"]
+    D["Link D<br/>4 VCs"] --> PD["pipe 4~7"] --> OD["CSI Controller 3"]
+    OA --> VI["Jetson NVCSI / VI"]
+    OB --> VI
+    OC --> VI
+    OD --> VI
+```
+
+If MAX96712 uses `csi-mode = "4x2"` but `is_port_b_connected` is commented out or removed, the driver outputs through two CSI controller groups: Link A/B map to Controller0, and Link C/D map to Controller1. In this case, two links in the same group must be distinguished through `vc-id` and endpoint topology. Do not simply treat the four links as four independent CSI outputs.
+
+```mermaid
+flowchart LR
+    subgraph G0["CSI output group 0"]
+        A["Link A<br/>4 VCs"] --> PA["pipe 0~3<br/>pipe_id = vc-id"]
+        B["Link B<br/>4 VCs"] --> PB["pipe 0~3<br/>pipe_id = vc-id"]
+        PA --> OA["CSI Controller 0"]
+        PB --> OA
+    end
+
+    subgraph G1["CSI output group 1"]
+        C["Link C<br/>4 VCs"] --> PC["pipe 4~7<br/>pipe_id = 4 + vc-id"]
+        D["Link D<br/>4 VCs"] --> PD["pipe 4~7<br/>pipe_id = 4 + vc-id"]
+        PC --> OB["CSI Controller 1"]
+        PD --> OB
+    end
+
+    OA --> VI["Jetson NVCSI / VI"]
+    OB --> VI
+```
+
+The `vc-id` values of different links in the reference DTS are not necessarily written as 0/1/2/3 in Depth/RGB/IR_L/IR_R order. The reference templates reverse the target VC order of Link B or Link D so cameras on four links can start Depth and RGB at the same time. When adapting new hardware, do not check only `cam-type`; check `vc-id`, `port-index`, and `bus-width` together in the sensor endpoint, NVCSI input endpoint, and VI endpoint of the same sub-stream.
 
 ### 16.6 Modify VI/CSI Topology
 

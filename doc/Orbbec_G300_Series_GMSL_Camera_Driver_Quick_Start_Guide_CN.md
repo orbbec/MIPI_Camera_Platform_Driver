@@ -802,19 +802,19 @@ dser0: max96712@29 {
 
   2x4 Lane 模式：
 
-  ![](./doc/image/Max96712_2x4.png)
+  ![](./image/Max96712_2x4.png)
 
   4x2 Lane 模式：
 
-  ![](./doc/image/Max96712_4x2.png)
+  ![](./image/Max96712_4x2.png)
 
   MAX96712 CSI 连接参考：
 
-  ![](./doc/image/Max96712_csi_connect.png)
+  ![](./image/Max96712_csi_connect.png)
 
   MAX9296 只有 2 个 PHY 和 2 个 CLOCK lane，只能使用 `2x4` 模式：
 
-  ![](./doc/image/Max9296_csi_connect.png)
+  ![](./image/Max9296_csi_connect.png)
 
 - `num_lanes`：与解串器每个 CSI Port 的 DATA lane 数一致。`num_lanes = "4"` 表示 4 lane。
 - `mipi_rate`：解串器 MIPI 输出速率 `mipi_rate = <15>` 表示 1.5 Gbps/lane。
