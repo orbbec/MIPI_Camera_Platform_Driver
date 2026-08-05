@@ -21908,7 +21908,7 @@ index 000000000..06fd6923e
 +        err = regmap_write(priv->regmap, addr, val);
 +        if (err == 0) {
 +            dev_dbg(&priv->i2c_client->dev, "[dser 0x%02x] i2c wr: 0x%04x = 0x%02x\n", priv->i2c_client->addr, addr, val);
-+            usleep_range(20, 30);
++            usleep_range(100, 200);
 +            return 0;
 +        }
 +		dev_err(&priv->i2c_client->dev, "max9296 write reg 0x%04x = %02x fail, err=%d, retry=%d\n", addr, val, err, retry);
@@ -21928,7 +21928,7 @@ index 000000000..06fd6923e
 +        if (err == 0) {
 +            *val = value & 0xff;
 +            dev_dbg(&priv->i2c_client->dev, "[dser 0x%02x] i2c rd: 0x%04x = 0x%02x\n", priv->i2c_client->addr, addr, *val);
-+            usleep_range(20, 30);
++            usleep_range(100, 200);
 +            return 0;
 +        }
 +		dev_err(&priv->i2c_client->dev, "max9296 read reg 0x%04x fail, err=%d, retry=%d\n", addr, err, retry);
@@ -23639,7 +23639,7 @@ index 000000000..d0ebc0c21
 +        err = regmap_write(priv->regmap, addr, val);
 +        if (err == 0) {
 +            dev_dbg(&priv->i2c_client->dev, "[dser 0x%02x] i2c wr: 0x%04x = 0x%02x\n", priv->i2c_client->addr, addr, val);
-+            usleep_range(20, 30);
++            usleep_range(100, 200);
 +            return 0;
 +        }
 +        dev_warn(&priv->i2c_client->dev, "max96712 write reg 0x%04x = %02x fail, err=%d, retry=%d\n", addr, val, err, retry);
@@ -23659,7 +23659,7 @@ index 000000000..d0ebc0c21
 +        if (err == 0) {
 +            *val = value & 0xff;
 +            dev_dbg(&priv->i2c_client->dev, "[dser 0x%02x] i2c rd: 0x%04x = 0x%02x\n", priv->i2c_client->addr, addr, *val);
-+            usleep_range(20, 30);
++            usleep_range(100, 200);
 +            return 0;
 +        }
 +        dev_warn(&priv->i2c_client->dev, "max96712 read reg 0x%04x fail, err=%d, retry=%d\n", addr, err, retry);
