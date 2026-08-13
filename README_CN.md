@@ -22,12 +22,9 @@
   ## 支持相机和平台
 | 相机型号     | 硬件平台                               | 厂商   | 软件版本         | GMSL 相机板                                                 |
 | ------------ | ------------------------------------- | ------ | --------------- | ----------------------------------------------------------- |
-| Gemini 335Lg | Jetson AGX Orin DevKit / Orin NX DevKit / Thor (D317 / MIC-742 / MIC-743) | NVIDIA | Jetpack 6.0 / 6.2 / 7.2 | FG96-8CH-V2 (MAX9296) / FG96-2CH (MAX9296) / Leopard LI-JAG-ADP-GMSL2-8CH (MAX96712) / MIC-FG-8G (MAX96712) / FG12-16CH (MAX96712) / D317 GM (MAX96712) |
+| Gemini 335Lg / Gemini 338Lg | Jetson AGX Orin DevKit / Orin NX DevKit / Thor (D317 / MIC-742 / MIC-743) | NVIDIA | Jetpack 6.0 / 6.2 / 7.2 | FG96-8CH-V2 (MAX9296) / FG96-2CH (MAX9296) / Leopard LI-JAG-ADP-GMSL2-8CH (MAX96712) / MIC-FG-8G (MAX96712) / FG12-16CH (MAX96712) / D317 GM (MAX96712) |
 | Gemini 345Lg | Jetson AGX Orin DevKit / Orin NX DevKit / Thor (D317 / MIC-742 / MIC-743) | NVIDIA | Jetpack 6.0 / 6.2 / 7.2 | FG96-8CH-V2 (MAX9296) / FG96-2CH (MAX9296) / Leopard LI-JAG-ADP-GMSL2-8CH (MAX96712) / MIC-FG-8G (MAX96712) / FG12-16CH (MAX96712) / D317 GM (MAX96712) |
-| Gemini 305G  | Jetson AGX Orin DevKit / Orin NX DevKit / Thor (D317 / MIC-742 / MIC-743) | NVIDIA | Jetpack 6.0 / 6.2 / 7.2 | FG96-8CH-V2 (MAX9296) / FG96-2CH (MAX9296) / Leopard LI-JAG-ADP-GMSL2-8CH (MAX96712) / MIC-FG-8G (MAX96712) / FG12-16CH (MAX96712) / D317 GM (MAX96712) |
-| Gemini 301G  | Jetson AGX Orin DevKit / Orin NX DevKit / Thor (D317 / MIC-742 / MIC-743) | NVIDIA | Jetpack 6.0 / 6.2 / 7.2 | FG96-8CH-V2 (MAX9296) / FG96-2CH (MAX9296) / Leopard LI-JAG-ADP-GMSL2-8CH (MAX96712) / MIC-FG-8G (MAX96712) / FG12-16CH (MAX96712) / D317 GM (MAX96712) |
-| Gemini 308G  | Jetson AGX Orin DevKit / Orin NX DevKit / Thor (D317 / MIC-742 / MIC-743) | NVIDIA | Jetpack 6.0 / 6.2 / 7.2 | FG96-8CH-V2 (MAX9296) / FG96-2CH (MAX9296) / Leopard LI-JAG-ADP-GMSL2-8CH (MAX96712) / MIC-FG-8G (MAX96712) / FG12-16CH (MAX96712) / D317 GM (MAX96712) |
-| Dabai AL     | Jetson AGX Orin DevKit / Orin NX DevKit / Thor (D317 / MIC-742 / MIC-743) | NVIDIA | Jetpack 6.0 / 6.2 / 7.2 | FG96-8CH-V2 (MAX9296) / FG96-2CH (MAX9296) / Leopard LI-JAG-ADP-GMSL2-8CH (MAX96712) / MIC-FG-8G (MAX96712) / FG12-16CH (MAX96712) / D317 GM (MAX96712) |
+| Gemini 305G / Gemini 301G| Jetson AGX Orin DevKit / Orin NX DevKit / Thor (D317 / MIC-742 / MIC-743) | NVIDIA | Jetpack 6.0 / 6.2 / 7.2 | FG96-8CH-V2 (MAX9296) / FG96-2CH (MAX9296) / Leopard LI-JAG-ADP-GMSL2-8CH (MAX96712) / MIC-FG-8G (MAX96712) / FG12-16CH (MAX96712) / D317 GM (MAX96712) |
 
 > 注：Thor 平台（D317 / MIC-742 / MIC-743）以及 FG12-16CH、D317 GM 解串板自 JetPack 7.2（驱动 v1.2.21）起支持；obcam-thin 驱动方案（SerDes 由用户态配置）适用于 FG96 与 Leopard LI-JAG-ADP-GMSL2-8CH 解串板。
 
