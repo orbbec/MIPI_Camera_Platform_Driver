@@ -23,10 +23,14 @@ This repository contains driver files for Orbbec GMSL interface cameras, designe
 
 | Camera Model | Hardware Platform                     | Manufacturer | Software Version| GMSL Adapter Board                                         |
 | ------------ | ------------------------------------ | ------------ | --------------- | ----------------------------------------------------------- |
-| Gemini 335Lg | Jetson AGX Orin DevKit/Orin nx DevKit | NVIDIA       | Jetpack 6.0/6.2 | FG96-8CH-V2(Max9296)/Leopard LI-JAG-ADP-GMSL2-8CH(Max96712)|
-| Gemini 345Lg | Jetson AGX Orin DevKit/Orin nx DevKit | NVIDIA       | Jetpack 6.0/6.2 | FG96-8CH-V2(Max9296)/Leopard LI-JAG-ADP-GMSL2-8CH(Max96712)|
-| Gemini 305G  | Jetson AGX Orin DevKit/Orin nx DevKit | NVIDIA       | Jetpack 6.0/6.2 | FG96-8CH-V2(Max9296)/Leopard LI-JAG-ADP-GMSL2-8CH(Max96712)|
-| Gemini 301G  | Jetson AGX Orin DevKit/Orin nx DevKit | NVIDIA       | Jetpack 6.0/6.2 | FG96-8CH-V2(Max9296)/Leopard LI-JAG-ADP-GMSL2-8CH(Max96712)|
+| Gemini 335Lg | Jetson AGX Orin DevKit / Orin NX DevKit / Thor (D317 / MIC-742 / MIC-743) | NVIDIA | Jetpack 6.0 / 6.2 / 7.2 | FG96-8CH-V2 (MAX9296) / FG96-2CH (MAX9296) / Leopard LI-JAG-ADP-GMSL2-8CH (MAX96712) / MIC-FG-8G (MAX96712) / FG12-16CH (MAX96712) / D317 GM (MAX96712) |
+| Gemini 345Lg | Jetson AGX Orin DevKit / Orin NX DevKit / Thor (D317 / MIC-742 / MIC-743) | NVIDIA | Jetpack 6.0 / 6.2 / 7.2 | FG96-8CH-V2 (MAX9296) / FG96-2CH (MAX9296) / Leopard LI-JAG-ADP-GMSL2-8CH (MAX96712) / MIC-FG-8G (MAX96712) / FG12-16CH (MAX96712) / D317 GM (MAX96712) |
+| Gemini 305G  | Jetson AGX Orin DevKit / Orin NX DevKit / Thor (D317 / MIC-742 / MIC-743) | NVIDIA | Jetpack 6.0 / 6.2 / 7.2 | FG96-8CH-V2 (MAX9296) / FG96-2CH (MAX9296) / Leopard LI-JAG-ADP-GMSL2-8CH (MAX96712) / MIC-FG-8G (MAX96712) / FG12-16CH (MAX96712) / D317 GM (MAX96712) |
+| Gemini 301G  | Jetson AGX Orin DevKit / Orin NX DevKit / Thor (D317 / MIC-742 / MIC-743) | NVIDIA | Jetpack 6.0 / 6.2 / 7.2 | FG96-8CH-V2 (MAX9296) / FG96-2CH (MAX9296) / Leopard LI-JAG-ADP-GMSL2-8CH (MAX96712) / MIC-FG-8G (MAX96712) / FG12-16CH (MAX96712) / D317 GM (MAX96712) |
+| Gemini 308G  | Jetson AGX Orin DevKit / Orin NX DevKit / Thor (D317 / MIC-742 / MIC-743) | NVIDIA | Jetpack 6.0 / 6.2 / 7.2 | FG96-8CH-V2 (MAX9296) / FG96-2CH (MAX9296) / Leopard LI-JAG-ADP-GMSL2-8CH (MAX96712) / MIC-FG-8G (MAX96712) / FG12-16CH (MAX96712) / D317 GM (MAX96712) |
+| Dabai AL     | Jetson AGX Orin DevKit / Orin NX DevKit / Thor (D317 / MIC-742 / MIC-743) | NVIDIA | Jetpack 6.0 / 6.2 / 7.2 | FG96-8CH-V2 (MAX9296) / FG96-2CH (MAX9296) / Leopard LI-JAG-ADP-GMSL2-8CH (MAX96712) / MIC-FG-8G (MAX96712) / FG12-16CH (MAX96712) / D317 GM (MAX96712) |
+
+> Note: The Thor platform (D317 / MIC-742 / MIC-743) and the FG12-16CH and D317 GM adapter boards are supported starting from JetPack 7.2 (driver v1.2.21). The obcam-thin driver variant (userspace-controlled SerDes) is available for the FG96 and Leopard LI-JAG-ADP-GMSL2-8CH boards.
 
 
 ## GMSL Integration Procedures
@@ -50,7 +54,7 @@ The diagram above illustrates a complete hardware connection setup for GMSL came
 Orbbec has adapted various deserializer chips such as MAX9296/96712. For detailed hardware design specifications and instructions, please refer to [Hardware Design Guide](./doc/GMSL%20Camera%20Board%20Hardware%20Design%20Guide.pdf).
 
 ### Software Driver Installation
-Orbbec has adapted the Gemini 335Lg  for different platforms and deserializer chips. For each platform, pre-compiled binaries, source code patches, and kernel source code are provided to facilitate integration for various customers. Developers and customers should select the appropriate driver installation method based on their carrier board, software version, and deserializer chip model.
+Orbbec has adapted the G300 series cameras (Gemini 335Lg, Gemini 345Lg, Gemini 305G, Gemini 301G, and Dabai AL) for different platforms and deserializer chips. For each platform, pre-compiled binaries, source code patches, and kernel source code are provided to facilitate integration for various customers. Developers and customers should select the appropriate driver installation method based on their carrier board, software version, and deserializer chip model.
 
 - **Orbbec G300 Series GMSL Camera Driver Quick Start Guide**
   - For a complete build, installation, device tree adaptation, and verification flow, refer to the [Orbbec G300 Series GMSL Camera Driver Quick Start Guide](./doc/Orbbec_G300_Series_GMSL_Camera_Driver_Quick_Start_Guide.md).

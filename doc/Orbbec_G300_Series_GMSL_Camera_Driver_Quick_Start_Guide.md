@@ -13,7 +13,10 @@ Typical supported hardware combinations:
 - Jetson AGX Orin + FG96_8CH_GMSL
 - Jetson AGX Orin + Leopard LI-JAG-ADP-GMSL2-8CH
 - Jetson AGX Orin + MIC-FG-8G
+- Jetson AGX Orin + FG12-16CH (JetPack 7.2)
 - Jetson Orin NX + FG96_2CH
+- Jetson Thor (D317) + D317 GM (JetPack 7.2)
+- Jetson Thor (MIC-742 / MIC-743) + MIC-FG-8G (JetPack 7.2)
 
 Deserializer mapping:
 
@@ -23,6 +26,8 @@ Deserializer mapping:
 | FG96_2CH | `obc_max9296.ko` | Common 2-channel board for Orin NX |
 | Leopard LI-JAG-ADP-GMSL2-8CH | `obc_max96712.ko` | Leopard 8-channel board |
 | MIC-FG-8G | `obc_max96712.ko` | Advantech MIC-FG-8G board |
+| FG12-16CH | `obc_max96712.ko` | 16-channel multi-deserializer board for AGX Orin (JetPack 7.2) |
+| D317 GM | `obc_max96712.ko` | Thor (D317) deserializer board (JetPack 7.2) |
 
 Driver modules:
 
@@ -30,6 +35,7 @@ Driver modules:
 - `obc_max9296.ko`: MAX9296 deserializer driver
 - `obc_max96712.ko`: MAX96712 deserializer driver
 - `obc_cam_sync.ko`: camera synchronization driver
+- `obcam.ko`: thin V4L2 subdevice driver used by the obcam-thin path, where userspace owns SerDes/G300 stream configuration
 
 Reading roadmap:
 
@@ -106,23 +112,30 @@ uname -r
 
 Common mappings:
 
+- JetPack 7.2: kernel `6.8.12-1021-tegra`
 - JetPack 6.2: kernel `5.15.148-tegra`
 - JetPack 6.0: kernel `5.15.136-tegra`
 
-This guide uses JetPack 6.2 as the default example. See the next section for JetPack 6.0 and 6.2 differences.
+This guide uses JetPack 6.2 as the default example. See the next section for JetPack 6.0, 6.2, and 7.2 differences.
 
-### 2.1 JetPack 6.0 and JetPack 6.2 Differences
+### 2.1 JetPack 6.0, 6.2, and 7.2 Differences
 
-The overall flow is the same: prepare sources and toolchain, build, package, copy to Jetson, run the target install script, reboot, and verify. The version numbers, source URLs, module directories, and packaging paths are different.
+The overall flow is the same: prepare sources and toolchain, build, package, copy to Jetson, run the target install script, reboot, and verify. The version numbers, source URLs, toolchain, module directories, and packaging paths are different. JetPack 7.2 also introduces a new kernel series, a new toolchain layout, the Thor platform, and an OOT-only install (it does not replace the kernel `Image`).
 
-| Item | JetPack 6.2 | JetPack 6.0 |
-| --- | --- | --- |
-| `build_all.sh` argument | `./build_all.sh 6.2 Linux_for_Tegra/source` | `./build_all.sh 6.0 Linux_for_Tegra/source` |
-| L4T tag | `jetson_36.4.3` | `jetson_36.3` |
-| Kernel module directory | `5.15.148-tegra` | `5.15.136-tegra` |
-| Toolchain directory | `l4t-gcc/6.2` | `l4t-gcc/6.0` |
-| Source package URL | `r36_release_v4.3/sources/public_sources.tbz2` | `r36_release_v3.0/sources/public_sources.tbz2` |
-| Recommended packaging | Use the JP6.2 `copy_to_jetson_ssh.sh`, or package manually as described in section 7 | Use the JP6.0 `copy_to_jetson_ssh.sh`, or package manually |
+| Item | JetPack 7.2 | JetPack 6.2 | JetPack 6.0 |
+| --- | --- | --- | --- |
+| `build_all.sh` argument | `./build_all.sh 7.2 Linux_for_Tegra/source` | `./build_all.sh 6.2 Linux_for_Tegra/source` | `./build_all.sh 6.0 Linux_for_Tegra/source` |
+| L4T tag | `jetson_39.2` | `jetson_36.4.3` | `jetson_36.3` |
+| Kernel module directory | `6.8.12-1021-tegra` | `5.15.148-tegra` | `5.15.136-tegra` |
+| Kernel source dir | `kernel/kernel-noble` | `kernel/kernel-jammy-src` | `kernel/kernel-jammy-src` |
+| Toolchain directory | `l4t-gcc/7.2` (`x-tools/aarch64-none-linux-gnu`) | `l4t-gcc/6.2` (`bin/aarch64-buildroot-linux-gnu`) | `l4t-gcc/6.0` (`bin/aarch64-buildroot-linux-gnu`) |
+| Source package URL | `r39_release_v2.0/sources/public_sources.tbz2` | `r36_release_v4.3/sources/public_sources.tbz2` | `r36_release_v3.0/sources/public_sources.tbz2` |
+| Extra build deps | adds `libssl-dev zstd` | `build-essential bc flex bison` | `build-essential bc flex bison` |
+| DTBO output path | `source/build/nvidia-public/devicetree/generic-dtbs` | `source/kernel-devicetree/generic-dts/dtbs` | `source/nvidia-oot/device-tree/platform/generic-dts/dtbs` |
+| NVCsi module | `nvhost-nvcsi.ko` | `nvhost-nvcsi-t194.ko` | `nvhost-nvcsi-t194.ko` |
+| Install approach | OOT modules + DTBO only (no `Image` replacement); kernel version checked | Replaces `Image` + modules + DTBO | Replaces `Image` + modules + DTBO |
+| Supported platforms | AGX Orin / Orin NX / Thor (D317 / MIC-742 / MIC-743) | AGX Orin / Orin NX | AGX Orin / Orin NX |
+| Recommended packaging | `./copy_to_jetson_ssh.sh 7.2` | Use the JP6.2 `copy_to_jetson_ssh.sh`, or package manually as described in section 7 | Use the JP6.0 `copy_to_jetson_ssh.sh`, or package manually |
 
 For JetPack 6.0, replace these values in the guide:
 
@@ -132,7 +145,9 @@ For JetPack 6.0, replace these values in the guide:
 r36_release_v4.3 -> r36_release_v3.0
 ```
 
-Before using `copy_to_jetson_ssh.sh`, make sure the paths inside the script match your JetPack version. JP6.2 should use `images/6.2` and `5.15.148-tegra`; JP6.0 should use `images/6.0` and `5.15.136-tegra`.
+For JetPack 7.2, the flow diverges more (different toolchain, sources, and install scripts). Follow the dedicated "JetPack 7.2" notes in sections 4, 5, 6, 7, and 9.
+
+Before using `copy_to_jetson_ssh.sh`, make sure the paths inside the script match your JetPack version. JP7.2 uses `images/7.2` and `6.8.12-1021-tegra`; JP6.2 should use `images/6.2` and `5.15.148-tegra`; JP6.0 should use `images/6.0` and `5.15.136-tegra`.
 
 ## 3. Install Dependencies on the Build Host
 
@@ -189,6 +204,17 @@ cd ../..
 ls l4t-gcc/6.0/bin/aarch64-buildroot-linux-gnu-gcc
 ```
 
+For JetPack 7.2, the toolchain is a different package (`x-tools.tbz2`) and extracts into `x-tools/aarch64-none-linux-gnu` (no `--strip-components`):
+
+```bash
+mkdir -p l4t-gcc/7.2
+cd l4t-gcc/7.2
+wget https://developer.nvidia.com/downloads/embedded/L4T/r38_Release_v2.0/release/x-tools.tbz2
+tar xf x-tools.tbz2
+cd ../..
+ls l4t-gcc/7.2/x-tools/aarch64-none-linux-gnu/bin/aarch64-none-linux-gnu-gcc
+```
+
 ## 5. Prepare NVIDIA L4T Sources
 
 Run from the repository root on the build host:
@@ -225,6 +251,21 @@ cd source
 tar xjf kernel_src.tbz2
 tar xjf kernel_oot_modules_src.tbz2
 tar xjf nvidia_kernel_display_driver_source.tbz2
+cd ../..
+```
+
+For JetPack 7.2, use the `r39` source package and extract one additional tarball (`nvidia_unified_gpu_display_driver_source.tbz2`):
+
+```bash
+mkdir -p Linux_for_Tegra
+cd Linux_for_Tegra
+wget https://developer.nvidia.com/downloads/embedded/L4T/r39_Release_v2.0/sources/public_sources.tbz2
+tar xjf public_sources.tbz2
+cd source
+tar xf kernel_src.tbz2
+tar xf kernel_oot_modules_src.tbz2
+tar xf nvidia_kernel_display_driver_source.tbz2
+tar xf nvidia_unified_gpu_display_driver_source.tbz2
 cd ../..
 ```
 
@@ -284,6 +325,31 @@ ls images/6.0/rootfs/lib/modules/5.15.136-tegra/updates/drivers/media/i2c/obc_ma
 ls images/6.0/rootfs/lib/modules/5.15.136-tegra/updates/drivers/media/i2c/obc_max96712.ko
 ```
 
+For JetPack 7.2, apply the 7.2 patch, install the extra build dependencies, and build:
+
+```bash
+# Apply the JetPack 7.2 G300 patch
+git apply jetson_jp7.2_g300_driver_v1.2.21.patch
+
+# install dependencies (7.2 adds libssl-dev and zstd)
+sudo apt install build-essential bc flex bison libssl-dev zstd
+
+# build kernel, dtb and G300 driver
+./build_all.sh 7.2 Linux_for_Tegra/source
+```
+
+Check key outputs (7.2 uses the `6.8.12-1021-tegra` kernel and a different DTBO output path):
+
+```bash
+ls images/7.2/rootfs/lib/modules/6.8.12-1021-tegra/updates/drivers/media/i2c/g300.ko
+ls images/7.2/rootfs/lib/modules/6.8.12-1021-tegra/updates/drivers/media/i2c/obc_max9296.ko
+ls images/7.2/rootfs/lib/modules/6.8.12-1021-tegra/updates/drivers/media/i2c/obc_max96712.ko
+ls images/7.2/rootfs/lib/modules/6.8.12-1021-tegra/updates/drivers/media/i2c/obcam.ko
+ls Linux_for_Tegra/source/build/nvidia-public/devicetree/generic-dtbs/tegra234-p3737-camera-g300-fg96-overlay.dtbo
+ls Linux_for_Tegra/source/build/nvidia-public/devicetree/generic-dtbs/tegra234-p3737-camera-g300-fg12-overlay.dtbo
+ls Linux_for_Tegra/source/build/nvidia-public/devicetree/generic-dtbs/tegra264-p4071-camera-g300-d317-gm-overlay.dtbo
+```
+
 ## 7. Package Files for Jetson
 
 Prefer the `copy_to_jetson_ssh.sh` script that matches your JetPack version.
@@ -302,7 +368,15 @@ If the version matches, run:
 sh copy_to_jetson_ssh.sh
 ```
 
-The script copies the products from `images/<JetPack version>` into `gmsl-driver-jetson`. If the script version does not match your build version, use the script from the matching JetPack directory or package manually as follows.
+The script copies the products from `images/<JetPack version>` into `gmsl-driver-jetson`.
+
+For JetPack 7.2, pass the version explicitly. The 7.2 package is OOT-only: it does not include the kernel `Image` or `capture-ivc.ko`, uses `nvhost-nvcsi.ko` (not `nvhost-nvcsi-t194.ko`), and includes `obcam.ko` for the obcam-thin path.
+
+```bash
+sh copy_to_jetson_ssh.sh 7.2
+```
+
+If the script version does not match your build version, use the script from the matching JetPack directory or package manually as follows.
 
 Manual packaging from the repository root:
 
@@ -434,6 +508,34 @@ If your camera uses metadata embedded in the first image row:
 sh copy_to_target_orin_nx_nomtd_fg96.sh
 ```
 
+### 9.5 JetPack 7.2 additional install scripts
+
+JetPack 7.2 adds the following board combinations. The 7.2 install scripts also verify that the running kernel is `6.8.12-1021-tegra` and refuse to install otherwise, so they cannot be mixed with JP6.0/6.2 packages.
+
+AGX Orin + FG12-16CH (MAX96712, 16-channel multi-deserializer board):
+
+```bash
+sh copy_to_target_agx_orin_fg12.sh
+```
+
+AGX Orin + FG96 obcam-thin (userspace-controlled SerDes):
+
+```bash
+sh copy_to_target_agx_orin_fg96_obcam.sh
+```
+
+Thor (D317) + D317 GM (MAX96712):
+
+```bash
+sh copy_to_target_thor_dm317.sh
+```
+
+Thor (MIC-742 / MIC-743) + MIC-FG-8G (MAX96712):
+
+```bash
+sh copy_to_target_thor_mic_fg_8g.sh
+```
+
 The install scripts:
 
 - Back up the original `/boot/Image`
@@ -443,6 +545,8 @@ The install scripts:
 - Copy new `.ko` files
 - Enable the Orbbec Camera device tree overlay through Jetson IO
 - Run `depmod`
+
+On JetPack 7.2 the install scripts are OOT-only: they do **not** back up or replace `/boot/Image`. They back up and replace `tegra-camera.ko`, `videodev.ko`, and `nvhost-nvcsi.ko`, copy the G300/deserializer/`obcam.ko` modules, install the DTBO, and run Jetson IO (`config-by-hardware.py -n 2="Jetson Orbbec Camera G300"` for Orin, `-n 1=...` for Thor, `-n 2="Jetson Orbbec Camera G300 obcam thin"` for obcam-thin). To uninstall, run `./remove_g300.sh` in the `gmsl-driver-jetson` directory; it restores the `.orig` backups and removes the G300 modules.
 
 ## 10. Reboot Jetson
 
@@ -606,6 +710,9 @@ Do not write a DTS from scratch. Copy the closest reference overlay first.
 | MAX96712, 4-link deserializer, similar to Leopard | `tegra234-p3737-camera-g300-leopard-overlay.dts` |
 | MAX96712, similar to MIC-FG-8G | `tegra234-p3737-camera-g300-mic-fg-8g-overlay.dts` |
 | Metadata embedded in the first image row | Use a `nomtd` overlay as reference |
+| MAX96712, 16-channel multi-deserializer, similar to FG12-16CH (JetPack 7.2) | `tegra234-p3737-camera-g300-fg12-overlay.dts` |
+| MAX96712, Thor (D317) deserializer board (JetPack 7.2) | `tegra264-p4071-camera-g300-d317-gm-overlay.dts` |
+| Thor (MIC-742/743) + MIC-FG-8G (JetPack 7.2) | `tegra264-p4071-camera-g300-mic-fg-8g-overlay.dts` |
 
 Example:
 
@@ -1032,6 +1139,12 @@ Common JP6.0 output path:
 Linux_for_Tegra/source/nvidia-oot/device-tree/platform/generic-dts/dtbs/*.dtbo
 ```
 
+Common JP7.2 output path:
+
+```bash
+Linux_for_Tegra/source/build/nvidia-public/devicetree/generic-dtbs/*.dtbo
+```
+
 After copying the new `.dtbo` to `gmsl-driver-jetson`, update the target install script to copy your new filename. Example:
 
 ```bash
@@ -1121,6 +1234,12 @@ ls l4t-gcc/6.2/bin/aarch64-buildroot-linux-gnu-gcc
 ```
 
 If it does not exist, download the toolchain again as described in section 4.
+
+On JetPack 7.2 the compiler prefix is different. Check and download the `x-tools` toolchain instead:
+
+```bash
+ls l4t-gcc/7.2/x-tools/aarch64-none-linux-gnu/bin/aarch64-none-linux-gnu-gcc
+```
 
 ### 17.2 Install Script Cannot Find `.ko`
 
@@ -1237,6 +1356,8 @@ If you are unsure what to choose, use this flow:
 
 For JetPack 6.0, replace `6.2` with `6.0`, check modules under `5.15.136-tegra`, and use the JP6.0 `copy_to_jetson_ssh.sh`.
 
+For JetPack 7.2, prepare the `x-tools` toolchain and `r39` sources (with the extra `nvidia_unified_gpu_display_driver_source.tbz2`), build with `./build_all.sh 7.2 Linux_for_Tegra/source`, package with `./copy_to_jetson_ssh.sh 7.2`, and select a 7.2 install script. 7.2 also supports the Thor (D317 / MIC-742 / MIC-743) platform.
+
 ## 19. Script Selection Quick Reference
 
 | Jetson | Deserializer board | Deserializer | Recommended script |
@@ -1248,6 +1369,11 @@ For JetPack 6.0, replace `6.2` with `6.0`, check modules under `5.15.136-tegra`,
 | AGX Orin | MIC-FG-8G | MAX96712 | `copy_to_target_agx_orin_mic_fg_8g.sh` |
 | Orin NX | FG96_2CH | MAX9296 | `copy_to_target_orin_nx_fg96.sh` |
 | Orin NX | FG96_2CH, metadata in first row | MAX9296 | `copy_to_target_orin_nx_nomtd_fg96.sh` |
+| AGX Orin | FG12-16CH (JetPack 7.2) | MAX96712 | `copy_to_target_agx_orin_fg12.sh` |
+| AGX Orin | FG96 obcam-thin (JetPack 7.2) | MAX9296 | `copy_to_target_agx_orin_fg96_obcam.sh` |
+| AGX Orin | Leopard obcam-thin | MAX96712 | `copy_to_target_agx_orin_leopard_obcam.sh` |
+| Thor (D317) | D317 GM (JetPack 7.2) | MAX96712 | `copy_to_target_thor_dm317.sh` |
+| Thor (MIC-742/743) | MIC-FG-8G (JetPack 7.2) | MAX96712 | `copy_to_target_thor_mic_fg_8g.sh` |
 
 ## 20. Minimal Verification Command List
 

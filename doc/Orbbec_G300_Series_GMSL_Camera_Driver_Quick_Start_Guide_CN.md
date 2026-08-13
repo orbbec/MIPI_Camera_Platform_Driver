@@ -13,7 +13,10 @@
 - Jetson AGX Orin + FG96_8CH_GMSL
 - Jetson AGX Orin + Leopard LI-JAG-ADP-GMSL2-8CH
 - Jetson AGX Orin + MIC-FG-8G
+- Jetson AGX Orin + FG12-16CH（JetPack 7.2）
 - Jetson Orin NX + FG96_2CH
+- Jetson Thor（D317）+ D317 GM（JetPack 7.2）
+- Jetson Thor（MIC-742 / MIC-743）+ MIC-FG-8G（JetPack 7.2）
 
 解串器对应关系：
 
@@ -23,6 +26,8 @@
 | FG96_2CH | `obc_max9296.ko` | Orin NX 常用 2 路板 |
 | Leopard LI-JAG-ADP-GMSL2-8CH | `obc_max96712.ko` | Leopard 8 路板 |
 | MIC-FG-8G | `obc_max96712.ko` | 研华 MIC-FG-8G 板 |
+| FG12-16CH | `obc_max96712.ko` | AGX Orin 16 路多解串器板（JetPack 7.2） |
+| D317 GM | `obc_max96712.ko` | Thor（D317）解串板（JetPack 7.2） |
 
 驱动相关模块：
 
@@ -30,6 +35,7 @@
 - `obc_max9296.ko`：MAX9296 解串器驱动
 - `obc_max96712.ko`：MAX96712 解串器驱动
 - `obc_cam_sync.ko`：相机同步相关驱动
+- `obcam.ko`：obcam-thin 方案使用的轻量 V4L2 subdevice 驱动，SerDes/G300 数据流配置由用户态完成
 
 阅读路线图：
 
@@ -106,23 +112,30 @@ uname -r
 
 常见对应关系：
 
+- JetPack 7.2：内核是 `6.8.12-1021-tegra`
 - JetPack 6.2：内核是 `5.15.148-tegra`
 - JetPack 6.0：内核是 `5.15.136-tegra`
 
-本文档默认以 JetPack 6.2 为例。JetPack 6.0 和 6.2 的具体差异见下一节。
+本文档默认以 JetPack 6.2 为例。JetPack 6.0、6.2 和 7.2 的具体差异见下一节。
 
-### 2.1 JetPack 6.0 和 JetPack 6.2 差异
+### 2.1 JetPack 6.0、6.2 和 7.2 差异
 
-两者整体流程一样，都是：准备源码和工具链、编译、打包、传到 Jetson、运行目标安装脚本、重启验证。但版本号、源码地址、模块目录和打包方式不同。
+三者整体流程一样，都是：准备源码和工具链、编译、打包、传到 Jetson、运行目标安装脚本、重启验证。但版本号、源码地址、工具链、模块目录和打包方式不同。JetPack 7.2 还引入了新的内核系列、新的工具链布局、Thor 平台，以及仅 OOT 安装（不替换内核 `Image`）的安装方式。
 
-| 项目 | JetPack 6.2 | JetPack 6.0 |
-| --- | --- | --- |
-| `build_all.sh` 参数 | `./build_all.sh 6.2 Linux_for_Tegra/source` | `./build_all.sh 6.0 Linux_for_Tegra/source` |
-| L4T tag | `jetson_36.4.3` | `jetson_36.3` |
-| 内核版本目录 | `5.15.148-tegra` | `5.15.136-tegra` |
-| 工具链目录 | `l4t-gcc/6.2` | `l4t-gcc/6.0` |
-| 源码包 URL | `r36_release_v4.3/sources/public_sources.tbz2` | `r36_release_v3.0/sources/public_sources.tbz2` |
-| 推荐打包方式 | 使用 JP6.2 对应的 `copy_to_jetson_ssh.sh`，也可按第 7 节手动打包 | 使用 JP6.0 对应的 `copy_to_jetson_ssh.sh`，也可手动打包 |
+| 项目 | JetPack 7.2 | JetPack 6.2 | JetPack 6.0 |
+| --- | --- | --- | --- |
+| `build_all.sh` 参数 | `./build_all.sh 7.2 Linux_for_Tegra/source` | `./build_all.sh 6.2 Linux_for_Tegra/source` | `./build_all.sh 6.0 Linux_for_Tegra/source` |
+| L4T tag | `jetson_39.2` | `jetson_36.4.3` | `jetson_36.3` |
+| 内核版本目录 | `6.8.12-1021-tegra` | `5.15.148-tegra` | `5.15.136-tegra` |
+| 内核源码目录 | `kernel/kernel-noble` | `kernel/kernel-jammy-src` | `kernel/kernel-jammy-src` |
+| 工具链目录 | `l4t-gcc/7.2`（`x-tools/aarch64-none-linux-gnu`） | `l4t-gcc/6.2`（`bin/aarch64-buildroot-linux-gnu`） | `l4t-gcc/6.0`（`bin/aarch64-buildroot-linux-gnu`） |
+| 源码包 URL | `r39_release_v2.0/sources/public_sources.tbz2` | `r36_release_v4.3/sources/public_sources.tbz2` | `r36_release_v3.0/sources/public_sources.tbz2` |
+| 额外编译依赖 | 增加 `libssl-dev zstd` | `build-essential bc flex bison` | `build-essential bc flex bison` |
+| DTBO 输出路径 | `source/build/nvidia-public/devicetree/generic-dtbs` | `source/kernel-devicetree/generic-dts/dtbs` | `source/nvidia-oot/device-tree/platform/generic-dts/dtbs` |
+| NVCsi 模块 | `nvhost-nvcsi.ko` | `nvhost-nvcsi-t194.ko` | `nvhost-nvcsi-t194.ko` |
+| 安装方式 | 仅 OOT 模块 + DTBO（不替换 `Image`）；会校验内核版本 | 替换 `Image` + 模块 + DTBO | 替换 `Image` + 模块 + DTBO |
+| 支持平台 | AGX Orin / Orin NX / Thor（D317 / MIC-742 / MIC-743） | AGX Orin / Orin NX | AGX Orin / Orin NX |
+| 推荐打包方式 | `./copy_to_jetson_ssh.sh 7.2` | 使用 JP6.2 对应的 `copy_to_jetson_ssh.sh`，也可按第 7 节手动打包 | 使用 JP6.0 对应的 `copy_to_jetson_ssh.sh`，也可手动打包 |
 
 如果使用 JetPack 6.0，本指南中的命令需要同步替换：
 
@@ -132,7 +145,9 @@ uname -r
 r36_release_v4.3 -> r36_release_v3.0
 ```
 
-注意：不同 JetPack 版本的仓库会提供对应版本的 `copy_to_jetson_ssh.sh`。使用前先确认脚本里的路径版本是否和你的编译版本一致，例如 JP6.2 应该使用 `images/6.2` 和 `5.15.148-tegra`，JP6.0 应该使用 `images/6.0` 和 `5.15.136-tegra`。
+如果使用 JetPack 7.2，流程差异更大（工具链、源码、安装脚本都不同），请按第 4、5、6、7、9 节中专门的 "JetPack 7.2" 说明操作。
+
+注意：不同 JetPack 版本的仓库会提供对应版本的 `copy_to_jetson_ssh.sh`。使用前先确认脚本里的路径版本是否和你的编译版本一致，例如 JP7.2 应该使用 `images/7.2` 和 `6.8.12-1021-tegra`，JP6.2 应该使用 `images/6.2` 和 `5.15.148-tegra`，JP6.0 应该使用 `images/6.0` 和 `5.15.136-tegra`。
 
 JetPack 6.0 / 6.2 操作差异示意：
 
@@ -206,6 +221,19 @@ cd ../..
 ls l4t-gcc/6.0/bin/aarch64-buildroot-linux-gnu-gcc
 ```
 
+JetPack 7.2 操作差异：
+
+7.2 的工具链是不同的包（`x-tools.tbz2`），解压后位于 `x-tools/aarch64-none-linux-gnu`（不需要 `--strip-components`）：
+
+```bash
+mkdir -p l4t-gcc/7.2
+cd l4t-gcc/7.2
+wget https://developer.nvidia.com/downloads/embedded/L4T/r38_Release_v2.0/release/x-tools.tbz2
+tar xf x-tools.tbz2
+cd ../..
+ls l4t-gcc/7.2/x-tools/aarch64-none-linux-gnu/bin/aarch64-none-linux-gnu-gcc
+```
+
 ## 5. 准备 NVIDIA L4T 源码
 
 在编译主机、仓库根目录执行：
@@ -242,6 +270,23 @@ cd source
 tar xjf kernel_src.tbz2
 tar xjf kernel_oot_modules_src.tbz2
 tar xjf nvidia_kernel_display_driver_source.tbz2
+cd ../..
+```
+
+JetPack 7.2 操作差异：
+
+7.2 使用 `r39` 源码包，并且需要多解压一个 `nvidia_unified_gpu_display_driver_source.tbz2`：
+
+```bash
+mkdir -p Linux_for_Tegra
+cd Linux_for_Tegra
+wget https://developer.nvidia.com/downloads/embedded/L4T/r39_Release_v2.0/sources/public_sources.tbz2
+tar xjf public_sources.tbz2
+cd source
+tar xf kernel_src.tbz2
+tar xf kernel_oot_modules_src.tbz2
+tar xf nvidia_kernel_display_driver_source.tbz2
+tar xf nvidia_unified_gpu_display_driver_source.tbz2
 cd ../..
 ```
 
@@ -301,6 +346,33 @@ ls images/6.0/rootfs/lib/modules/5.15.136-tegra/updates/drivers/media/i2c/obc_ma
 ls images/6.0/rootfs/lib/modules/5.15.136-tegra/updates/drivers/media/i2c/obc_max96712.ko
 ```
 
+JetPack 7.2 操作差异：
+
+7.2 需要先打 7.2 补丁，安装额外编译依赖，再编译：
+
+```bash
+# 应用 JetPack 7.2 G300 补丁
+git apply jetson_jp7.2_g300_driver_v1.2.21.patch
+
+# 安装依赖（7.2 增加 libssl-dev 和 zstd）
+sudo apt install build-essential bc flex bison libssl-dev zstd
+
+# 编译内核、dtb 和 G300 驱动
+./build_all.sh 7.2 Linux_for_Tegra/source
+```
+
+检查关键产物（7.2 使用 `6.8.12-1021-tegra` 内核，DTBO 输出路径也不同）：
+
+```bash
+ls images/7.2/rootfs/lib/modules/6.8.12-1021-tegra/updates/drivers/media/i2c/g300.ko
+ls images/7.2/rootfs/lib/modules/6.8.12-1021-tegra/updates/drivers/media/i2c/obc_max9296.ko
+ls images/7.2/rootfs/lib/modules/6.8.12-1021-tegra/updates/drivers/media/i2c/obc_max96712.ko
+ls images/7.2/rootfs/lib/modules/6.8.12-1021-tegra/updates/drivers/media/i2c/obcam.ko
+ls Linux_for_Tegra/source/build/nvidia-public/devicetree/generic-dtbs/tegra234-p3737-camera-g300-fg96-overlay.dtbo
+ls Linux_for_Tegra/source/build/nvidia-public/devicetree/generic-dtbs/tegra234-p3737-camera-g300-fg12-overlay.dtbo
+ls Linux_for_Tegra/source/build/nvidia-public/devicetree/generic-dtbs/tegra264-p4071-camera-g300-d317-gm-overlay.dtbo
+```
+
 编译产物关系：
 
 ```mermaid
@@ -338,7 +410,15 @@ grep -n "images/6\\.|5.15.*-tegra" copy_to_jetson_ssh.sh
 sh copy_to_jetson_ssh.sh
 ```
 
-该脚本会把对应 `images/<JetPack版本>` 下的产物拷贝到 `gmsl-driver-jetson`。如果脚本版本和你的编译版本不一致，请换用对应 JetPack 版本仓库里的脚本，或者继续按下面的备用流程手动打包。
+该脚本会把对应 `images/<JetPack版本>` 下的产物拷贝到 `gmsl-driver-jetson`。
+
+JetPack 7.2 需要显式传入版本号。7.2 的包是纯 OOT 安装：不含内核 `Image` 和 `capture-ivc.ko`，使用 `nvhost-nvcsi.ko`（不是 `nvhost-nvcsi-t194.ko`），并包含 obcam-thin 方案用的 `obcam.ko`。
+
+```bash
+sh copy_to_jetson_ssh.sh 7.2
+```
+
+如果脚本版本和你的编译版本不一致，请换用对应 JetPack 版本仓库里的脚本，或者继续按下面的备用流程手动打包。
 
 备用手动打包流程如下，在编译主机、仓库根目录执行：
 
@@ -490,6 +570,34 @@ sh copy_to_target_orin_nx_fg96.sh
 sh copy_to_target_orin_nx_nomtd_fg96.sh
 ```
 
+### 9.5 JetPack 7.2 额外安装脚本
+
+JetPack 7.2 新增以下板卡组合。7.2 安装脚本还会校验当前内核是否为 `6.8.12-1021-tegra`，不匹配会拒绝安装，因此不能和 JP6.0/6.2 的包混用。
+
+AGX Orin + FG12-16CH（MAX96712，16 路多解串器板）：
+
+```bash
+sh copy_to_target_agx_orin_fg12.sh
+```
+
+AGX Orin + FG96 obcam-thin（SerDes 由用户态配置）：
+
+```bash
+sh copy_to_target_agx_orin_fg96_obcam.sh
+```
+
+Thor（D317）+ D317 GM（MAX96712）：
+
+```bash
+sh copy_to_target_thor_dm317.sh
+```
+
+Thor（MIC-742 / MIC-743）+ MIC-FG-8G（MAX96712）：
+
+```bash
+sh copy_to_target_thor_mic_fg_8g.sh
+```
+
 安装脚本会做这些事情：
 
 - 备份原始 `/boot/Image`
@@ -499,6 +607,8 @@ sh copy_to_target_orin_nx_nomtd_fg96.sh
 - 复制新的 `.ko`
 - 调用 Jetson IO 使能 Orbbec Camera 设备树覆盖
 - 执行 `depmod`
+
+JetPack 7.2 的安装脚本是纯 OOT 安装：**不会**备份或替换 `/boot/Image`。脚本会备份并替换 `tegra-camera.ko`、`videodev.ko`、`nvhost-nvcsi.ko`，复制 G300/解串器/`obcam.ko` 模块，安装 DTBO，并调用 Jetson IO（Orin 用 `config-by-hardware.py -n 2="Jetson Orbbec Camera G300"`，Thor 用 `-n 1=...`，obcam-thin 用 `-n 2="Jetson Orbbec Camera G300 obcam thin"`）。卸载时在 `gmsl-driver-jetson` 目录执行 `./remove_g300.sh`，会恢复 `.orig` 备份并删除 G300 模块。
 
 安装脚本选择图：
 
@@ -694,6 +804,9 @@ flowchart TD
 | 使用 MAX96712，4 link 解串器，类似 Leopard | `tegra234-p3737-camera-g300-leopard-overlay.dts` |
 | 使用 MAX96712，类似 MIC-FG-8G | `tegra234-p3737-camera-g300-mic-fg-8g-overlay.dts` |
 | 元数据放在图像第一行 | 参考 `nomtd` 版本 overlay |
+| 使用 MAX96712，16 路多解串器，类似 FG12-16CH（JetPack 7.2） | `tegra234-p3737-camera-g300-fg12-overlay.dts` |
+| 使用 MAX96712，Thor（D317）解串板（JetPack 7.2） | `tegra264-p4071-camera-g300-d317-gm-overlay.dts` |
+| Thor（MIC-742/743）+ MIC-FG-8G（JetPack 7.2） | `tegra264-p4071-camera-g300-mic-fg-8g-overlay.dts` |
 
 建议复制成新文件，例如：
 
@@ -1132,6 +1245,12 @@ JP6.0 常见输出路径：
 Linux_for_Tegra/source/nvidia-oot/device-tree/platform/generic-dts/dtbs/*.dtbo
 ```
 
+JP7.2 常见输出路径：
+
+```bash
+Linux_for_Tegra/source/build/nvidia-public/devicetree/generic-dtbs/*.dtbo
+```
+
 把新的 `.dtbo` 拷贝到 `gmsl-driver-jetson` 后，目标 Jetson 上安装脚本也要改成复制你的新文件名。例如：
 
 ```bash
@@ -1221,6 +1340,12 @@ ls l4t-gcc/6.2/bin/aarch64-buildroot-linux-gnu-gcc
 ```
 
 如果不存在，回到第 4 节重新下载工具链。
+
+JetPack 7.2 的编译器前缀不同，请按下面路径检查并下载 `x-tools` 工具链：
+
+```bash
+ls l4t-gcc/7.2/x-tools/aarch64-none-linux-gnu/bin/aarch64-none-linux-gnu-gcc
+```
 
 ### 17.2 安装脚本找不到 `.ko`
 
@@ -1337,6 +1462,8 @@ sudo reboot
 
 如果是 JetPack 6.0，把上面的 `6.2` 换成 `6.0`，模块目录按 `5.15.136-tegra` 检查，并使用 JP6.0 对应的 `copy_to_jetson_ssh.sh`。
 
+如果是 JetPack 7.2，准备 `x-tools` 工具链和 `r39` 源码（多解压一个 `nvidia_unified_gpu_display_driver_source.tbz2`），用 `./build_all.sh 7.2 Linux_for_Tegra/source` 编译，用 `./copy_to_jetson_ssh.sh 7.2` 打包，并选择 7.2 对应的安装脚本。7.2 还支持 Thor（D317 / MIC-742 / MIC-743）平台。
+
 ## 19. 脚本选择速查表
 
 | Jetson | 解串板 | 解串器 | 推荐脚本 |
@@ -1348,6 +1475,11 @@ sudo reboot
 | AGX Orin | MIC-FG-8G | MAX96712 | `copy_to_target_agx_orin_mic_fg_8g.sh` |
 | Orin NX | FG96_2CH | MAX9296 | `copy_to_target_orin_nx_fg96.sh` |
 | Orin NX | FG96_2CH，元数据在第一行 | MAX9296 | `copy_to_target_orin_nx_nomtd_fg96.sh` |
+| AGX Orin | FG12-16CH（JetPack 7.2） | MAX96712 | `copy_to_target_agx_orin_fg12.sh` |
+| AGX Orin | FG96 obcam-thin（JetPack 7.2） | MAX9296 | `copy_to_target_agx_orin_fg96_obcam.sh` |
+| AGX Orin | Leopard obcam-thin | MAX96712 | `copy_to_target_agx_orin_leopard_obcam.sh` |
+| Thor（D317） | D317 GM（JetPack 7.2） | MAX96712 | `copy_to_target_thor_dm317.sh` |
+| Thor（MIC-742/743） | MIC-FG-8G（JetPack 7.2） | MAX96712 | `copy_to_target_thor_mic_fg_8g.sh` |
 
 ## 20. 最小验证命令清单
 
