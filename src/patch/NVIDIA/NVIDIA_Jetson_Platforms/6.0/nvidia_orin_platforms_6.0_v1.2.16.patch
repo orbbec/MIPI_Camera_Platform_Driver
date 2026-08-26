@@ -25946,13 +25946,13 @@ index 7b16dcaf3..02a697244 100644
  {
  	struct vb2_v4l2_buffer *vbuf = &buf->buf;
  
-+	if (chan->embedded_data_height == 1 && buf->vb2_state == VB2_BUF_STATE_DONE)
-+		vi5_release_metadata_buffer(chan, vbuf);
-+
  	vbuf->sequence = chan->sequence++;
  	vbuf->field = V4L2_FIELD_NONE;
  	vb2_set_plane_payload(&vbuf->vb2_buf, 0, chan->format.sizeimage);
  
++	if (chan->embedded_data_height == 1 && buf->vb2_state == VB2_BUF_STATE_DONE)
++		vi5_release_metadata_buffer(chan, vbuf);
++
  	vb2_buffer_done(&vbuf->vb2_buf, buf->vb2_state);
 +
  }
