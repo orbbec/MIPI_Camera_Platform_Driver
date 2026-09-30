@@ -36,6 +36,21 @@ sudo apt install build-essential bc flex bison
 
 Debian packages will be generated in `images` folder.
 
+## obcam Thin Driver
+
+`Linux_for_Tegra/source/nvidia-oot/drivers/media/i2c/obcam.c` builds
+`obcam.ko`. It is a thin V4L2 subdevice and media graph driver used by the
+`obcam-thin` overlays. Unlike the full `g300.ko` path, it does not initialize or
+program the G300 sensor or SerDes pipeline in kernel space. Its job is to bind
+device tree nodes with `compatible = "orbbec,obcam"`, expose stable media
+entities to the Tegra VI/NVCSI graph, and advertise the mbus formats,
+resolutions, and frame intervals expected by userspace.
+
+The thin path is intended for systems where userspace owns G300 and SerDes
+stream configuration. `obcam.c` provides YUYV depth/RGB formats and Y8 IR
+formats with the supported G300 resolutions and frame rates, while userspace
+configures the real sensor mode and GMSL links before capture.
+
 ## Install kernel and G335Lg driver to Jetson 
 <details>
 <summary>JP6.0 build results</summary>
@@ -73,7 +88,14 @@ sh copy_to_target_agx_orin_mic_fg_8g.sh
 # AGX_Orin + G335Lg/G345Lg/G305g/G301g + FG96_8CH_GMSL (EVK): If use FG96_8CH_GMSL_V2 Dser board, use TSC1 generate multi-camera synchronization signals and G335Lg place the Metadata data in the first row of the image.
 sh copy_to_target_agx_orin_nomtd_fg96.sh
 
+# AGX Orin + G300 obcam-thin + Leopard LI-JAG-ADP-GMSL2-8CH: use TSC0 synchronization; SerDes/G300 stream configuration is handled by userspace.
+./copy_to_target_agx_orin_leopard_obcam.sh
+
+
 # Orin_NX +  G335Lg/G345Lg/G305g/G301g + FG96_2CH: if use FG96_2CH_V2 Dser board and use pwm8 generate multi-camera synchronization signals.
 sh copy_to_target_orin_nx_fg96.sh    
+
+# Orin_NX +  G335Lg/G345Lg/G305g/G301g + FG96_2CH: if use FG96_2CH_V2 Dser board and use pwm8 generate multi-camera synchronization signals and G335Lg place the Metadata data in the first row of the image.
+sh copy_to_target_orin_nx_nomtd_fg96.sh
 
 ```

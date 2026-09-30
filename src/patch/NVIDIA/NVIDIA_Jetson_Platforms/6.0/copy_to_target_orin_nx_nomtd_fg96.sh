@@ -36,7 +36,7 @@ if [ -e /lib/modules/$(uname -r)/updates/drivers/media/i2c/g2xx.ko ];then
     sudo rm /lib/modules/$(uname -r)/updates/drivers/media/i2c/g2xx.ko
 fi
 
-sudo cp tegra234-p3737-camera-g300-fg96-overlay.dtbo /boot/tegra234-p3737-camera-g300-overlay.dtbo
+sudo cp tegra234-p3767-camera-p3768-g300-nomtd-fg96-overlay.dtbo /boot/tegra234-p3767-camera-p3768-g300-overlay.dtbo
 
 ## copy tegra-camera.ko file ##
 tegra_camera_dir=/lib/modules/$(uname -r)/updates/drivers/media/platform/tegra/camera
@@ -84,22 +84,24 @@ fi
 
 sudo cp Image /boot/Image
 
-if [ -e /boot/dtb/kernel_tegra234-p3737-0000+p3701-0000-nv.dtb ]; then
-    if [ ! -f "/boot/dtb/kernel_tegra234-p3737-0000+p3701-0000-nv.dtb.orig" ];then
+# copy dtb
+if [ -e /boot/dtb/kernel_tegra234-p3768-0000+p3767-0000-nv.dtb ]; then
+    if [ ! -f "/boot/dtb/kernel_tegra234-p3768-0000+p3767-0000-nv.dtb.orig" ];then
         echo "bakckup DTB"
-        sudo cp /boot/dtb/kernel_tegra234-p3737-0000+p3701-0000-nv.dtb /boot/dtb/kernel_tegra234-p3737-0000+p3701-0000-nv.dtb.orig
+        sudo cp /boot/dtb/kernel_tegra234-p3768-0000+p3767-0000-nv.dtb /boot/dtb/kernel_tegra234-p3768-0000+p3767-0000-nv.dtb.orig
     fi
-    sudo cp tegra234-p3737-0000+p3701-0000-nv.dtb /boot/dtb/kernel_tegra234-p3737-0000+p3701-0000-nv.dtb
+    sudo cp tegra234-p3768-0000+p3767-0000-nv.dtb /boot/dtb/kernel_tegra234-p3768-0000+p3767-0000-nv.dtb
 fi
 
-if [ -e /boot/dtb/kernel_tegra234-p3737-0000+p3701-0005-nv.dtb ]; then
-    if [ ! -f "/boot/dtb/kernel_tegra234-p3737-0000+p3701-0005-nv.dtb.orig" ];then
+if [ -e /boot/dtb/kernel_tegra234-p3768-0000+p3767-0001-nv.dtb ]; then
+    if [ ! -f "/boot/dtb/kernel_tegra234-p3768-0000+p3767-0001-nv.dtb.orig" ];then
         echo "bakckup DTB"
-        sudo cp /boot/dtb/kernel_tegra234-p3737-0000+p3701-0005-nv.dtb /boot/dtb/kernel_tegra234-p3737-0000+p3701-0005-nv.dtb.orig
+        sudo cp /boot/dtb/kernel_tegra234-p3768-0000+p3767-0001-nv.dtb /boot/dtb/kernel_tegra234-p3768-0000+p3767-0001-nv.dtb.orig
     fi
-    sudo cp tegra234-p3737-0000+p3701-0005-nv.dtb /boot/dtb/kernel_tegra234-p3737-0000+p3701-0005-nv.dtb
+    sudo cp tegra234-p3768-0000+p3767-0001-nv.dtb /boot/dtb/kernel_tegra234-p3768-0000+p3767-0001-nv.dtb
 fi
 
-sudo /opt/nvidia/jetson-io/config-by-hardware.py -n 2="Jetson Orbbec Camera G335Lg"
+# Modified /boot/extlinux/extlinux.conf to add following DTBO entries
+sudo /opt/nvidia/jetson-io/config-by-hardware.py -n 1="Jetson Orbbec Camera G335Lg"
 sudo depmod
 

@@ -1,5 +1,25 @@
 #!/bin/bash
 
+EXPECTED_KERNEL_PATTERN="5.15.136-tegra"
+EXPECTED_JETPACK="JetPack 6.0"
+KVER=$(uname -r)
+
+check_kernel_version()
+{
+    case "$KVER" in
+        5.15.136-tegra)
+            ;;
+        *)
+            echo "ERROR: unsupported Linux kernel version: $KVER" >&2
+            echo "This driver package is built for ${EXPECTED_JETPACK} / Linux ${EXPECTED_KERNEL_PATTERN}." >&2
+            echo "Refusing to install to avoid mixing kernel modules across JetPack versions." >&2
+            exit 1
+            ;;
+    esac
+}
+
+check_kernel_version
+
 if [ -e /boot/tegra234-camera-g300-overlay.dtbo ];then
     sudo rm /boot/tegra234-camera-g300-overlay.dtbo
 fi
